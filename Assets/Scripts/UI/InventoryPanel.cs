@@ -23,7 +23,7 @@ public class InventoryPanel : UIPanelBase
     public override void OnInit()
     {
         base.OnInit();
-        StartCoroutine(InitSlots());
+        InitSlots();
 
         //订阅事件：当背包数据变化时自动刷新
         InventoryManager.Instance.OnInventoryChangedEvent += OnInventoryUpdated;
@@ -37,9 +37,8 @@ public class InventoryPanel : UIPanelBase
     /// <summary>
     /// 初始化格子
     /// </summary>
-    IEnumerator InitSlots()
+    private void InitSlots()
     {
-        yield return null;
         var inv = InventoryManager.Instance;
 
         // 确保SO与UI格子数量一致

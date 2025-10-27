@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c13b7cc8eb6e1458c463004a88d1e7, type: 3}
+  m_Name: "\u6B66\u5668\u7BB1"
+  m_EditorClassIdentifier: 
+  commonEntries:
+  - item: {fileID: 11400000, guid: 4ac96843ec622e241b25bbccd4c9d08d, type: 2}
+    minAmount: 1
+    maxAmount: 1
+  rareEntries:
+  - item: {fileID: 11400000, guid: ff02a774483208e4c91c8955fd6d6b25, type: 2}
+    minAmount: 1
+    maxAmount: 1
+  epicEntries:
+  - item: {fileID: 11400000, guid: d5f169a658251614ebd4471c3d198877, type: 2}
+    minAmount: 1
+    maxAmount: 1
+  legendaryEntries:
+  - item: {fileID: 11400000, guid: 328a8062967ee884b9d5df888975940a, type: 2}
+    minAmount: 1
+    maxAmount: 1
+  commonChance: 0.8
+  rareChance: 0.14
+  epicChance: 0.05
+  legendaryChance: 0.01

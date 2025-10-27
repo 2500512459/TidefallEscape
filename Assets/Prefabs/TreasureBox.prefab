@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6723665501669291821}
   - component: {fileID: 7618451584763610988}
   - component: {fileID: 513954835611730533}
-  - component: {fileID: 1680803794995559428}
+  - component: {fileID: 7327774627005389863}
   m_Layer: 0
   m_Name: TreasureBox
   m_TagString: Untagged
@@ -129,7 +129,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -147,11 +147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 967f427140bc76347bf123223427539c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  density: 800
   slicesPerAxis: 2
-  isConcave: 0
   voxelsLimit: 16
---- !u!114 &1680803794995559428
+  density: 800
+--- !u!114 &7327774627005389863
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,6 +159,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2704006021686220995}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2efe3af67c1a7214b8f6e7e62144cc6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 54266f4514b4afc438562956dc2d7d31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemData: {fileID: 11400000, guid: d5f169a658251614ebd4471c3d198877, type: 2}
+  count: 1
