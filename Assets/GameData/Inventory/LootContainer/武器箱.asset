@@ -16,18 +16,26 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: 4ac96843ec622e241b25bbccd4c9d08d, type: 2}
     minAmount: 1
     maxAmount: 1
+    probability: 1
+    weight: 1
   rareEntries:
   - item: {fileID: 11400000, guid: ff02a774483208e4c91c8955fd6d6b25, type: 2}
     minAmount: 1
     maxAmount: 1
+    probability: 1
+    weight: 1
   epicEntries:
   - item: {fileID: 11400000, guid: d5f169a658251614ebd4471c3d198877, type: 2}
     minAmount: 1
     maxAmount: 1
+    probability: 1
+    weight: 1
   legendaryEntries:
   - item: {fileID: 11400000, guid: 328a8062967ee884b9d5df888975940a, type: 2}
     minAmount: 1
     maxAmount: 1
+    probability: 1
+    weight: 1
   commonChance: 0.8
   rareChance: 0.14
   epicChance: 0.05

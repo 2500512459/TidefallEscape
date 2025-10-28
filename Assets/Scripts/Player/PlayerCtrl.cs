@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipDynamics : MonoBehaviour
+public class PlayerCtrl : MonoBehaviour
 {
     [SerializeField] private float maxImpetus = 1000f;          //最大动力
     [SerializeField] private float backwardSpeedFactor = 0.5f;  //后退系数
@@ -14,9 +14,11 @@ public class ShipDynamics : MonoBehaviour
 
     private Rigidbody rigidbodyComponent;
 
+    public static Transform PlayerTransform;
     void Awake()
     {
         rigidbodyComponent = GetComponent<Rigidbody>();
+        PlayerTransform = transform;
     }
 
     private void FixedUpdate()
@@ -42,7 +44,7 @@ public class ShipDynamics : MonoBehaviour
 
         Quaternion currenRotation = rigidbodyComponent.rotation;
         Vector3 angle = currenRotation.eulerAngles;
-        angle.y += rotationAngle;   //绕y轴旋转
+        angle.y += rotationAngle * Time.fixedDeltaTime * 50f;   //绕y轴旋转
         angle.y = angle.y % 360.0f;
         Quaternion newRotation = Quaternion.Euler(angle);
         rigidbodyComponent.MoveRotation(newRotation);
