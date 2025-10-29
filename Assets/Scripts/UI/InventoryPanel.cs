@@ -12,6 +12,12 @@ public class InventoryPanel : UIPanelBase
     public Transform equipmentGridRoot;     // 装备栏（2x5）
     public Transform backpackContent;       // 背包 ScrollView 内容节点
     public Transform storageContent;        // 仓库 ScrollView 内容节点
+    public Transform lootGridRoot;          // 战利品
+
+    [Header("显示隐藏节点")]
+    public Transform LootGridText;
+    public Transform LootGrid;
+    public Transform RightPanel;
 
     [Header("物品槽预制体")]
     public GameObject itemSlotPrefab;
@@ -19,6 +25,8 @@ public class InventoryPanel : UIPanelBase
     private List<ItemSlotUI> equipmentSlots = new List<ItemSlotUI>();
     private List<ItemSlotUI> backpackSlots = new List<ItemSlotUI>();
     private List<ItemSlotUI> storageSlots = new List<ItemSlotUI>();
+    private List<ItemSlotUI> lootSlots = new List<ItemSlotUI>();
+
 
     public override void OnInit()
     {
@@ -60,6 +68,16 @@ public class InventoryPanel : UIPanelBase
     {
         base.OnShow();
         RefreshAll();
+
+        // 根据场景控制显示
+        var ctx = InventoryManager.Instance.currenContext;
+        bool isHome = ctx == InventoryContext.Home;
+        bool isLooting = ctx == InventoryContext.Looting;
+
+        RightPanel.gameObject.SetActive(isHome);
+
+        LootGridText.gameObject.SetActive(isLooting);
+        LootGrid.gameObject.SetActive(isLooting);
     }
 
     /// <summary>
@@ -79,6 +97,7 @@ public class InventoryPanel : UIPanelBase
         RefreshEquipment(inv.EquipmentData);
         RefreshBackpack(inv.BackpackData);
         RefreshStorage(inv.StorageData);
+        RefreshLoot(inv.LootData);
     }
 
     /// <summary>
@@ -132,7 +151,20 @@ public class InventoryPanel : UIPanelBase
                 storageSlots[i].ClearSlot();
         }
     }
-
+    /// <summary>
+    /// 刷新掉落栏
+    /// </summary>
+    private void RefreshLoot(InventoryDataSO data)
+    {
+        EnsureSlotCount(lootSlots, lootGridRoot, data.items.Count);
+        for (int i = 0; i < lootSlots.Count; i++)
+        {
+            if (i < data.items.Count)
+                lootSlots[i].SetItem(data.items[i], InventoryType.Loot, i);
+            else
+                lootSlots[i].ClearSlot();
+        }
+    }
     /// <summary>
     /// 初始化时创建空格子
     /// </summary>
@@ -164,12 +196,18 @@ public class InventoryPanel : UIPanelBase
     /// <param name="type"></param>
     private void OnInventoryUpdated(InventoryType type)
     {
-        if (type == InventoryType.Backpack)
-            RefreshBackpack(InventoryManager.Instance.BackpackData);
-        else if (type == InventoryType.Equipment)
-            RefreshEquipment(InventoryManager.Instance.EquipmentData);
-        else if (type == InventoryType.Storage)
-            RefreshStorage(InventoryManager.Instance.StorageData);
+        var inv = InventoryManager.Instance;
+        switch (type)
+        {
+            case InventoryType.Equipment:
+                RefreshEquipment(inv.EquipmentData); break;
+            case InventoryType.Backpack:
+                RefreshBackpack(inv.BackpackData); break;
+            case InventoryType.Storage:
+                RefreshStorage(inv.StorageData); break;
+            case InventoryType.Loot:
+                RefreshLoot(inv.LootData); break;
+        }
     }
 
 }

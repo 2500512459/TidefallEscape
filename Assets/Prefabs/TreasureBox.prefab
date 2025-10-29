@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6070231831261902410}
   - component: {fileID: 5529593173088941462}
   - component: {fileID: 1782873641178578778}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,9 +87,9 @@ GameObject:
   - component: {fileID: 8041775166447326764}
   - component: {fileID: 2335862907047107552}
   - component: {fileID: 2114410367066773366}
-  - component: {fileID: 4882881029835979566}
   - component: {fileID: 3278708518709764711}
-  m_Layer: 0
+  - component: {fileID: 4882881029835979566}
+  m_Layer: 7
   m_Name: HintUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,6 +180,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &3278708518709764711
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2151481064957882623}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &4882881029835979566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,18 +208,6 @@ MonoBehaviour:
   rectTransform: {fileID: 4571154071381443601}
   heightOffset: 3
   lookLerpSpeed: 5
---- !u!225 &3278708518709764711
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2151481064957882623}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &2704006021686220995
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,8 +222,8 @@ GameObject:
   - component: {fileID: 6723665501669291821}
   - component: {fileID: 7618451584763610988}
   - component: {fileID: 513954835611730533}
-  - component: {fileID: 8641325998964058032}
-  m_Layer: 0
+  - component: {fileID: 7856408133233679478}
+  m_Layer: 7
   m_Name: TreasureBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +359,7 @@ MonoBehaviour:
   slicesPerAxis: 2
   voxelsLimit: 16
   density: 800
---- !u!114 &8641325998964058032
+--- !u!114 &7856408133233679478
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -368,12 +368,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2704006021686220995}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eae3b930e3cedc40a04d57be17bec87, type: 3}
+  m_Script: {fileID: 11500000, guid: 2efe3af67c1a7214b8f6e7e62144cc6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootContainer: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
+  lootContainerData: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
   HintUI: {fileID: 4882881029835979566}
-  detectDistance: 10
+  detectDistance: 5
+  lootMaxSlotCount: 5
+  allowDuplicates: 1
 --- !u!1 &5314095652856406515
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,7 +387,7 @@ GameObject:
   - component: {fileID: 2518573830682058597}
   - component: {fileID: 2613708136780236657}
   - component: {fileID: 8338120731729412228}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

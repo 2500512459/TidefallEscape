@@ -19,5 +19,13 @@ public enum InventoryType
 { 
     Backpack, 
     Equipment, 
-    Storage 
+    Storage,
+    Loot
+}
+// 仓库状态
+public enum InventoryContext
+{
+    Default,    // 普通状态（只能打开背包+装备）
+    Home,       // 在家（背包+装备+仓库）
+    Looting     // 打开宝箱时（背包+装备+掉落物）
 }
