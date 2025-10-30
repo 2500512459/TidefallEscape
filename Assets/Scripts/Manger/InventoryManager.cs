@@ -66,27 +66,4 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         // 可选：触发 UI 刷新或保存事件
         Debug.Log($"{type} 数据已更新");
     }
-
-    /// <summary>
-    /// 整理功能
-    /// </summary>
-    /// <param name="type"></param>
-    public void SortInventory(InventoryType type)
-    {
-        var data = GetInventory(type);
-        if (data == null) return;
-
-        // 去除空格子前先复制一份
-        var items = new List<ItemStack>(data.items);
-
-        // 排序
-        items.Sort(new ItemComparer());
-
-        // 重新赋值
-        data.items.Clear();
-        data.items.AddRange(items);
-
-        // 通知更新
-        OnInventoryChanged(type);
-    }
 }

@@ -22,20 +22,23 @@ public class CameraManer : MonoBehaviour
 
     void LateUpdate()
     {
-        if (InputManager.Instance.inputRotateState)
+        if (!InputManager.Instance.isInventoryOpen)
         {
-            UpdateVertical();
-            UpdateHorizontal();
+            if (InputManager.Instance.inputRotateState)
+            {
+                UpdateVertical();
+                UpdateHorizontal();
+            }
+
+            UpdateDistance();
+
+            lookRotateX = Mathf.Clamp(lookRotateX, 60, 80);
+            Quaternion rot = Quaternion.Euler(lookRotateX, lookRotateY, 0);
+            offset = rot * Vector3.forward * lookDistance;
+
+            transform.position = target.transform.position - offset;
+            transform.LookAt(target);
         }
-
-        UpdateDistance();
-
-        lookRotateX = Mathf.Clamp(lookRotateX, 60, 80);
-        Quaternion rot = Quaternion.Euler(lookRotateX, lookRotateY, 0);
-        offset = rot * Vector3.forward * lookDistance;
-
-        transform.position = target.transform.position - offset;
-        transform.LookAt(target);
     }
 
     IEnumerator InitCamer()

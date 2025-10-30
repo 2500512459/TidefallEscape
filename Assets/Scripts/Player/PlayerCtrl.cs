@@ -76,12 +76,15 @@ public class PlayerCtrl : MonoBehaviour
 
     private void Update()
     {
-        // 读取移动输入
-        verticalImpetus = InputManager.Instance.inputMove.y;
-        horizontalImpetus = InputManager.Instance.inputMove.x;
-        isBoosting = InputManager.Instance.isBoosting;
-        // 检测最近宝箱
-        UpdateNearestTreasure();
+        if (!InputManager.Instance.isInventoryOpen)
+        {
+            // 读取移动输入
+            verticalImpetus = InputManager.Instance.inputMove.y;
+            horizontalImpetus = InputManager.Instance.inputMove.x;
+            isBoosting = InputManager.Instance.isBoosting;
+            // 检测最近宝箱
+            UpdateNearestTreasure();
+        }
     }
 
     // ===================== Tab键 打开/关闭背包 =====================

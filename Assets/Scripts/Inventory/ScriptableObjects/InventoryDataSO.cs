@@ -106,6 +106,15 @@ public class InventoryDataSO : ScriptableObject
         while (items.Count > targetCount)
             items.RemoveAt(items.Count - 1);
     }
+
+    /// <summary>
+    /// 按 ItemID 排序（空格子会自动放在最后）
+    /// </summary>
+    public void SortItems()
+    {
+        if (items == null || items.Count == 0) return;
+        items.Sort(new ItemComparer());
+    }
 }
 
 [System.Serializable]

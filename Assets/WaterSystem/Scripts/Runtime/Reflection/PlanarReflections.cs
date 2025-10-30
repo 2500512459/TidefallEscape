@@ -16,7 +16,7 @@ using System.Collections.Generic;
 /// - 镜子、地板反射
 /// - 任何基于平面反射的场景
 /// </summary>
-[ExecuteAlways]  // 在编辑器中也能实时执行
+//[ExecuteAlways]  // 在编辑器中也能实时执行
 public class PlanarReflections : MonoBehaviour
 {
     #region ======== 可调参数 (Inspector 设置) ========

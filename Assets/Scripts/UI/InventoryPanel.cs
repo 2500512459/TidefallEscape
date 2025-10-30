@@ -61,7 +61,7 @@ public class InventoryPanel : UIPanelBase
         CreateEmptySlots(backpackSlots, backpackContent, inv.BackpackData.maxCount);
 
         // 初始化仓库默认格子
-        CreateEmptySlots(storageSlots, storageContent, inv.StorageData.maxCount);
+        //CreateEmptySlots(storageSlots, storageContent, inv.StorageData.maxCount);
     }
 
     public override void OnShow()
@@ -96,7 +96,7 @@ public class InventoryPanel : UIPanelBase
 
         RefreshEquipment(inv.EquipmentData);
         RefreshBackpack(inv.BackpackData);
-        RefreshStorage(inv.StorageData);
+        //RefreshStorage(inv.StorageData);
         RefreshLoot(inv.LootData);
     }
 
@@ -137,20 +137,20 @@ public class InventoryPanel : UIPanelBase
     /// <summary>
     /// 刷新仓库栏（可动态增长）
     /// </summary>
-    private void RefreshStorage(InventoryDataSO storageData)
-    {
-        var data = storageData != null ? storageData.items : new List<ItemStack>();
+    //private void RefreshStorage(InventoryDataSO storageData)
+    //{
+    //    var data = storageData != null ? storageData.items : new List<ItemStack>();
 
-        EnsureSlotCount(storageSlots, storageContent, data.Count);
+    //    EnsureSlotCount(storageSlots, storageContent, data.Count);
 
-        for (int i = 0; i < storageSlots.Count; i++)
-        {
-            if (i < data.Count)
-                storageSlots[i].SetItem(data[i], InventoryType.Storage, i);
-            else
-                storageSlots[i].ClearSlot();
-        }
-    }
+    //    for (int i = 0; i < storageSlots.Count; i++)
+    //    {
+    //        if (i < data.Count)
+    //            storageSlots[i].SetItem(data[i], InventoryType.Storage, i);
+    //        else
+    //            storageSlots[i].ClearSlot();
+    //    }
+    //}
     /// <summary>
     /// 刷新掉落栏
     /// </summary>
@@ -204,10 +204,23 @@ public class InventoryPanel : UIPanelBase
             case InventoryType.Backpack:
                 RefreshBackpack(inv.BackpackData); break;
             case InventoryType.Storage:
-                RefreshStorage(inv.StorageData); break;
+                //RefreshStorage(inv.StorageData);
+                break;
             case InventoryType.Loot:
                 RefreshLoot(inv.LootData); break;
         }
+    }
+
+
+    public void OnSortBackpackButtonClicked()
+    {
+        InventoryManager.Instance.BackpackData.SortItems();
+        InventoryManager.Instance.OnInventoryChanged(InventoryType.Backpack);
+    }
+    public void OnSortStorageButtonClicked()
+    {
+        InventoryManager.Instance.StorageData.SortItems();
+        InventoryManager.Instance.OnInventoryChanged(InventoryType.Storage);
     }
 
 }

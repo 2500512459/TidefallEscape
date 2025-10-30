@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[ExecuteAlways]
+//[ExecuteAlways]
 public partial class Water : MonoBehaviour
 {
     private static Water instance = null;

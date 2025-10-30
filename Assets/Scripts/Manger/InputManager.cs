@@ -36,17 +36,7 @@ public class InputManager : MonoSingleton<InputManager>
 
     void Update()
     {
-        // 这里可以根据状态锁定鼠标
-        if (isInventoryOpen)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+
     }
 
 #if ENABLE_INPUT_SYSTEM
@@ -55,19 +45,17 @@ public class InputManager : MonoSingleton<InputManager>
     // =====================
     public void OnMove(InputAction.CallbackContext value)
     {
-        if (isInventoryOpen) return;  // 打开背包时禁止移动
+
         MoveInput(value.ReadValue<Vector2>());
     }
 
     public void OnLook(InputAction.CallbackContext value)
     {
-        if (isInventoryOpen) return;  // 打开背包时禁止视角旋转
         LookInput(value.ReadValue<Vector2>());
     }
 
     public void OnRotate(InputAction.CallbackContext value)
     {
-        if (isInventoryOpen) return;
         RotateInput(value.performed);
     }
     // Shift 加速
