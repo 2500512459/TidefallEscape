@@ -1,31 +1,40 @@
-//µÀ¾ßÀàÐÍ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 public enum ItemType
 {
-    Weapon,         //ÎäÆ÷
-    Ammo,           //µ¯Ò©
-    Consumable,     //ÏûºÄÆ·
-    Material        //²ÄÁÏ
+    Weapon,         //ï¿½ï¿½ï¿½ï¿½
+    Ammo,           //ï¿½ï¿½Ò©
+    Consumable,     //ï¿½ï¿½ï¿½ï¿½Æ·
+    Material        //ï¿½ï¿½ï¿½ï¿½
 }
-//µÀ¾ßÏ¡ÓÐ¶È
+//ï¿½ï¿½ï¿½ï¿½Ï¡ï¿½Ð¶ï¿½
 public enum ItemRarity
 {
-    Common,         //³£¼û
-    Rare,           //º±¼û
-    Epic,           //Ê·Ê«¼¶
-    Legendary       //´«Ææ¼¶
+    Common,         //ï¿½ï¿½ï¿½ï¿½
+    Rare,           //ï¿½ï¿½ï¿½ï¿½
+    Epic,           //Ê·Ê«ï¿½ï¿½
+    Legendary       //ï¿½ï¿½ï¿½æ¼¶
 }
-//¿âµÄÀàÐÍ
-public enum InventoryType 
-{ 
-    Backpack, 
-    Equipment, 
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+public enum InventoryType
+{
+    Backpack,
+    Equipment,
     Storage,
-    Loot
+    Loot,
+    Shop
 }
-// ²Ö¿â×´Ì¬
+// ï¿½Ö¿ï¿½×´Ì¬
 public enum InventoryContext
 {
-    Default,    // ÆÕÍ¨×´Ì¬£¨Ö»ÄÜ´ò¿ª±³°ü+×°±¸£©
-    Home,       // ÔÚ¼Ò£¨±³°ü+×°±¸+²Ö¿â£©
-    Looting     // ´ò¿ª±¦ÏäÊ±£¨±³°ü+×°±¸+µôÂäÎï£©
+    Default,    // ï¿½ï¿½Í¨×´Ì¬ï¿½ï¿½Ö»ï¿½Ü´ò¿ª±ï¿½ï¿½ï¿½+×°ï¿½ï¿½ï¿½ï¿½
+    Home,       // ï¿½Ú¼Ò£ï¿½ï¿½ï¿½ï¿½ï¿½+×°ï¿½ï¿½+ï¿½Ö¿â£©
+    Looting     // ï¿½ò¿ª±ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½+×°ï¿½ï¿½+ï¿½ï¿½ï¿½ï¿½ï¿½ï£©
+}
+
+public enum ShopType
+{
+    WeaponShop,     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    AmmoShop,       //ï¿½ï¿½Ò©ï¿½ï¿½
+    ConsumableShop,     //ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½
+    MaterialShop        //ï¿½ï¿½ï¿½Ïµï¿½
 }

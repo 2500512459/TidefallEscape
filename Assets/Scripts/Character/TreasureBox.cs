@@ -21,7 +21,7 @@ public class TreasureBox : Character
     public bool allowDuplicates = true;
 
     [Header("当前宝箱掉落数据")]
-    private InventoryDataSO LootData;   // 每个宝箱自己的掉落表
+    private InventoryDataSO LootData;   // 每个宝箱自己的掉落数据
     // UI 是否当前可见（外部只读）
     private bool isUIVisible  = false;
 
@@ -108,14 +108,14 @@ public class TreasureBox : Character
             return;
         }
         // 生成掉落物列表
-        int lootSlotCount = Random.Range(1, lootMaxSlotCount + 1);
+        int lootSlotCount = Random.Range(1, lootMaxSlotCount + 1);  // 生成掉落数量
         List<ItemStack> lootItems = lootContainerData.GenerateLoot(lootSlotCount, allowDuplicates);
 
         if (lootItems == null || lootItems.Count == 0)
         {
             Debug.Log($"[TreasureBox] {name} 未生成任何掉落物。");
             return;
-        }
+        }        
 
         // 将掉落按顺序写入前 N 个格子
         for (int i = 0; i < lootItems.Count; i++)

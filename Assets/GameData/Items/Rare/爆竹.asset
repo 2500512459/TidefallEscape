@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb76fabcb7ed3534faac6a98c281542c, type: 3}
   m_Name: "\u7206\u7AF9"
   m_EditorClassIdentifier: 
-  itemID: 11
+  itemID: 12
   itemName: "\u7206\u7AF9"
-  icon: {fileID: 21300000, guid: 9ba7ac9cdb137436abf579705590a0b1, type: 3}
+  icon: {fileID: 21300000, guid: 19ebe36fb7967474792f82f0ac4d1007, type: 3}
   type: 0
-  rarity: 1
-  maxStack: 3
+  rarity: 0
+  maxStack: 1
   worldPrefab: {fileID: 0}
-  description: 
+  description: "\u8FDC\u7A0B\u653B\u51FB\u76EE\u6807\u9020\u6210<color=\"white\">5</color>\u70B9\u4F24\u5BB3"

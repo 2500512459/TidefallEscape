@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class UIManger : MonoSingleton<UIManger>
 {
-    [Header("所有需要管理的UI面板（手动绑定）")]
+    [Header("UIRoot节点")]
     public Transform Root;
 
     [Header("所有需要管理的UI面板（手动绑定）")]
@@ -87,5 +87,18 @@ public class UIManger : MonoSingleton<UIManger>
             kvp.Value.OnClose();
             kvp.Value.gameObject.SetActive(false);
         }
+    }
+
+    /// <summary>
+    /// 获取指定类型的面板实例（不论是否显示）
+    /// </summary>
+    public T GetPanel<T>() where T : UIPanelBase
+    {
+        var type = typeof(T);
+        if (panelDict.TryGetValue(type, out UIPanelBase panel))
+        {
+            return panel as T;
+        }
+        return null;
     }
 }

@@ -6,11 +6,11 @@ public class ItemDataSO : ScriptableObject
     public string itemID;
     public string itemName;
     public Sprite icon;
-    public ItemType type;           //ÀàÐÍ£¨ÎäÆ÷¡¢ÏûºÄÆ·£©
-    public ItemRarity rarity;       //Ï¡ÓÐ¶È
-    public int maxStack = 99;       //×î´óµþ¼ÓÊý
+    public ItemType type;           //ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½
+    public ItemRarity rarity;       //Ï¡ï¿½Ð¶ï¿½
+    public int maxStack = 99;       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public GameObject worldPrefab;
 
     [TextArea]
-    public string description;      //ÃèÊöÐÅÏ¢
+    public string description;      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 }

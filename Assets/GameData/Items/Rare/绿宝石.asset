@@ -19,4 +19,4 @@ MonoBehaviour:
   rarity: 1
   maxStack: 99
   worldPrefab: {fileID: 0}
-  description: 
+  description: "\u589E\u52A0\u4F24\u5BB3 <color=\"green\">50%</color>"

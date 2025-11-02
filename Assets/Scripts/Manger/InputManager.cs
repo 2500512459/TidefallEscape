@@ -69,13 +69,18 @@ public class InputManager : MonoSingleton<InputManager>
     // Tab 打开/关闭背包
     public void OnInventory(InputAction.CallbackContext value)
     {
-        if (value.phase == InputActionPhase.Started)
+        if (value.phase != InputActionPhase.Started) return;
+
+        // 如果此时打开的是商店界面，就不改变背包的状态
+        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        if (shopPanel != null && !shopPanel.IsVisible)
         {
             isInventoryOpen = !isInventoryOpen;
-            OpenInventoryEvent?.Invoke(isInventoryOpen);
-
             isLootOpen = isInventoryOpen;
         }
+
+        OpenInventoryEvent?.Invoke(isInventoryOpen);
+
     }
     // F 打开/关闭背包和掉落栏
     public void OnLoot(InputAction.CallbackContext value)

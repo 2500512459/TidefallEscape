@@ -114,6 +114,8 @@ public class InventoryDataSO : ScriptableObject
     {
         if (items == null || items.Count == 0) return;
         items.Sort(new ItemComparer());
+
+        InventoryManager.Instance.OnInventoryChanged(type);
     }
 }
 

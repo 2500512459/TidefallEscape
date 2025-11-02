@@ -4,72 +4,73 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// ±³°üÃæ°å£º°üº¬×°±¸À¸¡¢±³°ü¡¢²Ö¿âÈý¸öÇøÓò
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£ºï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 public class InventoryPanel : UIPanelBase
 {
-    [Header("ÒýÓÃUI½Úµã")]
-    public Transform equipmentGridRoot;     // ×°±¸À¸£¨2x5£©
-    public Transform backpackContent;       // ±³°ü ScrollView ÄÚÈÝ½Úµã
-    public Transform storageContent;        // ²Ö¿â ScrollView ÄÚÈÝ½Úµã
-    public Transform lootGridRoot;          // Õ½ÀûÆ·
+    // [Header("ï¿½ï¿½ï¿½ï¿½UIï¿½Úµï¿½")]
+    // public Transform equipmentGridRoot;     // ×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2x5ï¿½ï¿½
+    // public Transform backpackContent;       // ï¿½ï¿½ï¿½ï¿½ ScrollView ï¿½ï¿½ï¿½Ý½Úµï¿½
+    // public Transform storageContent;        // ï¿½Ö¿ï¿½ ScrollView ï¿½ï¿½ï¿½Ý½Úµï¿½
+    // public Transform lootGridRoot;          // Õ½ï¿½ï¿½Æ·
 
-    [Header("ÏÔÊ¾Òþ²Ø½Úµã")]
+    [Header("Panelï¿½Úµï¿½")]
     public Transform LootGridText;
     public Transform LootGrid;
+    public Transform InfoNodeRoot;
     public Transform RightPanel;
 
-    [Header("ÎïÆ·²ÛÔ¤ÖÆÌå")]
-    public GameObject itemSlotPrefab;
+    // [Header("ï¿½ï¿½Æ·ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½")]
+    // public GameObject itemSlotPrefab;
 
-    private List<ItemSlotUI> equipmentSlots = new List<ItemSlotUI>();
-    private List<ItemSlotUI> backpackSlots = new List<ItemSlotUI>();
-    private List<ItemSlotUI> storageSlots = new List<ItemSlotUI>();
-    private List<ItemSlotUI> lootSlots = new List<ItemSlotUI>();
+    // private List<ItemSlot> equipmentSlots = new List<ItemSlot>();
+    // private List<ItemSlot> backpackSlots = new List<ItemSlot>();
+    // private List<ItemSlot> storageSlots = new List<ItemSlot>();
+    // private List<ItemSlot> lootSlots = new List<ItemSlot>();
 
 
     public override void OnInit()
     {
         base.OnInit();
-        InitSlots();
+        //InitSlots();
 
-        //¶©ÔÄÊÂ¼þ£ºµ±±³°üÊý¾Ý±ä»¯Ê±×Ô¶¯Ë¢ÐÂ
-        InventoryManager.Instance.OnInventoryChangedEvent += OnInventoryUpdated;
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ä»¯Ê±ï¿½Ô¶ï¿½Ë¢ï¿½ï¿½
+        // InventoryManager.Instance.OnInventoryChangedEvent += OnInventoryUpdated;
     }
     public override void OnClose()
     {
         base.OnClose();
-        if (InventoryManager.Instance != null)
-            InventoryManager.Instance.OnInventoryChangedEvent -= OnInventoryUpdated;
+        // if (InventoryManager.Instance != null)
+        //     InventoryManager.Instance.OnInventoryChangedEvent -= OnInventoryUpdated;
     }
     /// <summary>
-    /// ³õÊ¼»¯¸ñ×Ó
+    /// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    private void InitSlots()
-    {
-        var inv = InventoryManager.Instance;
+    // private void InitSlots()
+    // {
+    //     var inv = InventoryManager.Instance;
 
-        // È·±£SOÓëUI¸ñ×ÓÊýÁ¿Ò»ÖÂ
-        inv.EquipmentData.EnsureSlotCount(10);
-        inv.BackpackData.EnsureSlotCount(inv.BackpackData.maxCount);
-        inv.StorageData.EnsureSlotCount(inv.StorageData.maxCount);
+    //     // È·ï¿½ï¿½SOï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+    //     inv.EquipmentData.EnsureSlotCount(10);
+    //     // inv.BackpackData.EnsureSlotCount(inv.BackpackData.maxCount);
+    //     // inv.StorageData.EnsureSlotCount(inv.StorageData.maxCount);
 
-        // ³õÊ¼»¯×°±¸À¸£¨¹Ì¶¨ 2x5 = 10¸ñ£©
-        CreateEmptySlots(equipmentSlots, equipmentGridRoot, 10);
+    //     // ï¿½ï¿½Ê¼ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ 2x5 = 10ï¿½ï¿½
+    //     CreateEmptySlots(equipmentSlots, equipmentGridRoot, 10);
 
-        // ³õÊ¼»¯±³°üÄ¬ÈÏ¸ñ×Ó
-        CreateEmptySlots(backpackSlots, backpackContent, inv.BackpackData.maxCount);
+    //     // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï¸ï¿½ï¿½ï¿½
+    //     //CreateEmptySlots(backpackSlots, backpackContent, inv.BackpackData.maxCount);
 
-        // ³õÊ¼»¯²Ö¿âÄ¬ÈÏ¸ñ×Ó
-        //CreateEmptySlots(storageSlots, storageContent, inv.StorageData.maxCount);
-    }
+    //     // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ö¿ï¿½Ä¬ï¿½Ï¸ï¿½ï¿½ï¿½
+    //     //CreateEmptySlots(storageSlots, storageContent, inv.StorageData.maxCount);
+    // }
 
     public override void OnShow()
     {
         base.OnShow();
-        RefreshAll();
+        //RefreshAll();
 
-        // ¸ù¾Ý³¡¾°¿ØÖÆÏÔÊ¾
+        // ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
         var ctx = InventoryManager.Instance.currenContext;
         bool isHome = ctx == InventoryContext.Home;
         bool isLooting = ctx == InventoryContext.Looting;
@@ -78,67 +79,69 @@ public class InventoryPanel : UIPanelBase
 
         LootGridText.gameObject.SetActive(isLooting);
         LootGrid.gameObject.SetActive(isLooting);
+
+        InfoNodeRoot.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Ë¢ÐÂËùÓÐUIÇøÓò
-    /// Ã¿´Î¶¼´Ó InventoryManager µÄ SO ÖÐÖØÐÂ¼ÓÔØ×îÐÂÊý¾Ý
-    /// </summary>
-    public void RefreshAll()
-    {
-        // È·±£Êý¾ÝÊµÊ±¸üÐÂ
-        var inv = InventoryManager.Instance;
-        if (inv == null)
-        {
-            Debug.LogError("[InventoryPanel] InventoryManager.Instance Îª null");
-            return;
-        }
+    // /// <summary>
+    // /// Ë¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½
+    // /// Ã¿ï¿½Î¶ï¿½ï¿½ï¿½ InventoryManager ï¿½ï¿½ SO ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // /// </summary>
+    // public void RefreshAll()
+    // {
+    //     // È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÊµÊ±ï¿½ï¿½ï¿½ï¿½
+    //     var inv = InventoryManager.Instance;
+    //     if (inv == null)
+    //     {
+    //         Debug.LogError("[InventoryPanel] InventoryManager.Instance Îª null");
+    //         return;
+    //     }
 
-        RefreshEquipment(inv.EquipmentData);
-        RefreshBackpack(inv.BackpackData);
-        //RefreshStorage(inv.StorageData);
-        RefreshLoot(inv.LootData);
-    }
+    //     RefreshEquipment(inv.EquipmentData);
+    //     RefreshBackpack(inv.BackpackData);
+    //     RefreshStorage(inv.StorageData);
+    //     RefreshLoot(inv.LootData);
+    // }
 
-    /// <summary>
-    /// Ë¢ÐÂ×°±¸À¸
-    /// </summary>
-    private void RefreshEquipment(InventoryDataSO equipmentData)
-    {
-        var data = equipmentData != null ? equipmentData.items : new List<ItemStack>();
+    // /// <summary>
+    // /// Ë¢ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½
+    // /// </summary>
+    // private void RefreshEquipment(InventoryDataSO equipmentData)
+    // {
+    //     var data = equipmentData != null ? equipmentData.items : new List<ItemStack>();
 
-        for (int i = 0; i < equipmentSlots.Count; i++)
-        {
-            if (i < data.Count)
-                equipmentSlots[i].SetItem(data[i], InventoryType.Equipment, i);
-            else
-                equipmentSlots[i].ClearSlot();
-        }
-    }
+    //     for (int i = 0; i < equipmentSlots.Count; i++)
+    //     {
+    //         if (i < data.Count)
+    //             equipmentSlots[i].SetItem(data[i], InventoryType.Equipment, i);
+    //         else
+    //             equipmentSlots[i].ClearSlot();
+    //     }
+    // }
 
-    /// <summary>
-    /// Ë¢ÐÂ±³°üÀ¸£¨¿É¶¯Ì¬Ôö³¤£©
-    /// </summary>
-    private void RefreshBackpack(InventoryDataSO backpackData)
-    {
-        var data = backpackData != null ? backpackData.items : new List<ItemStack>();
+    // /// <summary>
+    // /// Ë¢ï¿½Â±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // /// </summary>
+    // private void RefreshBackpack(InventoryDataSO backpackData)
+    // {
+    //     var data = backpackData != null ? backpackData.items : new List<ItemStack>();
 
-        EnsureSlotCount(backpackSlots, backpackContent, data.Count);
+    //     EnsureSlotCount(backpackSlots, backpackContent, data.Count);
 
-        for (int i = 0; i < backpackSlots.Count; i++)
-        {
-            if (i < data.Count)
-                backpackSlots[i].SetItem(data[i], InventoryType.Backpack, i);
-            else
-                backpackSlots[i].ClearSlot();
-        }
-    }
+    //     for (int i = 0; i < backpackSlots.Count; i++)
+    //     {
+    //         if (i < data.Count)
+    //             backpackSlots[i].SetItem(data[i], InventoryType.Backpack, i);
+    //         else
+    //             backpackSlots[i].ClearSlot();
+    //     }
+    // }
 
-    /// <summary>
-    /// Ë¢ÐÂ²Ö¿âÀ¸£¨¿É¶¯Ì¬Ôö³¤£©
-    /// </summary>
-    //private void RefreshStorage(InventoryDataSO storageData)
-    //{
+    // // <summary>
+    // // Ë¢ï¿½Â²Ö¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // // </summary>
+    // private void RefreshStorage(InventoryDataSO storageData)
+    // {
     //    var data = storageData != null ? storageData.items : new List<ItemStack>();
 
     //    EnsureSlotCount(storageSlots, storageContent, data.Count);
@@ -150,77 +153,77 @@ public class InventoryPanel : UIPanelBase
     //        else
     //            storageSlots[i].ClearSlot();
     //    }
-    //}
-    /// <summary>
-    /// Ë¢ÐÂµôÂäÀ¸
-    /// </summary>
-    private void RefreshLoot(InventoryDataSO data)
-    {
-        EnsureSlotCount(lootSlots, lootGridRoot, data.items.Count);
-        for (int i = 0; i < lootSlots.Count; i++)
-        {
-            if (i < data.items.Count)
-                lootSlots[i].SetItem(data.items[i], InventoryType.Loot, i);
-            else
-                lootSlots[i].ClearSlot();
-        }
-    }
-    /// <summary>
-    /// ³õÊ¼»¯Ê±´´½¨¿Õ¸ñ×Ó
-    /// </summary>
-    private void CreateEmptySlots(List<ItemSlotUI> list, Transform parent, int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            var slot = Instantiate(itemSlotPrefab, parent).GetComponent<ItemSlotUI>();
-            slot.ClearSlot(); // Ä¬ÈÏÏÔÊ¾±³¾°£¨°×±ß£©
-            list.Add(slot);
-        }
-    }
+    // }
+    // /// <summary>
+    // /// Ë¢ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½
+    // /// </summary>
+    // private void RefreshLoot(InventoryDataSO data)
+    // {
+    //     EnsureSlotCount(lootSlots, lootGridRoot, data.items.Count);
+    //     for (int i = 0; i < lootSlots.Count; i++)
+    //     {
+    //         if (i < data.items.Count)
+    //             lootSlots[i].SetItem(data.items[i], InventoryType.Loot, i);
+    //         else
+    //             lootSlots[i].ClearSlot();
+    //     }
+    // }
+    // /// <summary>
+    // /// ï¿½ï¿½Ê¼ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½
+    // /// </summary>
+    // private void CreateEmptySlots(List<ItemSlot> list, Transform parent, int count)
+    // {
+    //     for (int i = 0; i < count; i++)
+    //     {
+    //         var slot = Instantiate(itemSlotPrefab, parent).GetComponent<ItemSlot>();
+    //         slot.ClearSlot(); // Ä¬ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×±ß£ï¿½
+    //         list.Add(slot);
+    //     }
+    // }
 
-    /// <summary>
-    /// È·±£SlotÊýÁ¿¹»ÓÃ£¬²»¹»Ôò¶¯Ì¬Éú³É
-    /// </summary>
-    private void EnsureSlotCount(List<ItemSlotUI> list, Transform parent, int targetCount)
-    {
-        while (list.Count < targetCount)
-        {
-            var slot = Instantiate(itemSlotPrefab, parent).GetComponent<ItemSlotUI>();
-            list.Add(slot);
-            slot.ClearSlot(); // Ä¬ÈÏÏÔÊ¾±³¾°
-        }
-    }
-    /// <summary>
-    /// ´¦Àí½çÃæ¸üÐÂÊÂ¼þ
-    /// </summary>
-    /// <param name="type"></param>
-    private void OnInventoryUpdated(InventoryType type)
-    {
-        var inv = InventoryManager.Instance;
-        switch (type)
-        {
-            case InventoryType.Equipment:
-                RefreshEquipment(inv.EquipmentData); break;
-            case InventoryType.Backpack:
-                RefreshBackpack(inv.BackpackData); break;
-            case InventoryType.Storage:
-                //RefreshStorage(inv.StorageData);
-                break;
-            case InventoryType.Loot:
-                RefreshLoot(inv.LootData); break;
-        }
-    }
+    // /// <summary>
+    // /// È·ï¿½ï¿½Slotï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½
+    // /// </summary>
+    // private void EnsureSlotCount(List<ItemSlot> list, Transform parent, int targetCount)
+    // {
+    //     while (list.Count < targetCount)
+    //     {
+    //         var slot = Instantiate(itemSlotPrefab, parent).GetComponent<ItemSlot>();
+    //         list.Add(slot);
+    //         slot.ClearSlot(); // Ä¬ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+    //     }
+    // }
+    // /// <summary>
+    // /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+    // /// </summary>
+    // /// <param name="type"></param>
+    // private void OnInventoryUpdated(InventoryType type)
+    // {
+    //     var inv = InventoryManager.Instance;
+    //     switch (type)
+    //     {
+    //         case InventoryType.Equipment:
+    //             RefreshEquipment(inv.EquipmentData); break;
+    //         case InventoryType.Backpack:
+    //             RefreshBackpack(inv.BackpackData); break;
+    //         case InventoryType.Storage:
+    //             RefreshStorage(inv.StorageData);
+    //             break;
+    //         case InventoryType.Loot:
+    //             RefreshLoot(inv.LootData); break;
+    //     }
+    // }
 
 
-    public void OnSortBackpackButtonClicked()
-    {
-        InventoryManager.Instance.BackpackData.SortItems();
-        InventoryManager.Instance.OnInventoryChanged(InventoryType.Backpack);
-    }
-    public void OnSortStorageButtonClicked()
-    {
-        InventoryManager.Instance.StorageData.SortItems();
-        InventoryManager.Instance.OnInventoryChanged(InventoryType.Storage);
-    }
+    // public void OnSortBackpackButtonClicked()
+    // {
+    //     InventoryManager.Instance.BackpackData.SortItems();
+    //     InventoryManager.Instance.OnInventoryChanged(InventoryType.Backpack);
+    // }
+    // public void OnSortStorageButtonClicked()
+    // {
+    //     InventoryManager.Instance.StorageData.SortItems();
+    //     InventoryManager.Instance.OnInventoryChanged(InventoryType.Storage);
+    // }
 
 }
