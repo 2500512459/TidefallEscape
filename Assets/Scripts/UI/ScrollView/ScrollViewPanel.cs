@@ -15,7 +15,7 @@ public class ScrollViewPanel : MonoBehaviour
     /// <summary>
     /// 更新item信息
     /// </summary>
-    protected virtual void OnUpdateScrollItemAction(ItemSlot item, int index)
+    protected virtual void OnUpdateScrollItemAction(StorageItem item, int index)
     {
 
     }

@@ -6,29 +6,29 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoSingleton<InventoryManager>
 {
-    [Header("±³°üÊı¾İ")]
+    [Header("èƒŒåŒ…æ•°æ®")]
     public InventoryDataSO BackpackData;
-    [Header("×°±¸Êı¾İ")]
+    [Header("è£…å¤‡æ•°æ®")]
     public InventoryDataSO EquipmentData;
-    [Header("²Ö¿âÊı¾İ")]
+    [Header("ä»“åº“æ•°æ®")]
     public InventoryDataSO StorageData;
-    [Header("µ±Ç°µôÂäÀ¸ÁÙÊ±Êı¾İ")]
-    public InventoryDataSO LootData;                // ÁÙÊ±ÔËĞĞÊ±ÈİÆ÷
+    [Header("å½“å‰æ‰è½æ ä¸´æ—¶æ•°æ®")]
+    public InventoryDataSO LootData;                // ä¸´æ—¶è¿è¡Œæ—¶å®¹å™¨
 
-    [Header("µ±Ç°³¡¾°")]
+    [Header("å½“å‰åœºæ™¯")]
     public InventoryContext currenContext = InventoryContext.Home;
 
     public event Action<InventoryType> OnInventoryChangedEvent;
 
-    [ContextMenu("²âÊÔÀ©Õ¹±³°üÈİÁ¿ +5")]
+    [ContextMenu("æµ‹è¯•æ‰©å±•èƒŒåŒ…å®¹é‡ +5")]
     private void TestExpand()
     {
         BackpackData.maxCount += 5;
-        Debug.Log($"[InventoryDataSO] ÒÑÀ©Õ¹ÈİÁ¿: {BackpackData.maxCount}");
+        Debug.Log($"[InventoryDataSO] å·²æ‰©å±•å®¹é‡: {BackpackData.maxCount}");
     }
 
     /// <summary>
-    /// Ìí¼Ó
+    /// æ·»åŠ 
     /// </summary>
     /// <param name="item"></param>
     /// <param name="count"></param>
@@ -39,7 +39,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         var inv = GetInventory(type);
         if (inv == null)
         {
-            Debug.LogWarning($"[InventoryManager] AddItem Ê§°Ü£º{type} ÎŞĞ§¡£");
+            Debug.LogWarning($"[InventoryManager] AddItem å¤±è´¥ï¼š{type} æ— æ•ˆã€‚");
             return false;
         }
 
@@ -47,7 +47,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         OnInventoryChanged(type);
         return result;
     }
-    // ¸ù¾İÀàĞÍ»ñµÃ¿âÊı¾İ
+    // æ ¹æ®ç±»å‹è·å¾—åº“æ•°æ®
     public InventoryDataSO GetInventory(InventoryType type)
     {
         return type switch
@@ -59,11 +59,36 @@ public class InventoryManager : MonoSingleton<InventoryManager>
             _ => null
         };
     }
-    // ²Ö¿âÊı¾İ¸üĞÂÊÂ¼ş¹ã²¥
+    // ä»“åº“æ•°æ®æ›´æ–°äº‹ä»¶å¹¿æ’­
     public void OnInventoryChanged(InventoryType type)
     {
         OnInventoryChangedEvent?.Invoke(type);
-        // ¿ÉÑ¡£º´¥·¢ UI Ë¢ĞÂ»ò±£´æÊÂ¼ş
-        Debug.Log($"{type} Êı¾İÒÑ¸üĞÂ");
+        // å¯é€‰ï¼šè§¦å‘ UI åˆ·æ–°æˆ–ä¿å­˜äº‹ä»¶
+        Debug.Log($"{type} æ•°æ®å·²æ›´æ–°");
     }
+
+    #region æ£€æµ‹ä»»åŠ¡ç‰©å“
+    // ä»»åŠ¡ç‰©å“æ£€æµ‹
+    public void CheckQuestItem(string questItemName)
+    {
+        // æ£€æµ‹èƒŒåŒ…
+        CheckInventoryForQuestItem(BackpackData, questItemName);
+        // æ£€æµ‹ä»“åº“
+        CheckInventoryForQuestItem(StorageData, questItemName);
+        // æ£€æµ‹è£…å¤‡æ 
+        CheckInventoryForQuestItem(EquipmentData, questItemName);
+    }
+
+    private void CheckInventoryForQuestItem(InventoryDataSO backpackData, string questItemName)
+    {
+        foreach (var item in backpackData.items)
+        {
+            if (item.item != null && item.item.itemName == questItemName)
+            {
+                QuestManager.Instance.UpdateQuestProgress(questItemName, item.count);
+            }
+        }
+    }
+
+    #endregion
 }

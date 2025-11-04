@@ -55,12 +55,12 @@ public class InventoryScrollViewPanel : ScrollViewPanel
     /// <summary>
     /// 更新item信息
     /// </summary>
-    protected override void OnUpdateScrollItemAction(ItemSlot item, int index)
+    protected override void OnUpdateScrollItemAction(StorageItem item, int index)
     {
         base.OnUpdateScrollItemAction(item, index);
         item.SetItem(InventoryData.items[index], type, index);
 
-        var bagScrollViewItem = item as ItemSlot;
+        var bagScrollViewItem = item as StorageItem;
         bagScrollViewItem.UpdateCellSelect(index == curSelectIndex);
     }
 

@@ -10,8 +10,8 @@ using UnityEngine.UI;
 /// </summary>
 public class LootBar : MonoBehaviour
 {
-    [Header("模板 ItemSlot")]
-    public ItemSlot itemSlotPref; // 模板预制体（Hierarchy里放一份并禁用）
+    [Header("模板 StorageItem")]
+    public StorageItem StorageItemPref; // 模板预制体（Hierarchy里放一份并禁用）
     [Header("选中信息显示")]
     public GameObject InfoNode;  // 选中物品信息节点
     public Image selectIcon;     // 图标
@@ -24,7 +24,7 @@ public class LootBar : MonoBehaviour
     public Vector2 offset = new Vector2(0f, 0f);    // InfoNode 偏移
 
     private InventoryDataSO LootData;  // 当前掉落数据（可能为 null）
-    private List<ItemSlot> slotList = new List<ItemSlot>();
+    private List<StorageItem> slotList = new List<StorageItem>();
 
     public int curSelectIndex = -1; // 当前选中索引
     private UnityAction<int> onSlotClicked; // 点击回调
@@ -110,9 +110,9 @@ public class LootBar : MonoBehaviour
         }
         slotList.Clear();
 
-        if (itemSlotPref == null)
+        if (StorageItemPref == null)
         {
-            Debug.LogError("[LootBar] itemSlotPref 未设置");
+            Debug.LogError("[LootBar] StorageItemPref 未设置");
             return;
         }
 
@@ -122,16 +122,16 @@ public class LootBar : MonoBehaviour
             return;
         }
 
-        itemSlotPref.gameObject.SetActive(false);
+        StorageItemPref.gameObject.SetActive(false);
 
         int count = LootData.maxCount;
         for (int i = 0; i < count; i++)
         {
-            var go = Instantiate(itemSlotPref.gameObject, transform);
+            var go = Instantiate(StorageItemPref.gameObject, transform);
             go.name = $"LootCell_{i}";
             go.SetActive(true);
 
-            var slot = go.GetComponent<ItemSlot>();
+            var slot = go.GetComponent<StorageItem>();
             if (slot != null)
             {
                 slot.AddButtonClickListener(OnSlotClickedInternal);

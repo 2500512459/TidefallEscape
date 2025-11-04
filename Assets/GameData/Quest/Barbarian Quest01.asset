@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64e56353f7e75c3498827a07073025ba, type: 3}
+  m_Name: Barbarian Quest01
+  m_EditorClassIdentifier: 
+  questName: "\u6D88\u706D\u654C\u4EBA"
+  description: "\u91CE\u86EE\u4EBA\u5E0C\u671B\u6211\u4EEC\u5E2E\u4ED6\u6D88\u706D3\u8258\u666E\u901A\u8239\uFF0C\u6D88\u706D\u5B8C\u6210\u540E\u6709\u4E00\u4E9B\u5956\u52B1"
+  isStarted: 1
+  isCompleted: 0
+  isFinished: 0
+  questRequires:
+  - name: ShipNPC
+    requiteAmount: 1
+    currentAmount: 0
+  questRewards:
+  - item: {fileID: 11400000, guid: 4ac96843ec622e241b25bbccd4c9d08d, type: 2}
+    count: 1
+  - item: {fileID: 11400000, guid: 6a22f77ec7817cd4ba3b211f2bf6001d, type: 2}
+    count: 2

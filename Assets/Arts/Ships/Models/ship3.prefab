@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6118462808808454743}
   - component: {fileID: 4804356218712405889}
   - component: {fileID: 2527162557660019459}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UpperDeck_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4678917348275489348}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Helm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 5819830277963442603}
   - component: {fileID: 8123069127815525956}
   - component: {fileID: 635539700560043261}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ladder001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6951768757372605950}
   - component: {fileID: 6438796806674631634}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: WheelAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 7131873796272502775}
   - component: {fileID: 5479748116503762879}
   - component: {fileID: 2886408215616298115}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hull_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -338,7 +338,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6622272432711724929}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ship3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +356,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0.24784453, z: 0, w: 0.9687998}
   m_LocalPosition: {x: 108, y: 0, z: -175}
   m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2718236270516188845}
   - {fileID: 5265169920050906460}
@@ -381,7 +381,7 @@ GameObject:
   - component: {fileID: 6899946000451075616}
   - component: {fileID: 1047572129053051158}
   - component: {fileID: 5160598453918757982}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,7 +464,7 @@ GameObject:
   - component: {fileID: 6325111094499576034}
   - component: {fileID: 2814485649292539915}
   - component: {fileID: 3050899074665063867}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BackBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,7 +545,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1165137759639792213}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MastsNRigging
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -583,7 +583,7 @@ GameObject:
   - component: {fileID: 7911629036809070990}
   - component: {fileID: 5165275337705730594}
   - component: {fileID: 3779835324800406762}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HullBackDetailPlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +666,7 @@ GameObject:
   - component: {fileID: 861344405562450890}
   - component: {fileID: 6210139658307063144}
   - component: {fileID: 8776176907421048102}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PoopDeck_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -749,7 +749,7 @@ GameObject:
   - component: {fileID: 8721652762608523253}
   - component: {fileID: 1144443454085795462}
   - component: {fileID: 4554574557867952897}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HullDetails
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -830,7 +830,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4783565879223988887}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -869,7 +869,7 @@ GameObject:
   - component: {fileID: 3228319078989969265}
   - component: {fileID: 7489854165339458742}
   - component: {fileID: 8564399797612844584}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LeftAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -971,7 +971,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3299664782673841464}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Poopdeck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1010,7 +1010,7 @@ GameObject:
   - component: {fileID: 6403506193985259802}
   - component: {fileID: 2722202209244470524}
   - component: {fileID: 4517380233912562230}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DeckDetailPlank001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1093,7 +1093,7 @@ GameObject:
   - component: {fileID: 7242500191109309091}
   - component: {fileID: 2541333500361419526}
   - component: {fileID: 5807935421002796852}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MidMast001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1176,7 +1176,7 @@ GameObject:
   - component: {fileID: 1344019912158763241}
   - component: {fileID: 2519993046006138791}
   - component: {fileID: 4788004445214138651}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MastSupport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1259,7 +1259,7 @@ GameObject:
   - component: {fileID: 2109322041763396950}
   - component: {fileID: 836738417545842169}
   - component: {fileID: 6972094112751014948}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Barrel001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1342,7 +1342,7 @@ GameObject:
   - component: {fileID: 2357396233400094827}
   - component: {fileID: 736107632418488968}
   - component: {fileID: 4888554614223456732}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MidBoom001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1425,7 +1425,7 @@ GameObject:
   - component: {fileID: 1587896256908509402}
   - component: {fileID: 4682121250991571203}
   - component: {fileID: 6108340844506941296}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UpperHatch_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1508,7 +1508,7 @@ GameObject:
   - component: {fileID: 1175058514499723506}
   - component: {fileID: 7724300425701702801}
   - component: {fileID: 97126672515431064}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UpperHatch001_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1592,7 +1592,7 @@ GameObject:
   - component: {fileID: 7768255171653017807}
   - component: {fileID: 7034837178393900975}
   - component: {fileID: 2747428466670531057}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RightAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1696,7 +1696,7 @@ GameObject:
   - component: {fileID: 5804887644071494750}
   - component: {fileID: 7437489256086285463}
   - component: {fileID: 125406218134823255}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ladder002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1777,7 +1777,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3703226649489806922}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: rotater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1812,7 +1812,7 @@ GameObject:
   - component: {fileID: 6586541634559099534}
   - component: {fileID: 2072032397218928275}
   - component: {fileID: 3234628077103395129}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MidMastTopRope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1893,7 +1893,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5265169920050906460}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DeckStuff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1930,7 +1930,7 @@ GameObject:
   - component: {fileID: 2857319375877312950}
   - component: {fileID: 8168084521243820752}
   - component: {fileID: 2181157922064775757}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MidBoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2013,7 +2013,7 @@ GameObject:
   - component: {fileID: 8072120375675411407}
   - component: {fileID: 6268749890484212189}
   - component: {fileID: 3979953055328377404}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2096,7 +2096,7 @@ GameObject:
   - component: {fileID: 973561773828866996}
   - component: {fileID: 6126256671800385830}
   - component: {fileID: 1068569348204791268}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Rudder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2179,7 +2179,7 @@ GameObject:
   - component: {fileID: 3937819254499761759}
   - component: {fileID: 8069504915077730759}
   - component: {fileID: 4704919651983278382}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hatch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2262,7 +2262,7 @@ GameObject:
   - component: {fileID: 8334671631662391898}
   - component: {fileID: 3902451689912613243}
   - component: {fileID: 7839681406079863426}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hatch001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2343,7 +2343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4542128654142804297}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2376,7 +2376,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6337771960560821389}
   - component: {fileID: 143429102033881042}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SailAnim001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2463,7 +2463,7 @@ GameObject:
   - component: {fileID: 6532642637576344958}
   - component: {fileID: 3826084480413959342}
   - component: {fileID: 2440281315062356813}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MidMast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2546,7 +2546,7 @@ GameObject:
   - component: {fileID: 5241892116610834402}
   - component: {fileID: 177321927140805540}
   - component: {fileID: 5878492007105737162}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Box007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2629,7 +2629,7 @@ GameObject:
   - component: {fileID: 2718236270516188845}
   - component: {fileID: 6360113573896689764}
   - component: {fileID: 8250370275432424113}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DeckDetailPlank002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2712,7 +2712,7 @@ GameObject:
   - component: {fileID: 7682979085480338975}
   - component: {fileID: 6257188979197186839}
   - component: {fileID: 7845588478179253754}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ShipWheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2797,7 +2797,7 @@ GameObject:
   - component: {fileID: 3968268228643034399}
   - component: {fileID: 3089256750174057364}
   - component: {fileID: 3015355442688023941}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -29,6 +29,11 @@ public class InputManager : MonoSingleton<InputManager>
     // UI或系统事件
     public event Action<bool> OpenInventoryEvent;   //打开背包
     public event Action LootPressedEvent;           //打开宝箱
+
+
+    public bool inputFire = false;
+    public bool inputWeapon1 = false;
+    public bool inputWeapon2 = false;
     void Start()
     {
 
@@ -89,6 +94,21 @@ public class InputManager : MonoSingleton<InputManager>
 
         LootPressedEvent?.Invoke();
     }
+
+    public void OnWeapon1(InputAction.CallbackContext value)
+    {
+        Weapon1Input(value.performed);
+    }
+
+    public void OnWeapon2(InputAction.CallbackContext value)
+    {
+        Weapon2Input(value.performed);
+    }
+
+    public void OnFire(InputAction.CallbackContext value)
+    {
+        FireInput(value.performed);
+    }
 #endif
 
     // =====================
@@ -108,5 +128,36 @@ public class InputManager : MonoSingleton<InputManager>
     {
         inputRotateState = newRotateState;
     }
+    public void Weapon1Input(bool newWeapon1State)
+    {
+        if (newWeapon1State)
+        {
+            ClearWeaponStates();
+            inputWeapon1 = newWeapon1State;
+        }
+    }
 
+    public void Weapon2Input(bool newWeapon2State)
+    {
+        if (newWeapon2State)
+        {
+            ClearWeaponStates();
+            inputWeapon2 = newWeapon2State;
+        }
+    }
+
+    public bool IsWeaponState()
+    {
+        return inputWeapon1 || inputWeapon2;
+    }
+
+    public void ClearWeaponStates()
+    {
+        inputWeapon1 = false;
+        inputWeapon2 = false;
+    }
+    public void FireInput(bool newFireState)
+    {
+        inputFire = newFireState;
+    }
 }

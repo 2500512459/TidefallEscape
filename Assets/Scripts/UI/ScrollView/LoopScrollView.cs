@@ -14,7 +14,7 @@ public class LoopScrollView : MonoBehaviour
     private RectTransform contentRect;  // 内容节点的 RectTransform
 
     [Header("物品槽信息")]
-    public ItemSlot itemSlot; // 物品槽预制体
+    public StorageItem StorageItem; // 物品槽预制体
     private float itemHeight;    // 物品槽高度
     private float itemWidth;     // 物品槽宽度
     public float offsetX = 10f;  // X 轴间距
@@ -28,7 +28,7 @@ public class LoopScrollView : MonoBehaviour
     private int maxShowItemNum;
 
     //列表显示的Item列表，用于设置位置,只存了0-显示的个数这么多
-    private List<ItemSlot> showItems = new List<ItemSlot>();
+    private List<StorageItem> showItems = new List<StorageItem>();
 
     //总行数
     private int totalRow;
@@ -38,7 +38,7 @@ public class LoopScrollView : MonoBehaviour
     public int totalNum = 100;
 
     //事件相关
-    public UnityAction<ItemSlot, int> updateItemAction;
+    public UnityAction<StorageItem, int> updateItemAction;
 
     private UnityAction<int> clickItemAction;
 
@@ -62,7 +62,7 @@ public class LoopScrollView : MonoBehaviour
         width = rect.width;
 
 
-        var itemRect = itemSlot.GetComponent<RectTransform>().rect;
+        var itemRect = StorageItem.GetComponent<RectTransform>().rect;
         itemHeight = itemRect.height;
         itemWidth = itemRect.width;
 
@@ -76,7 +76,7 @@ public class LoopScrollView : MonoBehaviour
         totalRow = Mathf.CeilToInt((float)totalNum / column);
 
         //隐藏模版cell
-        itemSlot.gameObject.SetActive(false);
+        StorageItem.gameObject.SetActive(false);
 
         //设置content的大小
         contentRect = content.GetComponent<RectTransform>();
@@ -99,7 +99,7 @@ public class LoopScrollView : MonoBehaviour
     /// 添加列表项更新事件
     /// </summary>
     /// <param name="updateAction"></param>
-    public void AddUpdateCellAction(UnityAction<ItemSlot, int> updateAction)
+    public void AddUpdateCellAction(UnityAction<StorageItem, int> updateAction)
     {
         updateItemAction += updateAction;
     }
@@ -124,7 +124,7 @@ public class LoopScrollView : MonoBehaviour
         //最多只创建屏幕显示的个数这么多
         var showCell = Mathf.Min(maxShowItemNum, totalNum);
         
-        showItems = new List<ItemSlot>(showCell);
+        showItems = new List<StorageItem>(showCell);
 
         for (int i = 0; i < showCell; i++)
         {
@@ -132,9 +132,9 @@ public class LoopScrollView : MonoBehaviour
 
             var index = i;
 
-            var go = GameObject.Instantiate(itemSlot.gameObject, content);
+            var go = GameObject.Instantiate(StorageItem.gameObject, content);
             go.name = $"Cell_{index}";
-            var scrollItem = go.GetComponent<ItemSlot>();
+            var scrollItem = go.GetComponent<StorageItem>();
 
             UpdateCell(scrollItem, index);
             scrollItem.AddButtonClickListener(clickItemAction);
@@ -151,7 +151,7 @@ public class LoopScrollView : MonoBehaviour
     /// </summary>
     /// <param name="scrollItem"></param>
     /// <param name="index"></param>
-    void UpdateCell(ItemSlot scrollItem, int index)
+    void UpdateCell(StorageItem scrollItem, int index)
     {
         scrollItem.UpdateCellPos(GetCellPos(index));
         
@@ -205,8 +205,6 @@ public class LoopScrollView : MonoBehaviour
             {
                 return;
             }
-
-            print(startIndex + ":" + preStartIndex);
 
             //更新所有cell
             for (int i = startIndex; i < startIndex + maxShowItemNum; i++)

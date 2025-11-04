@@ -3,29 +3,29 @@ using UnityEngine;
 using static UnityEditor.Progress;
 
 /// <summary>
-/// ±¦Ïä£¨¼Ì³Ğ Character£©
-/// Ôö¼Ó ShowHint/HideHint ½Ó¿Ú£¬È·±£ TryOpen Ê±¹Ø±ÕÌáÊ¾²¢Ìî³äµôÂäÀ¸
+/// å®ç®±ï¼ˆç»§æ‰¿ Characterï¼‰
+/// å¢åŠ  ShowHint/HideHint æ¥å£ï¼Œç¡®ä¿ TryOpen æ—¶å…³é—­æç¤ºå¹¶å¡«å……æ‰è½æ 
 /// </summary>
 public class TreasureBox : Character
 {
-    [Header("ÎïÆ·Éú³É¿â")]
+    [Header("ç‰©å“ç”Ÿæˆåº“")]
     public LootContainerSO lootContainerData;
 
-    [Header("ÌáÊ¾UI")]
+    [Header("æç¤ºUI")]
     public TreasureHintUI HintUI;
 
-    [Header("µôÂäÊıÁ¿ÉèÖÃ")]
-    [Tooltip("Éú³ÉµÄ×î´óÎïÆ·ÊıÁ¿")]
+    [Header("æ‰è½æ•°é‡è®¾ç½®")]
+    [Tooltip("ç”Ÿæˆçš„æœ€å¤§ç‰©å“æ•°é‡")]
     public int lootMaxSlotCount = 5;
-    [Tooltip("ÊÇ·ñÔÊĞíÖØ¸´µôÂäÍ¬Ò»ÎïÆ·")]
+    [Tooltip("æ˜¯å¦å…è®¸é‡å¤æ‰è½åŒä¸€ç‰©å“")]
     public bool allowDuplicates = true;
 
-    [Header("µ±Ç°±¦ÏäµôÂäÊı¾İ")]
-    private InventoryDataSO LootData;   // Ã¿¸ö±¦Ïä×Ô¼ºµÄµôÂäÊı¾İ
-    // UI ÊÇ·ñµ±Ç°¿É¼û£¨Íâ²¿Ö»¶Á£©
+    [Header("å½“å‰å®ç®±æ‰è½æ•°æ®")]
+    private InventoryDataSO LootData;   // æ¯ä¸ªå®ç®±è‡ªå·±çš„æ‰è½æ•°æ®
+    // UI æ˜¯å¦å½“å‰å¯è§ï¼ˆå¤–éƒ¨åªè¯»ï¼‰
     private bool isUIVisible  = false;
 
-    // ÊÇ·ñÒÑ±»´ò¿ª£¨±ÜÃâÖØ¸´¿ªÏä£©
+    // æ˜¯å¦å·²è¢«æ‰“å¼€ï¼ˆé¿å…é‡å¤å¼€ç®±ï¼‰
     private bool opened = false;
 
     protected override void Start()
@@ -34,7 +34,7 @@ public class TreasureBox : Character
         if (HintUI != null)
             HintUI.Init(transform);
 
-        // È·±£Ã¿¸ö±¦ÏäÓĞ¶ÀÁ¢ÊµÀı£¨·ÀÖ¹¶à¸ö±¦Ïä¹²ÏíÍ¬Ò»¸ö ScriptableObject£©
+        // ç¡®ä¿æ¯ä¸ªå®ç®±æœ‰ç‹¬ç«‹å®ä¾‹ï¼ˆé˜²æ­¢å¤šä¸ªå®ç®±å…±äº«åŒä¸€ä¸ª ScriptableObjectï¼‰
         if (LootData == null)
             LootData = ScriptableObject.CreateInstance<InventoryDataSO>();
         else
@@ -43,7 +43,7 @@ public class TreasureBox : Character
         InitializeEmptySlots();
     }
     /// <summary>
-    /// ³õÊ¼»¯ LootData µÄ¿Õ¸ñ×Ó
+    /// åˆå§‹åŒ– LootData çš„ç©ºæ ¼å­
     /// </summary>
     private void InitializeEmptySlots()
     {
@@ -52,12 +52,12 @@ public class TreasureBox : Character
 
         for (int i = 0; i < LootData.maxCount; i++)
         {
-            LootData.items.Add(new ItemStack(null, 0)); // ¿ÕÎïÆ·²Û
+            LootData.items.Add(new ItemStack(null, 0)); // ç©ºç‰©å“æ§½
         }
     }
 
     /// <summary>
-    /// ÏÔÊ¾ÌáÊ¾ UI£¨Íâ²¿µ÷ÓÃ£©
+    /// æ˜¾ç¤ºæç¤º UIï¼ˆå¤–éƒ¨è°ƒç”¨ï¼‰
     /// </summary>
     public void ShowHint()
     {
@@ -68,7 +68,7 @@ public class TreasureBox : Character
     }
 
     /// <summary>
-    /// Òş²ØÌáÊ¾ UI£¨Íâ²¿µ÷ÓÃ£©
+    /// éšè—æç¤º UIï¼ˆå¤–éƒ¨è°ƒç”¨ï¼‰
     /// </summary>
     public void HideHint()
     {
@@ -79,7 +79,7 @@ public class TreasureBox : Character
     }
 
     /// <summary>
-    /// ´ò¿ª±¦Ïä
+    /// æ‰“å¼€å®ç®±
     /// </summary>
     public void TryOpen()
     {
@@ -88,36 +88,42 @@ public class TreasureBox : Character
             if (!opened)
                 GenerateLootItems();
 
-            // ½« InventoryManager µÄ LootData Ö¸Ïò±¾±¦ÏäµÄ LootData
+            // å°† InventoryManager çš„ LootData æŒ‡å‘æœ¬å®ç®±çš„ LootData
             InventoryManager.Instance.LootData = LootData;
 
-            // ´ò¿ªLoot½çÃæ
+            // æ‰“å¼€Lootç•Œé¢
             InventoryManager.Instance.currenContext = InventoryContext.Looting;
             InventoryManager.Instance.OnInventoryChanged(InventoryType.Loot);
             UIManger.Instance.ShowPanel<InventoryPanel>();
         }
     }
-    // ===================== Éú³ÉµôÂäÎï =====================
+    // ===================== ç”Ÿæˆæ‰è½ç‰© =====================
     private void GenerateLootItems()
     {
         opened = true;
 
+        if (QuestManager.Instance != null)
+        {
+            Debug.Log($"[TreasureBox] {name} é€šçŸ¥ä»»åŠ¡ç³»ç»Ÿå·²å¼€å¯å®ç®±ã€‚");
+            QuestManager.Instance.UpdateQuestProgress("TreasureBox", 1);
+        }
+
         if (lootContainerData == null)
         {
-            Debug.LogWarning($"[TreasureBox] {name} È±ÉÙ lootContainerData¡£");
+            Debug.LogWarning($"[TreasureBox] {name} ç¼ºå°‘ lootContainerDataã€‚");
             return;
         }
-        // Éú³ÉµôÂäÎïÁĞ±í
-        int lootSlotCount = Random.Range(1, lootMaxSlotCount + 1);  // Éú³ÉµôÂäÊıÁ¿
+        // ç”Ÿæˆæ‰è½ç‰©åˆ—è¡¨
+        int lootSlotCount = Random.Range(1, lootMaxSlotCount + 1);  // ç”Ÿæˆæ‰è½æ•°é‡
         List<ItemStack> lootItems = lootContainerData.GenerateLoot(lootSlotCount, allowDuplicates);
 
         if (lootItems == null || lootItems.Count == 0)
         {
-            Debug.Log($"[TreasureBox] {name} Î´Éú³ÉÈÎºÎµôÂäÎï¡£");
+            Debug.Log($"[TreasureBox] {name} æœªç”Ÿæˆä»»ä½•æ‰è½ç‰©ã€‚");
             return;
         }        
 
-        // ½«µôÂä°´Ë³ĞòĞ´ÈëÇ° N ¸ö¸ñ×Ó
+        // å°†æ‰è½æŒ‰é¡ºåºå†™å…¥å‰ N ä¸ªæ ¼å­
         for (int i = 0; i < lootItems.Count; i++)
         {
             LootData.items[i] = lootItems[i];

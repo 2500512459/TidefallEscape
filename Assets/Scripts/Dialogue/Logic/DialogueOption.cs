@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogueOption : MonoBehaviour
+[System.Serializable]
+public class DialogueOption
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public string text;
+    public string targetID;
+    public bool takeQuest;
 }

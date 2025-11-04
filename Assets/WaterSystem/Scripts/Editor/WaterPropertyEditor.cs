@@ -9,7 +9,7 @@ using UnityEditor;
 public class WaterPropertyEditor : UnityEditor.Editor
 {
     private bool renderingFoldout = true;
-    private bool simulationFoldout = true;
+    //private bool simulationFoldout = true;
 
     public override void OnInspectorGUI()
     {

@@ -5,17 +5,17 @@ using TMPro;
 using UnityEngine.UI;
 /// <summary>
 /// 装备栏（参考 LoopScrollView 的实现方式）
-/// - 使用 itemSlotPref 为模板（该模板应在场景/预制中禁用）
+/// - 使用 StorageItemPref 为模板（该模板应在场景/预制中禁用）
 /// - 创建 equipmentData.maxCount 个槽位（装备栏不可滚动）
 /// - 支持点击选中、刷新、监听数据变更
 /// </summary>
 public class EquipmentBar : MonoBehaviour
 {
-    [Header("模板 ItemSlot")]
-    public ItemSlot itemSlotPref; // 模板预制体（在Hierarchy里放一份并禁用）
+    [Header("模板 StorageItem")]
+    public StorageItem StorageItemPref; // 模板预制体（在Hierarchy里放一份并禁用）
 
     private InventoryDataSO equipmentData;  // 装备栏数据
-    private List<ItemSlot> slotList = new List<ItemSlot>();
+    private List<StorageItem> slotList = new List<StorageItem>();
 
     [Header("选中信息显示")]
     public GameObject InfoNode;  // 选中物品面板
@@ -46,7 +46,7 @@ public class EquipmentBar : MonoBehaviour
     }
 
     /// <summary>
-    /// 初始化槽位：创建 equipmentData.maxCount 个 ItemSlot 实例并绑定点击回调
+    /// 初始化槽位：创建 equipmentData.maxCount 个 StorageItem 实例并绑定点击回调
     /// </summary>
     private void InitSlots()
     {
@@ -57,22 +57,22 @@ public class EquipmentBar : MonoBehaviour
         }
         slotList.Clear();
 
-        if (itemSlotPref == null)
+        if (StorageItemPref == null)
         {
-            Debug.LogError("[EquipmentBar] itemSlotPref 未设置");
+            Debug.LogError("[EquipmentBar] StorageItemPref 未设置");
             return;
         }
 
-        itemSlotPref.gameObject.SetActive(false);
+        StorageItemPref.gameObject.SetActive(false);
 
         int count = equipmentData != null ? equipmentData.maxCount : 0;
         for (int i = 0; i < count; i++)
         {
-            var go = Instantiate(itemSlotPref.gameObject, transform);
+            var go = Instantiate(StorageItemPref.gameObject, transform);
             go.name = $"EquipCell_{i}";
             go.SetActive(true);
 
-            var slot = go.GetComponent<ItemSlot>();
+            var slot = go.GetComponent<StorageItem>();
             if (slot != null)
             {
                 slot.AddButtonClickListener(OnSlotClickedInternal);
@@ -187,11 +187,11 @@ public class EquipmentBar : MonoBehaviour
     /// <param name="list"></param>
     /// <param name="parent"></param>
     /// <param name="targetCount"></param>
-    private void EnsureSlotCount(List<ItemSlot> list, Transform parent, int targetCount)
+    private void EnsureSlotCount(List<StorageItem> list, Transform parent, int targetCount)
     {
         while (list.Count < targetCount)
         {
-            var slot = Instantiate(itemSlotPref.gameObject, transform).GetComponent<ItemSlot>();
+            var slot = Instantiate(StorageItemPref.gameObject, transform).GetComponent<StorageItem>();
             list.Add(slot);
             slot.ClearSlot();
         }

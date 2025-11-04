@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// È«¾Ö UI ¹ÜÀíÆ÷£º¸ºÔğÃæ°åµÄÏÔÊ¾¡¢Òş²ØÓë¹Ø±Õ¡£
-/// Ãæ°åÔÚ Inspector ÖĞÊÖ¶¯°ó¶¨£¬ÎŞĞè¶¯Ì¬¼ÓÔØ¡£
+/// å…¨å±€ UI ç®¡ç†å™¨ï¼šè´Ÿè´£é¢æ¿çš„æ˜¾ç¤ºã€éšè—ä¸å…³é—­ã€‚
+/// é¢æ¿åœ¨ Inspector ä¸­æ‰‹åŠ¨ç»‘å®šï¼Œæ— éœ€åŠ¨æ€åŠ è½½ã€‚
 /// </summary>
 public class UIManger : MonoSingleton<UIManger>
 {
-    [Header("UIRoot½Úµã")]
-    public Transform Root;
+    [Header("UIç”»å¸ƒæ ¹èŠ‚ç‚¹")]
+    public Transform InventoryCanvas;
+    public Transform DialogueCanvas;
 
-    [Header("ËùÓĞĞèÒª¹ÜÀíµÄUIÃæ°å£¨ÊÖ¶¯°ó¶¨£©")]
+    [Header("æ‰€æœ‰éœ€è¦ç®¡ç†çš„UIé¢æ¿ï¼ˆæ‰‹åŠ¨ç»‘å®šï¼‰")]
     public List<UIPanelBase> panels = new List<UIPanelBase>();
 
-    /// <summary> »º´æ×Öµä£ºÀàĞÍ ¡ú Ãæ°åÊµÀı </summary>
+    /// <summary> ç¼“å­˜å­—å…¸ï¼šç±»å‹ â†’ é¢æ¿å®ä¾‹ </summary>
     private Dictionary<Type, UIPanelBase> panelDict = new Dictionary<Type, UIPanelBase>();
 
     protected override void Awake()
     {
-        // ³õÊ¼»¯Ê±×¢²áËùÓĞÃæ°å
+        // åˆå§‹åŒ–æ—¶æ³¨å†Œæ‰€æœ‰é¢æ¿
         foreach (var panel in panels)
         {
             if (panel == null) continue;
@@ -28,13 +29,13 @@ public class UIManger : MonoSingleton<UIManger>
             {
                 panelDict.Add(type, panel);
                 panel.OnInit();
-                panel.OnHide(); // Ä¬ÈÏÒş²Ø
+                panel.OnHide(); // é»˜è®¤éšè—
             }
         }
     }
 
     /// <summary>
-    /// ÏÔÊ¾Ö¸¶¨ÀàĞÍµÄÃæ°å
+    /// æ˜¾ç¤ºæŒ‡å®šç±»å‹çš„é¢æ¿
     /// </summary>
     public T ShowPanel<T>(params object[] args) where T : UIPanelBase
     {
@@ -46,12 +47,12 @@ public class UIManger : MonoSingleton<UIManger>
             return panel as T;
         }
 
-        Debug.LogWarning($"[UIManager] Î´°ó¶¨Ãæ°å£º{type.Name}");
+        Debug.LogWarning($"[UIManager] æœªç»‘å®šé¢æ¿ï¼š{type.Name}");
         return null;
     }
 
     /// <summary>
-    /// Òş²ØÖ¸¶¨ÀàĞÍµÄÃæ°å
+    /// éšè—æŒ‡å®šç±»å‹çš„é¢æ¿
     /// </summary>
     public void HidePanel<T>() where T : UIPanelBase
     {
@@ -64,7 +65,7 @@ public class UIManger : MonoSingleton<UIManger>
     }
 
     /// <summary>
-    /// ¹Ø±Õ²¢Ïú»ÙÖ¸¶¨Ãæ°å£¨Ò»°ã²»³£ÓÃ£©
+    /// å…³é—­å¹¶é”€æ¯æŒ‡å®šé¢æ¿ï¼ˆä¸€èˆ¬ä¸å¸¸ç”¨ï¼‰
     /// </summary>
     public void ClosePanel<T>() where T : UIPanelBase
     {
@@ -78,7 +79,7 @@ public class UIManger : MonoSingleton<UIManger>
     }
 
     /// <summary>
-    /// ¹Ø±ÕËùÓĞÃæ°å
+    /// å…³é—­æ‰€æœ‰é¢æ¿
     /// </summary>
     public void CloseAllPanels()
     {
@@ -90,7 +91,7 @@ public class UIManger : MonoSingleton<UIManger>
     }
 
     /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÀàĞÍµÄÃæ°åÊµÀı£¨²»ÂÛÊÇ·ñÏÔÊ¾£©
+    /// è·å–æŒ‡å®šç±»å‹çš„é¢æ¿å®ä¾‹ï¼ˆä¸è®ºæ˜¯å¦æ˜¾ç¤ºï¼‰
     /// </summary>
     public T GetPanel<T>() where T : UIPanelBase
     {

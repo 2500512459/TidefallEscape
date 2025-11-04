@@ -5,9 +5,9 @@ using UnityEngine;
 public class InventoryDataSO : ScriptableObject
 {
     public List<ItemStack> items = new List<ItemStack>();
-    [Header("¿âµÄÀàĞÍ")]
+    [Header("åº“çš„ç±»å‹")]
     public InventoryType type;
-    [Header("¿âµÄÈİÁ¿")]
+    [Header("åº“çš„å®¹é‡")]
     [SerializeField] private int _maxCount = 10;
     public int maxCount
     {
@@ -23,13 +23,13 @@ public class InventoryDataSO : ScriptableObject
         }
     }
     /// <summary>
-    /// ÏòÖ¸¶¨±³°üÌí¼ÓÎïÆ·£¨¹Ì¶¨¸ñ×ÓÄ£Ê½£©
-    /// - »á³¢ÊÔµş¼ÓÏàÍ¬ÎïÆ·
-    /// - ·ñÔòÑ°ÕÒµÚÒ»¸ö¿Õ¸ñ·ÅÈë
+    /// å‘æŒ‡å®šèƒŒåŒ…æ·»åŠ ç‰©å“ï¼ˆå›ºå®šæ ¼å­æ¨¡å¼ï¼‰
+    /// - ä¼šå°è¯•å åŠ ç›¸åŒç‰©å“
+    /// - å¦åˆ™å¯»æ‰¾ç¬¬ä¸€ä¸ªç©ºæ ¼æ”¾å…¥
     /// </summary>
     public bool AddItem(ItemDataSO item, int count = 1, InventoryType type = InventoryType.Backpack)
     {
-        // ¢Ù ÏÈµş¼Óµ½ÒÑÓĞÏàÍ¬ÎïÆ·
+        // â‘  å…ˆå åŠ åˆ°å·²æœ‰ç›¸åŒç‰©å“
         for (int i = 0; i < items.Count && count > 0; i++)
         {
             var stack = items[i];
@@ -42,7 +42,7 @@ public class InventoryDataSO : ScriptableObject
             }
         }
 
-        // ¢Ú Èç¹û»¹ÓĞÊ£ÓàÊıÁ¿£¬³¢ÊÔ·ÅÈë¿Õ¸ñ×Ó
+        // â‘¡ å¦‚æœè¿˜æœ‰å‰©ä½™æ•°é‡ï¼Œå°è¯•æ”¾å…¥ç©ºæ ¼å­
         for (int i = 0; i < items.Count && count > 0; i++)
         {
             var stack = items[i];
@@ -54,15 +54,15 @@ public class InventoryDataSO : ScriptableObject
             }
         }
 
-        // ¢Û Í¨Öª UI ¸üĞÂ
+        // â‘¢ é€šçŸ¥ UI æ›´æ–°
         InventoryManager.Instance.OnInventoryChanged(type);
 
-        // ¢Ü ·µ»ØÊÇ·ñÍêÈ«³É¹¦
+        // â‘£ è¿”å›æ˜¯å¦å®Œå…¨æˆåŠŸ
         return count <= 0;
     }
 
     /// <summary>
-    /// ´ÓÖ¸¶¨Î»ÖÃÒÆ³ıÎïÆ·
+    /// ä»æŒ‡å®šä½ç½®ç§»é™¤ç‰©å“
     /// </summary>
     public void RemoveItem(int index, int count, InventoryType type)
     {
@@ -78,7 +78,7 @@ public class InventoryDataSO : ScriptableObject
     }
 
     /// <summary>
-    /// ½«ÎïÆ·´ÓÒ»¸öÈİÆ÷ÒÆ¶¯µ½ÁíÒ»¸öÈİÆ÷
+    /// å°†ç‰©å“ä»ä¸€ä¸ªå®¹å™¨ç§»åŠ¨åˆ°å¦ä¸€ä¸ªå®¹å™¨
     /// </summary>
     public void MoveItem(int fromIndex, InventoryDataSO targetInventory, InventoryType fromType, InventoryType toType)
     {
@@ -96,7 +96,7 @@ public class InventoryDataSO : ScriptableObject
     }
 
     /// <summary>
-    /// È·±£ items ÁĞ±í³¤¶ÈÓëÔ¤ÆÚÒ»ÖÂ
+    /// ç¡®ä¿ items åˆ—è¡¨é•¿åº¦ä¸é¢„æœŸä¸€è‡´
     /// </summary>
     public void EnsureSlotCount(int targetCount)
     {
@@ -108,7 +108,7 @@ public class InventoryDataSO : ScriptableObject
     }
 
     /// <summary>
-    /// °´ ItemID ÅÅĞò£¨¿Õ¸ñ×Ó»á×Ô¶¯·ÅÔÚ×îºó£©
+    /// æŒ‰ ItemID æ’åºï¼ˆç©ºæ ¼å­ä¼šè‡ªåŠ¨æ”¾åœ¨æœ€åï¼‰
     /// </summary>
     public void SortItems()
     {

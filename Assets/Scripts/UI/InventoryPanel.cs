@@ -4,23 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// ������壺����װ�������������ֿ���������
+/// 背包面板：包含装备栏、背包、仓库、战利品等功能
 /// </summary>
 public class InventoryPanel : UIPanelBase
 {
-    // [Header("����UI�ڵ�")]
-    // public Transform equipmentGridRoot;     // װ������2x5��
-    // public Transform backpackContent;       // ���� ScrollView ���ݽڵ�
-    // public Transform storageContent;        // �ֿ� ScrollView ���ݽڵ�
-    // public Transform lootGridRoot;          // ս��Ʒ
+    // [Header("容器UI节点")]
+    // public Transform equipmentGridRoot;     // 装备栏2x5格
+    // public Transform backpackContent;       // 背包 ScrollView 内容节点
+    // public Transform storageContent;        // 仓库 ScrollView 内容节点
+    // public Transform lootGridRoot;          // 战利品
 
-    [Header("Panel�ڵ�")]
+    [Header("Panel节点")]
     public Transform LootGridText;
     public Transform LootGrid;
     public Transform InfoNodeRoot;
     public Transform RightPanel;
 
-    // [Header("��Ʒ��Ԥ����")]
+    // [Header("物品槽预制体")]
     // public GameObject itemSlotPrefab;
 
     // private List<ItemSlot> equipmentSlots = new List<ItemSlot>();
@@ -34,7 +34,7 @@ public class InventoryPanel : UIPanelBase
         base.OnInit();
         //InitSlots();
 
-        //�����¼������������ݱ仯ʱ�Զ�ˢ��
+        //注册事件监听，当库存数据变化时自动刷新
         // InventoryManager.Instance.OnInventoryChangedEvent += OnInventoryUpdated;
     }
     public override void OnClose()
@@ -44,24 +44,24 @@ public class InventoryPanel : UIPanelBase
         //     InventoryManager.Instance.OnInventoryChangedEvent -= OnInventoryUpdated;
     }
     /// <summary>
-    /// ��ʼ������
+    /// 初始化面板
     /// </summary>
     // private void InitSlots()
     // {
     //     var inv = InventoryManager.Instance;
 
-    //     // ȷ��SO��UI��������һ��
+    //     // 确保SO与UI格子数量一致
     //     inv.EquipmentData.EnsureSlotCount(10);
     //     // inv.BackpackData.EnsureSlotCount(inv.BackpackData.maxCount);
     //     // inv.StorageData.EnsureSlotCount(inv.StorageData.maxCount);
 
-    //     // ��ʼ��װ�������̶� 2x5 = 10��
+    //     // 初始化装备栏固定 2x5 = 10格
     //     CreateEmptySlots(equipmentSlots, equipmentGridRoot, 10);
 
-    //     // ��ʼ������Ĭ�ϸ���
+    //     // 初始化背包默认格子
     //     //CreateEmptySlots(backpackSlots, backpackContent, inv.BackpackData.maxCount);
 
-    //     // ��ʼ���ֿ�Ĭ�ϸ���
+    //     // 初始化仓库默认格子
     //     //CreateEmptySlots(storageSlots, storageContent, inv.StorageData.maxCount);
     // }
 
@@ -70,7 +70,7 @@ public class InventoryPanel : UIPanelBase
         base.OnShow();
         //RefreshAll();
 
-        // ���ݳ���������ʾ
+        // 根据场景类型显示
         var ctx = InventoryManager.Instance.currenContext;
         bool isHome = ctx == InventoryContext.Home;
         bool isLooting = ctx == InventoryContext.Looting;
@@ -84,16 +84,16 @@ public class InventoryPanel : UIPanelBase
     }
 
     // /// <summary>
-    // /// ˢ������UI����
-    // /// ÿ�ζ��� InventoryManager �� SO �����¼�����������
+    // /// 刷新所有UI格子
+    // /// 每次由 InventoryManager 的 SO 数据更新时调用
     // /// </summary>
     // public void RefreshAll()
     // {
-    //     // ȷ������ʵʱ����
+    //     // 确保数据实时性
     //     var inv = InventoryManager.Instance;
     //     if (inv == null)
     //     {
-    //         Debug.LogError("[InventoryPanel] InventoryManager.Instance Ϊ null");
+    //         Debug.LogError("[InventoryPanel] InventoryManager.Instance 为 null");
     //         return;
     //     }
 
@@ -104,7 +104,7 @@ public class InventoryPanel : UIPanelBase
     // }
 
     // /// <summary>
-    // /// ˢ��װ����
+    // /// 刷新装备栏
     // /// </summary>
     // private void RefreshEquipment(InventoryDataSO equipmentData)
     // {
@@ -120,7 +120,7 @@ public class InventoryPanel : UIPanelBase
     // }
 
     // /// <summary>
-    // /// ˢ�±��������ɶ�̬������
+    // /// 刷新背包动态格子
     // /// </summary>
     // private void RefreshBackpack(InventoryDataSO backpackData)
     // {
@@ -138,7 +138,7 @@ public class InventoryPanel : UIPanelBase
     // }
 
     // // <summary>
-    // // ˢ�²ֿ������ɶ�̬������
+    // // 刷新仓库动态格子
     // // </summary>
     // private void RefreshStorage(InventoryDataSO storageData)
     // {
@@ -155,7 +155,7 @@ public class InventoryPanel : UIPanelBase
     //    }
     // }
     // /// <summary>
-    // /// ˢ�µ�����
+    // /// 刷新战利品
     // /// </summary>
     // private void RefreshLoot(InventoryDataSO data)
     // {
@@ -169,20 +169,20 @@ public class InventoryPanel : UIPanelBase
     //     }
     // }
     // /// <summary>
-    // /// ��ʼ��ʱ�����ո���
+    // /// 初始化时创建空格子
     // /// </summary>
     // private void CreateEmptySlots(List<ItemSlot> list, Transform parent, int count)
     // {
     //     for (int i = 0; i < count; i++)
     //     {
     //         var slot = Instantiate(itemSlotPrefab, parent).GetComponent<ItemSlot>();
-    //         slot.ClearSlot(); // Ĭ����ʾ�������ױߣ�
+    //         slot.ClearSlot(); // 默认显示空格子
     //         list.Add(slot);
     //     }
     // }
 
     // /// <summary>
-    // /// ȷ��Slot�������ã�������̬����
+    // /// 确保Slot数量足够，用于动态格子
     // /// </summary>
     // private void EnsureSlotCount(List<ItemSlot> list, Transform parent, int targetCount)
     // {
@@ -190,11 +190,11 @@ public class InventoryPanel : UIPanelBase
     //     {
     //         var slot = Instantiate(itemSlotPrefab, parent).GetComponent<ItemSlot>();
     //         list.Add(slot);
-    //         slot.ClearSlot(); // Ĭ����ʾ����
+    //         slot.ClearSlot(); // 默认显示空格子
     //     }
     // }
     // /// <summary>
-    // /// ������������¼�
+    // /// 监听库存变化事件
     // /// </summary>
     // /// <param name="type"></param>
     // private void OnInventoryUpdated(InventoryType type)
