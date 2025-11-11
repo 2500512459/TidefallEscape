@@ -7,7 +7,7 @@ public class Buoyancy : MonoBehaviour
     [SerializeField] private int slicesPerAxis = 2;
     [SerializeField] private int voxelsLimit = 16;
     [SerializeField] private float density = 500;
-
+    [SerializeField] private float submergeOffset = 0f;
     private const float DAMPFER = 0.1f;
     private const float WATER_DENSITY = 1000;
 
@@ -197,7 +197,7 @@ public class Buoyancy : MonoBehaviour
         var worldPoint = transform.TransformPoint(point);
         float waterLevel = GetWaterLevel(worldPoint.x, worldPoint.z);
 
-        if (worldPoint.y - VoxelHalfHeight < waterLevel)
+        if (worldPoint.y - VoxelHalfHeight < waterLevel - submergeOffset)
         {
             float k = Mathf.Clamp01((waterLevel - worldPoint.y) / (2 * VoxelHalfHeight) + 0.5f);
             var velocity = Rb.GetPointVelocity(worldPoint);

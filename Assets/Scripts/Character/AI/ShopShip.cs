@@ -16,6 +16,9 @@ using CleverCrow.Fluid.BTs.Trees;
 [RequireComponent(typeof(SteeringBehaviors))]
 public class ShopShip : AICharacter
 {
+    public float maxHealth = 100f;
+    public HealthBar healthBar;
+
     [Header("商船检测参数")]
     [Tooltip("检测到玩家后开始靠近的范围")]
     public float detectPlayerRange = 15f;
@@ -48,6 +51,9 @@ public class ShopShip : AICharacter
     {
         base.Start();
 
+        attributesModule.AddAttribute(AttributeType.Hp, maxHealth, 0, maxHealth);
+        healthBar.SetMaxHealth(maxHealth);
+
         // 查找玩家（假设玩家物体有Tag "Player"）
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
@@ -55,7 +61,28 @@ public class ShopShip : AICharacter
 
         InitAI();
     }
+    /// <summary>
+    /// Update：每帧调用（此处未额外逻辑，保留父类更新）
+    /// </summary>
+    protected override void Update()
+    {
+        base.Update();
+        if (isDead)
+        {
+            healthBar.gameObject.SetActive(false);
+        }
+    }
 
+    /// <summary>
+    /// FixedUpdate：驱动行为树
+    /// </summary>
+    private void FixedUpdate()
+    {
+        if (brain != null && live)
+            brain.Tick();
+    }
+
+    #region 交互UI
     public void ShowShopUI()
     {
         var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
@@ -84,15 +111,8 @@ public class ShopShip : AICharacter
             isUIVisible = false;
         }
     }
+    #endregion
 
-    /// <summary>
-    /// FixedUpdate：驱动行为树
-    /// </summary>
-    private void FixedUpdate()
-    {
-        if (brain != null && live)
-            brain.Tick();
-    }
 
     /// <summary>
     /// 初始化商船AI行为树逻辑
@@ -183,5 +203,15 @@ public class ShopShip : AICharacter
                 })
             .End()
             .Build();
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        healthBar.SetHealth(attributesModule.GetAttributeValue(AttributeType.Hp));
+
+        if(healthBar.gameObject.activeSelf == false)
+            healthBar.gameObject.SetActive(true);
     }
 }

@@ -11,22 +11,23 @@ public class ShipWheel : MonoBehaviour
 
     private float rotationY = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    // 旋转中心（父物体）
+    public Transform wheelRoot;
 
     // Update is called once per frame
     void Update()
     {
-        if (InputManager.Instance != null)
+        rotationY += PlayerInput.Instance.AxesX * speed;
+        rotationY = Mathf.Clamp(rotationY, range.x, range.y);
+
+        // 绕父物体的中心旋转
+        if (wheelRoot != null)
         {
-            rotationY += InputManager.Instance.inputMove.x * speed;
-
-            rotationY = Mathf.Clamp(rotationY, range.x, range.y);
-            //Debug.Log("WHEEL ROTATION " + rotationZ.ToString());
-
+            wheelRoot.localRotation = Quaternion.Euler(0, rotationY, 0);
+        }
+        else
+        {
+            // 没有父物体就退而求其次
             transform.localRotation = Quaternion.Euler(0, rotationY, 0);
         }
     }

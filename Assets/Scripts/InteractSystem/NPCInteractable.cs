@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NPCInteractable : BaseInteractable
+{
+    private DialogueController dialogueController;
+
+    void Awake()
+    {
+        dialogueController = GetComponent<DialogueController>();
+    }
+    public override void Interact(Character player)
+    {
+        if (dialogueController.canTalk)
+        {
+            dialogueController.OpenDialogue();
+            InteractHintUI.Instance.ShowHint("结束对话", key);
+        }
+        else
+        {
+            dialogueController.CloseDialogue();
+            InteractHintUI.Instance.ShowHint(hintText, key);
+        }
+    }
+}

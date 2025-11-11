@@ -3,67 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Character£¨½ÇÉ«»ùÀà£©
-/// ËùÓĞ¿É±»³¡¾°¹ÜÀíµÄ½ÇÉ«¶ÔÏó£¨°üÀ¨Íæ¼ÒÓëAI£©¶¼Ó¦¼Ì³Ğ´ËÀà¡£
-/// Ìá¹©½ÇÉ«×¢²á¡¢¸ÕÌå¡¢¶¯»­»úµÄÍ³Ò»³õÊ¼»¯Âß¼­¡£
+/// Characterï¼ˆè§’è‰²åŸºç±»ï¼‰
+/// æ‰€æœ‰å¯è¢«åœºæ™¯ç®¡ç†çš„è§’è‰²å¯¹è±¡ï¼ˆåŒ…æ‹¬ç©å®¶ä¸AIï¼‰éƒ½åº”ç»§æ‰¿æ­¤ç±»ã€‚
+/// æä¾›è§’è‰²æ³¨å†Œã€åˆšä½“ã€åŠ¨ç”»æœºçš„ç»Ÿä¸€åˆå§‹åŒ–é€»è¾‘ã€‚
 /// </summary>
 public class Character : MonoBehaviour
 {
-    // ½ÇÉ«¶¯»­¿ØÖÆÆ÷ÒıÓÃ£¨ÓÃÓÚ²¥·Å½ÇÉ«¶¯»­£©
+    protected AttributesModule attributesModule;    // å±æ€§æ¨¡å—
     protected Animator animator;
-
-    // ½ÇÉ«ÎïÀí¸ÕÌåÒıÓÃ£¨ÓÃÓÚÎïÀí½»»¥ÓëÁ¦Ñ§¿ØÖÆ£©
     protected Rigidbody rgBody;
+    protected bool isDead = false;
 
-    /// <summary>
-    /// UnityÉúÃüÖÜÆÚ£ºAwake()
-    /// ÔÚËùÓĞStartÖ®Ç°µ÷ÓÃ£¬³£ÓÃÓÚ×é¼ş»º´æÓë³õÊ¼»¯£¨Áô¿Õ¹©×ÓÀàÀ©Õ¹£©
-    /// </summary>
     protected virtual void Awake()
     {
-
+        // ç¼“å­˜ç»„ä»¶
+        rgBody = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+        attributesModule = GetComponent<AttributesModule>();
     }
 
-    /// <summary>
-    /// UnityÉúÃüÖÜÆÚ£ºStart()
-    /// ÔÚAwakeÖ®ºóµ÷ÓÃ£¬³£ÓÃÓÚÆô¶¯Âß¼­£¨Áô¿Õ¹©×ÓÀàÀ©Õ¹£©
-    /// </summary>
     protected virtual void Start()
     {
 
     }
 
-    /// <summary>
-    /// UnityÉúÃüÖÜÆÚ£ºOnEnable()
-    /// µ±GameObjectÆôÓÃÊ±×Ô¶¯µ÷ÓÃ£º
-    /// - ÏòÈ«¾Ö CharacterManager ×¢²á×Ô¼º
-    /// - »ñÈ¡»ù´¡×é¼ş£¨Rigidbody¡¢Animator£©
-    /// </summary>
     protected virtual void OnEnable()
     {
-        // »ñÈ¡µ¥Àı¹ÜÀíÆ÷ÊµÀı
+        // è·å–å•ä¾‹ç®¡ç†å™¨å®ä¾‹
         CharacterManager manager = CharacterManager.Instance;
 
         if (manager != null)
         {
-            // ½«×ÔÉí×¢²áµ½È«¾Ö½ÇÉ«ÁĞ±íÖĞ
+            // å°†è‡ªèº«æ³¨å†Œåˆ°å…¨å±€è§’è‰²åˆ—è¡¨ä¸­
             manager.Register(this);
         }
         else
         {
             Debug.Log("CharacterManager is Null!");
         }
-
-        // »º´æ×é¼ş
-        rgBody = GetComponent<Rigidbody>();
-        animator = GetComponentInChildren<Animator>();
     }
-
-    /// <summary>
-    /// UnityÉúÃüÖÜÆÚ£ºOnDisable()
-    /// µ±GameObject½ûÓÃ»òÏú»ÙÊ±×Ô¶¯µ÷ÓÃ£º
-    /// - ´ÓCharacterManager·´×¢²á£¨·ÀÖ¹ÄÚ´æ²ĞÁô£©
-    /// </summary>
     protected virtual void OnDisable()
     {
         CharacterManager manager = CharacterManager.Instance;
@@ -74,17 +52,29 @@ public class Character : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// UnityÉúÃüÖÜÆÚ£ºUpdate()
-    /// Ã¿Ö¡µ÷ÓÃ£¨¹©×ÓÀà¸²Ğ´ÊµÏÖÂß¼­£©
-    /// </summary>
     protected virtual void Update()
     {
 
     }
 
     /// <summary>
-    /// »ñÈ¡½ÇÉ«¸ÕÌåÒıÓÃ
+    /// è·å–è§’è‰²åˆšä½“å¼•ç”¨
     /// </summary>
     public Rigidbody GetRigidBody() { return rgBody; }
+
+
+    public virtual void TakeDamage(float damage)
+    {
+        // è·å–å½“å‰è§’è‰²çš„å±æ€§æ¨¡å—ä¸­çš„ç”Ÿå‘½å€¼å±æ€§
+        Attribute hp = attributesModule.attributes[AttributeType.Hp];
+
+        float hpValue = hp.Value;
+        hpValue -= damage;
+        attributesModule.SetAttributeValue(AttributeType.Hp, hpValue);
+        if (hpValue <= 0)
+        {
+            // TODO: è§’è‰²æ­»äº¡
+            isDead = true;
+        }
+    }
 }

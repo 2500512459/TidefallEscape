@@ -4,22 +4,15 @@ using UnityEngine.UI;
 
 public class TreasureHintUI : MonoBehaviour
 {
-    [Header("UI×é¼þ")]
+    [Header("UIï¿½ï¿½ï¿½")]
     public CanvasGroup canvasGroup;
     public RectTransform rectTransform;
 
-    [Header("¸¡¶¯²ÎÊý")]
-    public float heightOffset = 3f;  // Àë±¦Ïä¶¥²¿µÄÆ«ÒÆ
-    public float lookLerpSpeed = 5f;   // UI³¯ÏòÉãÏñ»úµÄÆ½»¬ËÙ¶È
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public float heightOffset = 3f;  // ï¿½ë±¦ï¿½ä¶¥ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½
+    public float lookLerpSpeed = 5f;   // UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½Ù¶ï¿½
 
     private Tween currentTween;
-    private Transform target;          // ±¦ÏäTransform
-    private Camera mainCam;
-
-    public void Init(Transform followTarget)
-    {
-        target = followTarget;
-    }
 
     private void Awake()
     {
@@ -30,19 +23,6 @@ public class TreasureHintUI : MonoBehaviour
 
         canvasGroup.alpha = 0;
         rectTransform.localScale = Vector3.zero;
-        mainCam = Camera.main;
-    }
-
-    private void LateUpdate()
-    {
-        if (target == null || mainCam == null) return;
-
-        // ÈÃUI¸úËæÄ¿±êÎ»ÖÃ£¨²»¸úËæÐý×ª£©
-        transform.position = target.position + Vector3.up * heightOffset;
-
-        // Æ½»¬³¯ÏòÉãÏñ»ú
-        Quaternion targetRot = Quaternion.LookRotation(transform.position - mainCam.transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * lookLerpSpeed);
     }
 
     public void ShowUI()

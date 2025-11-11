@@ -1,48 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CleverCrow.Fluid.BTs.Trees; // Íâ²¿AIĞĞÎªÊ÷²å¼şÒıÓÃ
+using CleverCrow.Fluid.BTs.Trees; // å¤–éƒ¨AIè¡Œä¸ºæ ‘æ’ä»¶å¼•ç”¨
 
 /// <summary>
-/// AICharacter£¨AI½ÇÉ«»ùÀà£©
-/// ¼Ì³Ğ×ÔCharacter£¬À©Õ¹³öAIÏà¹ØµÄÊôĞÔÓëĞĞÎª£º
-/// - ÊÓÒ°·¶Î§
-/// - ¹¥»÷·¶Î§
-/// - ĞĞÎªÊ÷£¨BehaviorTree£©
-/// - ¸÷ÖÖ×ªÏòÓë±ÜÕÏĞĞÎª×é¼ş
+/// AICharacterï¼ˆAIè§’è‰²åŸºç±»ï¼‰
+/// ç»§æ‰¿è‡ªCharacterï¼Œæ‰©å±•å‡ºAIç›¸å…³çš„å±æ€§ä¸è¡Œä¸ºï¼š
+/// - è§†é‡èŒƒå›´
+/// - æ”»å‡»èŒƒå›´
+/// - è¡Œä¸ºæ ‘ï¼ˆBehaviorTreeï¼‰
+/// - å„ç§è½¬å‘ä¸é¿éšœè¡Œä¸ºç»„ä»¶
 /// </summary>
 public class AICharacter : Character
 {
-    // AIÊÓÒ°°ë¾¶£ºÄÜ¸ĞÖªµÄ×î´ó¾àÀë£¨ÓÃÓÚ¼ì²â¸½½üÄ¿±ê£©
+    // AIè§†é‡åŠå¾„ï¼šèƒ½æ„ŸçŸ¥çš„æœ€å¤§è·ç¦»ï¼ˆç”¨äºæ£€æµ‹é™„è¿‘ç›®æ ‡ï¼‰
     [Range(0.1f, 100)]
     public float viewRadius = 10;
 
-    // ¹¥»÷°ë¾¶£ºÄÜ½øĞĞ¹¥»÷µÄ¾àÀëãĞÖµ
+    // æ”»å‡»åŠå¾„ï¼šèƒ½è¿›è¡Œæ”»å‡»çš„è·ç¦»é˜ˆå€¼
     [Range(0.1f, 100)]
     public float attackRadius = 1;
 
-    // AIµÄĞĞÎªÊ÷Âß¼­¿ØÖÆÆ÷£¨Íâ²¿²å¼ş Fluid Behavior Tree£©
+    // AIçš„è¡Œä¸ºæ ‘é€»è¾‘æ§åˆ¶å™¨ï¼ˆå¤–éƒ¨æ’ä»¶ Fluid Behavior Treeï¼‰
     [SerializeField]
     protected BehaviorTree brain;
 
-    // ¸÷ÖÖAIÔË¶¯×é¼ş
-    protected SteeringBehaviors steeringBehaviors;   // ¸ºÔğÒÆ¶¯·½ÏòÓëÁ¦µÄÈÚºÏ
-    protected WanderBehavior wander;                 // Ëæ»úÂşÓÎ
-    protected PursueBehavior pursue;                 // ×·×ÙÄ¿±ê
-    protected CollisionSensor colsensor;             // Åö×²¸ĞÖª£¨·ÀÖ¹×²Ç½£©
-    protected SeparationBehavior separation;         // ·ÖÀëĞĞÎª£¨±ÜÃâÓëÆäËûAIÖØµş£©
+    // å„ç§AIè¿åŠ¨ç»„ä»¶
+    protected SteeringBehaviors steeringBehaviors;   // è´Ÿè´£ç§»åŠ¨æ–¹å‘ä¸åŠ›çš„èåˆ
+    protected WanderBehavior wander;                 // éšæœºæ¼«æ¸¸
+    protected PursueBehavior pursue;                 // è¿½è¸ªç›®æ ‡
+    protected CollisionSensor colsensor;             // ç¢°æ’æ„ŸçŸ¥ï¼ˆé˜²æ­¢æ’å¢™ï¼‰
+    protected SeparationBehavior separation;         // åˆ†ç¦»è¡Œä¸ºï¼ˆé¿å…ä¸å…¶ä»–AIé‡å ï¼‰
 
-    // ´æ»î×´Ì¬±êÊ¶
+    // å­˜æ´»çŠ¶æ€æ ‡è¯†
     protected bool live = true;
 
     /// <summary>
-    /// ³õÊ¼»¯AI½ÇÉ«£¬»º´æËùÓĞAIĞĞÎª×é¼ş¡£
+    /// åˆå§‹åŒ–AIè§’è‰²ï¼Œç¼“å­˜æ‰€æœ‰AIè¡Œä¸ºç»„ä»¶ã€‚
     /// </summary>
     protected override void Start()
     {
         base.Start();
 
-        // »º´æAIĞĞÎªÏà¹Ø×é¼ş
+        // ç¼“å­˜AIè¡Œä¸ºç›¸å…³ç»„ä»¶
         steeringBehaviors = GetComponent<SteeringBehaviors>();
         wander = GetComponent<WanderBehavior>();
         pursue = GetComponent<PursueBehavior>();
@@ -51,8 +51,8 @@ public class AICharacter : Character
     }
 
     /// <summary>
-    /// »ñÈ¡·¶Î§ÄÚµÄËùÓĞ½ÇÉ«
-    /// £¨ÎŞ¹ıÂË£©
+    /// è·å–èŒƒå›´å†…çš„æ‰€æœ‰è§’è‰²
+    /// ï¼ˆæ— è¿‡æ»¤ï¼‰
     /// </summary>
     public List<Character> GetCharactersInView()
     {
@@ -61,13 +61,13 @@ public class AICharacter : Character
             return CharacterManager.Instance.GetCharactersWithinRange(this, transform.position, viewRadius);
         }
 
-        // ÈôÎŞ¹ÜÀíÆ÷£¬Ôò·µ»Ø¿ÕÁĞ±í
+        // è‹¥æ— ç®¡ç†å™¨ï¼Œåˆ™è¿”å›ç©ºåˆ—è¡¨
         return new List<Character>();
     }
 
     /// <summary>
-    /// »ñÈ¡·¶Î§ÄÚµÄËùÓĞ½ÇÉ«£¨´øÀàĞÍ¹ıÂËÆ÷£©
-    /// ÀıÈç£ºÖ»¼ì²âµĞÈË»òÍæ¼Ò
+    /// è·å–èŒƒå›´å†…çš„æ‰€æœ‰è§’è‰²ï¼ˆå¸¦ç±»å‹è¿‡æ»¤å™¨ï¼‰
+    /// ä¾‹å¦‚ï¼šåªæ£€æµ‹æ•Œäººæˆ–ç©å®¶
     /// </summary>
     public List<Character> GetCharactersInView(CharacterTypeFilter typeFilter)
     {

@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 2114410367066773366}
   - component: {fileID: 3278708518709764711}
   - component: {fileID: 4882881029835979566}
+  - component: {fileID: 1238683693450617572}
   m_Layer: 7
   m_Name: HintUI
   m_TagString: Untagged
@@ -114,7 +115,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 3}
+  m_AnchoredPosition: {x: 0, y: 4}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8041775166447326764
@@ -208,6 +209,18 @@ MonoBehaviour:
   rectTransform: {fileID: 4571154071381443601}
   heightOffset: 3
   lookLerpSpeed: 5
+--- !u!114 &1238683693450617572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2151481064957882623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58044b3815692554da8d84ae72d9f478, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2704006021686220995
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +386,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lootContainerData: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
   HintUI: {fileID: 4882881029835979566}
-  detectDistance: 5
   lootMaxSlotCount: 5
   allowDuplicates: 1
 --- !u!1 &5314095652856406515

@@ -4,51 +4,51 @@ using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
 
 /// <summary>
-/// Æ½Ãæ·´ÉäÏµÍ³£¨Planar Reflection System£©
+/// å¹³é¢åå°„ç³»ç»Ÿï¼ˆPlanar Reflection Systemï¼‰
 ///
-/// ÊµÏÖÔ­Àí£º
-/// Îª·´ÉäÆ½Ãæ£¨ÈçË®Ãæ£©´´½¨Ò»¸ö¾µÏñÉãÏñ»ú£¬
-/// Í¨¹ı·´Éä¾ØÕó¼ÆËã¾µÏñÏà»úµÄ×ËÌ¬£¬
-/// äÖÈ¾³ö·´ÉäÌùÍ¼²¢´«µİ¸ø Shader ÓÃÓÚÊµÊ±·´Éä¡£
+/// å®ç°åŸç†ï¼š
+/// ä¸ºåå°„å¹³é¢ï¼ˆå¦‚æ°´é¢ï¼‰åˆ›å»ºä¸€ä¸ªé•œåƒæ‘„åƒæœºï¼Œ
+/// é€šè¿‡åå°„çŸ©é˜µè®¡ç®—é•œåƒç›¸æœºçš„å§¿æ€ï¼Œ
+/// æ¸²æŸ“å‡ºåå°„è´´å›¾å¹¶ä¼ é€’ç»™ Shader ç”¨äºå®æ—¶åå°„ã€‚
 ///
-/// ÊÊÓÃ·¶Î§£º
-/// - Ë®Ãæ·´Éä
-/// - ¾µ×Ó¡¢µØ°å·´Éä
-/// - ÈÎºÎ»ùÓÚÆ½Ãæ·´ÉäµÄ³¡¾°
+/// é€‚ç”¨èŒƒå›´ï¼š
+/// - æ°´é¢åå°„
+/// - é•œå­ã€åœ°æ¿åå°„
+/// - ä»»ä½•åŸºäºå¹³é¢åå°„çš„åœºæ™¯
 /// </summary>
-//[ExecuteAlways]  // ÔÚ±à¼­Æ÷ÖĞÒ²ÄÜÊµÊ±Ö´ĞĞ
+[ExecuteAlways]  // åœ¨ç¼–è¾‘å™¨ä¸­ä¹Ÿèƒ½å®æ—¶æ‰§è¡Œ
 public class PlanarReflections : MonoBehaviour
 {
-    #region ======== ¿Éµ÷²ÎÊı (Inspector ÉèÖÃ) ========
+    #region ======== å¯è°ƒå‚æ•° (Inspector è®¾ç½®) ========
 
     [Header("Reflection Settings")]
-    [Range(0.1f, 1.0f)] public float reflectionQuality = 0.5f;  // ·´ÉäÌùÍ¼·Ö±æÂÊ±ÈÀı£¨Ïà¶ÔÓÚÖ÷Ïà»ú£©
-    [Range(1, 4)] public int textureID = 1;                     // °ó¶¨µ½ Shader µÄÌùÍ¼±àºÅ£¨¿ÉÖ§³Ö¶à²ã·´Éä£©
-    public float farClipPlane = 100f;                           // ·´ÉäÏà»úÔ¶²Ã¼ôÃæ
-    public LayerMask reflectionLayers = -1;                     // ·´Éä¿É¼ûµÄ²ã£¨LayerMask£©
-    public bool renderSkybox = true;                            // ÊÇ·ñÔÚ·´ÉäÖĞäÖÈ¾Ìì¿ÕºĞ
+    [Range(0.1f, 1.0f)] public float reflectionQuality = 0.5f;  // åå°„è´´å›¾åˆ†è¾¨ç‡æ¯”ä¾‹ï¼ˆç›¸å¯¹äºä¸»ç›¸æœºï¼‰
+    [Range(1, 4)] public int textureID = 1;                     // ç»‘å®šåˆ° Shader çš„è´´å›¾ç¼–å·ï¼ˆå¯æ”¯æŒå¤šå±‚åå°„ï¼‰
+    public float farClipPlane = 100f;                           // åå°„ç›¸æœºè¿œè£å‰ªé¢
+    public LayerMask reflectionLayers = -1;                     // åå°„å¯è§çš„å±‚ï¼ˆLayerMaskï¼‰
+    public bool renderSkybox = true;                            // æ˜¯å¦åœ¨åå°„ä¸­æ¸²æŸ“å¤©ç©ºç›’
 
     [Header("Custom Reflection Plane")]
-    public bool useCustomNormal = false;                        // ÊÇ·ñÊ¹ÓÃ×Ô¶¨ÒåÆ½Ãæ·¨Ïß
-    public Vector3 customNormal = Vector3.up;                   // ×Ô¶¨Òå·´ÉäÆ½Ãæ·¨Ïß
+    public bool useCustomNormal = false;                        // æ˜¯å¦ä½¿ç”¨è‡ªå®šä¹‰å¹³é¢æ³•çº¿
+    public Vector3 customNormal = Vector3.up;                   // è‡ªå®šä¹‰åå°„å¹³é¢æ³•çº¿
 
     #endregion
 
-    #region ======== ÄÚ²¿×´Ì¬Óë»º´æ ========
+    #region ======== å†…éƒ¨çŠ¶æ€ä¸ç¼“å­˜ ========
 
-    private Camera reflectionCamera;                            // ·´ÉäÏà»ú
-    private GameObject reflectionCameraGO;                      // Ïà»ú¹ÒÔØ¶ÔÏó£¨Òş²ØÔÚ²ã¼¶ÖĞ£©
-    private readonly Dictionary<Camera, RenderTexture> cameraTextures = new(); // Ã¿¸öÖ÷Ïà»ú¶ÔÓ¦µÄ·´ÉäÌùÍ¼
-    private readonly HashSet<Camera> ignoredCameras = new();    // ºöÂÔ·´ÉäµÄÏà»ú¼¯ºÏ£¨±ÜÃâµİ¹é£©
+    private Camera reflectionCamera;                            // åå°„ç›¸æœº
+    private GameObject reflectionCameraGO;                      // ç›¸æœºæŒ‚è½½å¯¹è±¡ï¼ˆéšè—åœ¨å±‚çº§ä¸­ï¼‰
+    private readonly Dictionary<Camera, RenderTexture> cameraTextures = new(); // æ¯ä¸ªä¸»ç›¸æœºå¯¹åº”çš„åå°„è´´å›¾
+    private readonly HashSet<Camera> ignoredCameras = new();    // å¿½ç•¥åå°„çš„ç›¸æœºé›†åˆï¼ˆé¿å…é€’å½’ï¼‰
 
     #endregion
 
 
-    #region ======== MonoBehaviour ÉúÃüÖÜÆÚ ========
+    #region ======== MonoBehaviour ç”Ÿå‘½å‘¨æœŸ ========
 
     private void OnEnable()
     {
-        // ¿ÉÔÚ´Ë×¢²á SRP »Øµ÷£º
+        // å¯åœ¨æ­¤æ³¨å†Œ SRP å›è°ƒï¼š
         // RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
     }
 
@@ -66,23 +66,23 @@ public class PlanarReflections : MonoBehaviour
     #endregion
 
 
-    #region ======== ·´ÉäÏà»ú¹ÜÀí ========
+    #region ======== åå°„ç›¸æœºç®¡ç† ========
 
     /// <summary>
-    /// ³õÊ¼»¯·´ÉäÏà»ú£¨½öÔÚÊ×´Îµ÷ÓÃÊ±´´½¨£©
+    /// åˆå§‹åŒ–åå°„ç›¸æœºï¼ˆä»…åœ¨é¦–æ¬¡è°ƒç”¨æ—¶åˆ›å»ºï¼‰
     /// </summary>
     private void InitializeReflectionCamera()
     {
         if (reflectionCamera != null) return;
 
         reflectionCameraGO = new GameObject("ReflectionCamera", typeof(Camera));
-        reflectionCameraGO.hideFlags = HideFlags.HideAndDontSave; // ²»ÏÔÊ¾ÔÚ²ã¼¶Ãæ°åÖĞ
+        reflectionCameraGO.hideFlags = HideFlags.HideAndDontSave; // ä¸æ˜¾ç¤ºåœ¨å±‚çº§é¢æ¿ä¸­
         reflectionCamera = reflectionCameraGO.GetComponent<Camera>();
-        reflectionCamera.enabled = false;                         // ÊÖ¶¯¿ØÖÆäÖÈ¾
+        reflectionCamera.enabled = false;                         // æ‰‹åŠ¨æ§åˆ¶æ¸²æŸ“
     }
 
     /// <summary>
-    /// ÊÍ·Å·´ÉäÌùÍ¼ÓëÏà»ú×ÊÔ´
+    /// é‡Šæ”¾åå°„è´´å›¾ä¸ç›¸æœºèµ„æº
     /// </summary>
     private void Cleanup()
     {
@@ -101,50 +101,65 @@ public class PlanarReflections : MonoBehaviour
     #endregion
 
 
-    #region ======== ·´ÉääÖÈ¾Á÷³Ì ========
+    #region ======== åå°„æ¸²æŸ“æµç¨‹ ========
 
     /// <summary>
-    /// Ã¿Ö¡¸üĞÂ£ºÉú³É·´ÉäÏà»úµÄÊÓÍ¼²¢äÖÈ¾·´ÉäÌùÍ¼
+    /// æ¯å¸§æ›´æ–°ï¼šç”Ÿæˆåå°„ç›¸æœºçš„è§†å›¾å¹¶æ¸²æŸ“åå°„è´´å›¾
     /// </summary>
     private void Update()
     {
+        var mainCam = Camera.main;
+        if (mainCam == null || ShouldSkipCamera(mainCam))
+            return;
+
+        // å¦‚æœä¸»ç›¸æœºåœ¨æ°´é¢ä»¥ä¸‹ï¼Œåˆ™è·³è¿‡æ¸²æŸ“
+        if (mainCam.transform.position.y < transform.position.y)
+            return;
+
         InitializeReflectionCamera();
 
-        // »ñÈ¡·´ÉäÆ½ÃæµÄ·¨Ïß·½Ïò£¨¿É×Ô¶¨Òå£©
+        // è·å–åå°„å¹³é¢çš„æ³•çº¿æ–¹å‘ï¼ˆå¯è‡ªå®šä¹‰ï¼‰
         var normal = GetReflectionNormal();
 
-        // ¸´ÖÆÖ÷ÉãÏñ»úµÄÉèÖÃµ½·´ÉäÉãÏñ»ú
+        // å¤åˆ¶ä¸»æ‘„åƒæœºçš„è®¾ç½®åˆ°åå°„æ‘„åƒæœº
         ConfigureReflectionCamera(Camera.main);
 
-        // ´´½¨/¸üĞÂ·´ÉäÌùÍ¼
+        // åˆ›å»º/æ›´æ–°åå°„è´´å›¾
         UpdateRenderTexture(Camera.main);
 
-        // ¸üĞÂ·´ÉäÏà»úµÄÎ»ÖÃÓë³¯Ïò£¨¾µÏñ£©
+        // æ›´æ–°åå°„ç›¸æœºçš„ä½ç½®ä¸æœå‘ï¼ˆé•œåƒï¼‰
         UpdateReflectionCameraTransform(Camera.main, normal);
 
-        // ÉèÖÃ´øÇãĞ±²Ã¼ôµÄÍ¶Ó°¾ØÕó£¬Ê¹·´ÉäÃæÉÏ·½µÄÄÚÈİ±»ÌŞ³ı
+        // è®¾ç½®å¸¦å€¾æ–œè£å‰ªçš„æŠ•å½±çŸ©é˜µï¼Œä½¿åå°„é¢ä¸Šæ–¹çš„å†…å®¹è¢«å‰”é™¤
         SetupObliqueProjMatrix(normal);
 
-        // ´´½¨±ê×¼äÖÈ¾ÇëÇó£¨RenderPipeline API£©
+        // åˆ›å»ºæ ‡å‡†æ¸²æŸ“è¯·æ±‚ï¼ˆRenderPipeline APIï¼‰
         RenderPipeline.StandardRequest request = new RenderPipeline.StandardRequest();
 
         if (RenderPipeline.SupportsRenderRequest(reflectionCamera, request))
         {
-            // Êä³öÄ¿±êÉèÖÃÎªÏàÓ¦·´ÉäÌùÍ¼
+            // è¾“å‡ºç›®æ ‡è®¾ç½®ä¸ºç›¸åº”åå°„è´´å›¾
             request.destination = cameraTextures[Camera.main];
 
-            // Ö´ĞĞäÖÈ¾ÇëÇó£¨µÈ¼ÛÓÚµ¥¶ÀäÖÈ¾´ËÏà»ú£©
-            RenderPipeline.SubmitRenderRequest(reflectionCamera, request);
+            // æ‰§è¡Œæ¸²æŸ“è¯·æ±‚ï¼ˆç­‰ä»·äºå•ç‹¬æ¸²æŸ“æ­¤ç›¸æœºï¼‰
+            try
+            {
+                RenderPipeline.SubmitRenderRequest(reflectionCamera, request);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"PlanarReflection render failed: {e.Message}");
+            }
         }
 
-        // ½«Éú³ÉµÄ·´ÉäÌùÍ¼°ó¶¨µ½ Shader È«¾ÖÊôĞÔ
+        // å°†ç”Ÿæˆçš„åå°„è´´å›¾ç»‘å®šåˆ° Shader å…¨å±€å±æ€§
         var textureName = $"_PlanarReflectionsTex{textureID}";
         reflectionCamera.targetTexture.SetGlobalShaderProperty(textureName);
     }
 
     /// <summary>
-    /// ÅĞ¶ÏÊÇ·ñÌø¹ıÄ³¸öÏà»úµÄ·´ÉääÖÈ¾
-    /// ±ÜÃâµİ¹é·´Éä¡¢±à¼­Æ÷Ô¤ÀÀÏà»úµÈ
+    /// åˆ¤æ–­æ˜¯å¦è·³è¿‡æŸä¸ªç›¸æœºçš„åå°„æ¸²æŸ“
+    /// é¿å…é€’å½’åå°„ã€ç¼–è¾‘å™¨é¢„è§ˆç›¸æœºç­‰
     /// </summary>
     private bool ShouldSkipCamera(Camera camera)
     {
@@ -154,7 +169,7 @@ public class PlanarReflections : MonoBehaviour
     }
 
     /// <summary>
-    /// ´ÓÖ÷Ïà»ú¸´ÖÆÉèÖÃµ½·´ÉäÏà»ú
+    /// ä»ä¸»ç›¸æœºå¤åˆ¶è®¾ç½®åˆ°åå°„ç›¸æœº
     /// </summary>
     private void ConfigureReflectionCamera(Camera sourceCamera)
     {
@@ -164,21 +179,21 @@ public class PlanarReflections : MonoBehaviour
         reflectionCamera.farClipPlane = farClipPlane;
         reflectionCamera.cullingMask = reflectionLayers;
 
-        // ÊÇ·ñäÖÈ¾Ìì¿ÕºĞ£¨·ñÔòÊ¹ÓÃ´¿É«Çå¿Õ£©
+        // æ˜¯å¦æ¸²æŸ“å¤©ç©ºç›’ï¼ˆå¦åˆ™ä½¿ç”¨çº¯è‰²æ¸…ç©ºï¼‰
         reflectionCamera.clearFlags = renderSkybox
             ? sourceCamera.clearFlags
             : CameraClearFlags.SolidColor;
     }
 
     /// <summary>
-    /// ¸ù¾İÖ÷Ïà»ú·Ö±æÂÊÓëÖÊÁ¿ÉèÖÃ¸üĞÂ·´ÉäÌùÍ¼
+    /// æ ¹æ®ä¸»ç›¸æœºåˆ†è¾¨ç‡ä¸è´¨é‡è®¾ç½®æ›´æ–°åå°„è´´å›¾
     /// </summary>
     private void UpdateRenderTexture(Camera sourceCamera)
     {
         int width = Mathf.RoundToInt(sourceCamera.pixelWidth * reflectionQuality);
         int height = Mathf.RoundToInt(sourceCamera.pixelHeight * reflectionQuality);
 
-        // Èôµ±Ç°²»´æÔÚ»ò³ß´ç²»Æ¥Åä£¬ÔòÖØĞÂ´´½¨
+        // è‹¥å½“å‰ä¸å­˜åœ¨æˆ–å°ºå¯¸ä¸åŒ¹é…ï¼Œåˆ™é‡æ–°åˆ›å»º
         if (!cameraTextures.TryGetValue(sourceCamera, out RenderTexture texture) ||
             texture == null || texture.width != width || texture.height != height)
         {
@@ -204,10 +219,10 @@ public class PlanarReflections : MonoBehaviour
     #endregion
 
 
-    #region ======== ·´ÉäÊıÑ§¼ÆËã²¿·Ö ========
+    #region ======== åå°„æ•°å­¦è®¡ç®—éƒ¨åˆ† ========
 
     /// <summary>
-    /// »ñÈ¡·´ÉäÆ½ÃæµÄ·¨Ïß
+    /// è·å–åå°„å¹³é¢çš„æ³•çº¿
     /// </summary>
     private Vector3 GetReflectionNormal()
     {
@@ -216,40 +231,40 @@ public class PlanarReflections : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸üĞÂ·´ÉäÏà»úµÄ¿Õ¼äÎ»ÖÃÓëĞı×ª
-    /// Í¨¹ıÏò·¨Ïß·´ÉäÖ÷Ïà»úµÄÎ»ÖÃÓë·½Ïò
+    /// æ›´æ–°åå°„ç›¸æœºçš„ç©ºé—´ä½ç½®ä¸æ—‹è½¬
+    /// é€šè¿‡å‘æ³•çº¿åå°„ä¸»ç›¸æœºçš„ä½ç½®ä¸æ–¹å‘
     /// </summary>
     private void UpdateReflectionCameraTransform(Camera sourceCamera, Vector3 normal)
     {
-        // Ö÷Ïà»úµ½Æ½ÃæµÄÍ¶Ó°¾àÀë
+        // ä¸»ç›¸æœºåˆ°å¹³é¢çš„æŠ•å½±è·ç¦»
         Vector3 proj = normal * Vector3.Dot(
             normal, sourceCamera.transform.position - transform.position);
 
-        // ½«Ïà»úÎ»ÖÃÑØ·¨Ïß·½Ïò¶Ô³Æ
+        // å°†ç›¸æœºä½ç½®æ²¿æ³•çº¿æ–¹å‘å¯¹ç§°
         reflectionCamera.transform.position = sourceCamera.transform.position - 2 * proj;
 
-        // ½«Ïà»ú·½ÏòÏòÁ¿ÑØ·¨Ïß·´Éä
+        // å°†ç›¸æœºæ–¹å‘å‘é‡æ²¿æ³•çº¿åå°„
         Vector3 forward = Vector3.Reflect(sourceCamera.transform.forward, normal);
         Vector3 up = Vector3.Reflect(sourceCamera.transform.up, normal);
 
-        // ÉèÖÃ·´ÉäÏà»úµÄ³¯Ïò
+        // è®¾ç½®åå°„ç›¸æœºçš„æœå‘
         reflectionCamera.transform.LookAt(
             reflectionCamera.transform.position + forward, up);
     }
 
     /// <summary>
-    /// ÉèÖÃ´ø¡°ÇãĞ±Æ½Ãæ²Ã¼ô¡±µÄÍ¶Ó°¾ØÕó
-    /// ·ÀÖ¹·´ÉäÆ½ÃæÏÂ·½ÄÚÈİ³öÏÖÔÚ·´ÉäÌùÍ¼ÖĞ
+    /// è®¾ç½®å¸¦â€œå€¾æ–œå¹³é¢è£å‰ªâ€çš„æŠ•å½±çŸ©é˜µ
+    /// é˜²æ­¢åå°„å¹³é¢ä¸‹æ–¹å†…å®¹å‡ºç°åœ¨åå°„è´´å›¾ä¸­
     /// </summary>
     private void SetupObliqueProjMatrix(Vector3 normal)
     {
         Matrix4x4 viewMatrix = reflectionCamera.worldToCameraMatrix;
 
-        // ½«Æ½ÃæÎ»ÖÃÓë·¨Ïß´ÓÊÀ½ç¿Õ¼ä×ª»»µ½Ïà»ú¿Õ¼ä
+        // å°†å¹³é¢ä½ç½®ä¸æ³•çº¿ä»ä¸–ç•Œç©ºé—´è½¬æ¢åˆ°ç›¸æœºç©ºé—´
         Vector3 viewPosition = viewMatrix.MultiplyPoint(transform.position);
         Vector3 viewNormal = viewMatrix.MultiplyVector(normal).normalized;
 
-        // ¶¨ÒåÏà»ú¿Õ¼äÏÂµÄ²Ã¼ôÆ½Ãæ (Ax + By + Cz + D = 0)
+        // å®šä¹‰ç›¸æœºç©ºé—´ä¸‹çš„è£å‰ªå¹³é¢ (Ax + By + Cz + D = 0)
         Vector4 plane = new Vector4(
             viewNormal.x,
             viewNormal.y,
@@ -257,14 +272,14 @@ public class PlanarReflections : MonoBehaviour
             -Vector3.Dot(viewPosition, viewNormal)
         );
 
-        // ÉèÖÃ´øÓĞ´ËÆ½Ãæ²Ã¼ôµÄÍ¶Ó°¾ØÕó
+        // è®¾ç½®å¸¦æœ‰æ­¤å¹³é¢è£å‰ªçš„æŠ•å½±çŸ©é˜µ
         reflectionCamera.projectionMatrix = reflectionCamera.CalculateObliqueMatrix(plane);
     }
 
     #endregion
 
 
-    #region ======== Íâ²¿ API (¹©ÆäËû×é¼ş¿ØÖÆ) ========
+    #region ======== å¤–éƒ¨ API (ä¾›å…¶ä»–ç»„ä»¶æ§åˆ¶) ========
 
     public void IgnoreCamera(Camera camera) => ignoredCameras.Add(camera);
     public void UnignoreCamera(Camera camera) => ignoredCameras.Remove(camera);

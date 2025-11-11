@@ -74,10 +74,10 @@ public class Shark : AICharacter
 
     void InitAttributes()
     {
-        //if (attributesModule != null)
-        //{
-        //    attributesModule.AddAttribute(AttributeType.AT_Blood, 100, 0, 100);
-        //}
+        if (attributesModule != null)
+        {
+           attributesModule.AddAttribute(AttributeType.Hp, 100, 0, 100);
+        }
     }
 
     //target...
@@ -179,9 +179,9 @@ public class Shark : AICharacter
 
         //if (attributesModule != null)
         //{
-        //    int blood = (int)attributesModule.GetAttributeValue(AttributeType.AT_Blood);
+        //    int blood = (int)attributesModule.GetAttributeValue(AttributeType.Hp);
 
-        //    attributesModule.SetAttributeValue(AttributeType.AT_Blood, blood - damage);
+        //    attributesModule.SetAttributeValue(AttributeType.Hp, blood - damage);
 
         //    if (blood - damage <= 0)
         //    {

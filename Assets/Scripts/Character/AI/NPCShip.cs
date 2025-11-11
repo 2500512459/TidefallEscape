@@ -5,82 +5,79 @@ using CleverCrow.Fluid.BTs.Tasks;
 using CleverCrow.Fluid.BTs.Trees;
 
 /// <summary>
-/// NPCShip£ºAI ´¬Ö»Âß¼­
-/// - ¼Ì³Ğ×Ô AICharacter£¨¾ß±¸Í¨ÓÃ AI ĞĞÎª»ù´¡£©
-/// - Ê¹ÓÃ WaypointNavigator Ñ°Â·ÏµÍ³½øĞĞÂ·¾¶µ¼º½
-/// - Ê¹ÓÃ SteeringBehaviors ÊµÏÖ×ªÏòÓëÒÆ¶¯¿ØÖÆ
-/// - Ê¹ÓÃ Fluid Behavior Tree ÊµÏÖ AI ĞĞÎª¾ö²ß
+/// NPCShipï¼šAI èˆ¹åªé€»è¾‘
+/// - ç»§æ‰¿è‡ª AICharacterï¼ˆå…·å¤‡é€šç”¨ AI è¡Œä¸ºåŸºç¡€ï¼‰
+/// - ä½¿ç”¨ WaypointNavigator å¯»è·¯ç³»ç»Ÿè¿›è¡Œè·¯å¾„å¯¼èˆª
+/// - ä½¿ç”¨ SteeringBehaviors å®ç°è½¬å‘ä¸ç§»åŠ¨æ§åˆ¶
+/// - ä½¿ç”¨ Fluid Behavior Tree å®ç° AI è¡Œä¸ºå†³ç­–
 /// </summary>
 public class NPCShip : AICharacter
 {
-    // ¸Ã NPC ´¬ÉÏµÄÂ·¾¶µ¼º½×é¼ş£¨¸ºÔğÂ·¾¶µãµ¼º½£©
+    public float maxHealth = 100f;
+    public HealthBar healthBar;
+
+    // è¯¥ NPC èˆ¹ä¸Šçš„è·¯å¾„å¯¼èˆªç»„ä»¶ï¼ˆè´Ÿè´£è·¯å¾„ç‚¹å¯¼èˆªï¼‰
     WaypointNavigator waypointNav;
 
-
-    /// <summary>
-    /// Awake£ºÔÚ¶ÔÏó´´½¨Ê±µ÷ÓÃ£¨±È Start ¸üÔç£©
-    /// ÓÃÓÚ³õÊ¼»¯±ØÒª×é¼şÒıÓÃ
-    /// </summary>
     protected override void Awake()
     {
-        base.Awake();  // µ÷ÓÃ¸¸Àà AICharacter µÄ Awake£¨Ò»°ã³õÊ¼»¯ steeringBehaviors¡¢colsensor¡¢separation µÈ£©
+        base.Awake();  // è°ƒç”¨çˆ¶ç±» AICharacter çš„ Awakeï¼ˆä¸€èˆ¬åˆå§‹åŒ– steeringBehaviorsã€colsensorã€separation ç­‰ï¼‰
 
-        // »ñÈ¡¸½¼ÓÔÚÍ¬Ò»ÎïÌåÉÏµÄ WaypointNavigator ×é¼ş
+        // è·å–é™„åŠ åœ¨åŒä¸€ç‰©ä½“ä¸Šçš„ WaypointNavigator ç»„ä»¶
         waypointNav = GetComponent<WaypointNavigator>();
     }
 
-
-    /// <summary>
-    /// Start£ºÔÚ³¡¾°Æô¶¯Ê±µ÷ÓÃ
-    /// </summary>
     protected override void Start()
     {
-        base.Start();  // µ÷ÓÃ¸¸Àà Start£¨¿ÉÄÜ³õÊ¼»¯ AI ²ÎÊı»ò´«¸ĞÆ÷£©
+        base.Start();  // è°ƒç”¨çˆ¶ç±» Startï¼ˆå¯èƒ½åˆå§‹åŒ– AI å‚æ•°æˆ–ä¼ æ„Ÿå™¨ï¼‰
 
-        // ³õÊ¼»¯ĞĞÎªÊ÷
+        // åˆå§‹åŒ–è¡Œä¸ºæ ‘
         InitAI();
+
+        attributesModule.AddAttribute(AttributeType.Hp, maxHealth, 0, maxHealth);
+        healthBar.SetMaxHealth(maxHealth);
     }
 
-
-    /// <summary>
-    /// Update£ºÃ¿Ö¡µ÷ÓÃ£¨´Ë´¦Î´¶îÍâÂß¼­£¬±£Áô¸¸Àà¸üĞÂ£©
-    /// </summary>
     protected override void Update()
     {
         base.Update();
+        if (isDead)
+        {
+            healthBar.gameObject.SetActive(false);
+        }
     }
 
 
     /// <summary>
-    /// FixedUpdate£ºÎïÀíÖ¡¸üĞÂ£¨Í¨³£ÓÃÓÚÒÆ¶¯¡¢ÎïÀí¼ÆËã£©
-    /// ÔÚÕâÀïÇı¶¯ĞĞÎªÊ÷£¨brain.Tick£©Ã¿Ö¡Ö´ĞĞÒ»´Î¾ö²ßÂß¼­¡£
+    /// FixedUpdateï¼šç‰©ç†å¸§æ›´æ–°ï¼ˆé€šå¸¸ç”¨äºç§»åŠ¨ã€ç‰©ç†è®¡ç®—ï¼‰
+    /// åœ¨è¿™é‡Œé©±åŠ¨è¡Œä¸ºæ ‘ï¼ˆbrain.Tickï¼‰æ¯å¸§æ‰§è¡Œä¸€æ¬¡å†³ç­–é€»è¾‘ã€‚
     /// </summary>
     private void FixedUpdate()
     {
-        brain.Tick(); // Ö´ĞĞµ±Ç° AI ĞĞÎªÊ÷Âß¼­
+        brain.Tick(); // æ‰§è¡Œå½“å‰ AI è¡Œä¸ºæ ‘é€»è¾‘
     }
 
 
     /// <summary>
-    /// ³õÊ¼»¯ AI ĞĞÎªÊ÷£º
-    /// ¶¨Òå AI ´¬Ö»µÄÖ÷ÒªĞĞÎªÂß¼­£¨½öÒ»¸ö¼òµ¥µÄ¡°¸üĞÂ´¬×´Ì¬¡±ÈÎÎñ£©
+    /// åˆå§‹åŒ– AI è¡Œä¸ºæ ‘ï¼š
+    /// å®šä¹‰ AI èˆ¹åªçš„ä¸»è¦è¡Œä¸ºé€»è¾‘ï¼ˆä»…ä¸€ä¸ªç®€å•çš„â€œæ›´æ–°èˆ¹çŠ¶æ€â€ä»»åŠ¡ï¼‰
     /// </summary>
     void InitAI()
     {
         brain = new BehaviorTreeBuilder(gameObject)
-            // ======================== [ÈÎÎñ½Úµã] =========================
+            // ======================== [ä»»åŠ¡èŠ‚ç‚¹] =========================
             .Do("Update Ship", () =>
             {
-                // ³õÊ¼»¯Ä¿±êÎ»ÖÃ£¨Ä¬ÈÏÖµÎªÁã£©
+                // åˆå§‹åŒ–ç›®æ ‡ä½ç½®ï¼ˆé»˜è®¤å€¼ä¸ºé›¶ï¼‰
                 Vector3 targetPosition = Vector3.zero;
 
-                // ´Ó WaypointManager »ñÈ¡³¡¾°ÖĞËùÓĞµÄÂ·¾¶µã
+                // ä» WaypointManager è·å–åœºæ™¯ä¸­æ‰€æœ‰çš„è·¯å¾„ç‚¹
                 List<Waypoint> waypoints = WaypointManager.Instance.GetWaypoints();
 
-                // Èç¹ûÂ·¾¶µã´æÔÚ£¬ÔòËæ»úÑ¡ÔñÒ»¸öÄ¿±ê½øĞĞµ¼º½
+                // å¦‚æœè·¯å¾„ç‚¹å­˜åœ¨ï¼Œåˆ™éšæœºé€‰æ‹©ä¸€ä¸ªç›®æ ‡è¿›è¡Œå¯¼èˆª
                 if (waypoints != null && waypoints.Count > 0)
                 {
-                    // Èôµ±Ç°Ã»ÓĞÂ·¾¶£¬ÔòËæ»úÑ¡È¡Ò»¸öÂ·¾¶µã×÷ÎªĞÂÄ¿µÄµØ
+                    // è‹¥å½“å‰æ²¡æœ‰è·¯å¾„ï¼Œåˆ™éšæœºé€‰å–ä¸€ä¸ªè·¯å¾„ç‚¹ä½œä¸ºæ–°ç›®çš„åœ°
                     while (!waypointNav.HasPath)
                     {
                         waypointNav.SetDestination(
@@ -88,52 +85,62 @@ public class NPCShip : AICharacter
                         );
                     }
 
-                    // »ñÈ¡µ±Ç°Â·¾¶µÄÏÂÒ»¸öÄ¿±êµãÎ»ÖÃ
+                    // è·å–å½“å‰è·¯å¾„çš„ä¸‹ä¸€ä¸ªç›®æ ‡ç‚¹ä½ç½®
                     targetPosition = waypointNav.CurrentWaypointPosition;
                 }
 
-                // Ê¹ÓÃ steeringBehaviors µÄ¡°µ½´ï¡±ĞĞÎª¼ÆËã¼ÓËÙ¶ÈÏòÁ¿
+                // ä½¿ç”¨ steeringBehaviors çš„â€œåˆ°è¾¾â€è¡Œä¸ºè®¡ç®—åŠ é€Ÿåº¦å‘é‡
                 Vector3 accel = steeringBehaviors.Arrive(targetPosition);
 
 
-                // =================== [Åö×²´«¸ĞÆ÷ĞŞÕı] ====================
-                // Èôµ±Ç°´¬ÓµÓĞÅö×²¼ì²âÆ÷£¨colsensor£©£¬ÔòĞŞÕı¼ÓËÙ¶È·½Ïò£¬±Ü¿ªÕÏ°­
+                // =================== [ç¢°æ’ä¼ æ„Ÿå™¨ä¿®æ­£] ====================
+                // è‹¥å½“å‰èˆ¹æ‹¥æœ‰ç¢°æ’æ£€æµ‹å™¨ï¼ˆcolsensorï¼‰ï¼Œåˆ™ä¿®æ­£åŠ é€Ÿåº¦æ–¹å‘ï¼Œé¿å¼€éšœç¢
                 if (colsensor)
                 {
-                    // ÌáÈ¡¼ÓËÙ¶È·½Ïò
+                    // æå–åŠ é€Ÿåº¦æ–¹å‘
                     Vector3 accDir = accel.normalized;
 
-                    // Í¨¹ıÅö×²´«¸ĞÆ÷¼ÆËã°²È«·½Ïò£¨GetCollisionFreeDirection2£©
+                    // é€šè¿‡ç¢°æ’ä¼ æ„Ÿå™¨è®¡ç®—å®‰å…¨æ–¹å‘ï¼ˆGetCollisionFreeDirection2ï¼‰
                     colsensor.GetCollisionFreeDirection2(accDir, out accDir);
 
-                    // ±£ÁôÔ­±¾¼ÓËÙ¶È´óĞ¡£¨·ÀÖ¹ËÙ¶ÈÍ»±ä£©
+                    // ä¿ç•™åŸæœ¬åŠ é€Ÿåº¦å¤§å°ï¼ˆé˜²æ­¢é€Ÿåº¦çªå˜ï¼‰
                     accDir *= accel.magnitude;
 
-                    // ¸üĞÂĞŞÕıºóµÄ¼ÓËÙ¶È
+                    // æ›´æ–°ä¿®æ­£åçš„åŠ é€Ÿåº¦
                     accel = accDir;
                 }
 
 
-                // =================== [·ÖÀëĞĞÎªĞŞÕı] ====================
-                // Èô´¬´æÔÚ separation£¨ÈºÌå·ÖÀëĞĞÎª£©£¬
-                // ÔòÔÚÔ­ÓĞ¼ÓËÙ¶È»ù´¡ÉÏµş¼Ó·ÖÀëÏòÁ¿£¨±ÜÃâÓëÆäËû´¬ÖØµş£©
+                // =================== [åˆ†ç¦»è¡Œä¸ºä¿®æ­£] ====================
+                // è‹¥èˆ¹å­˜åœ¨ separationï¼ˆç¾¤ä½“åˆ†ç¦»è¡Œä¸ºï¼‰ï¼Œ
+                // åˆ™åœ¨åŸæœ‰åŠ é€Ÿåº¦åŸºç¡€ä¸Šå åŠ åˆ†ç¦»å‘é‡ï¼ˆé¿å…ä¸å…¶ä»–èˆ¹é‡å ï¼‰
                 if (separation)
                 {
                     accel += separation.GetSteering();
                 }
 
 
-                // =================== [×îÖÕÖ´ĞĞÒÆ¶¯Óë×ªÏò] ====================
-                // ½«¼ÆËãºÃµÄ×Ü¼ÓËÙ¶È´«µİ¸ø Steering ÏµÍ³½øĞĞÒÆ¶¯¿ØÖÆ
+                // =================== [æœ€ç»ˆæ‰§è¡Œç§»åŠ¨ä¸è½¬å‘] ====================
+                // å°†è®¡ç®—å¥½çš„æ€»åŠ é€Ÿåº¦ä¼ é€’ç»™ Steering ç³»ç»Ÿè¿›è¡Œç§»åŠ¨æ§åˆ¶
                 steeringBehaviors.Steer(accel);
 
-                // ÈÃ´¬Ö»³¯ÒÆ¶¯·½ÏòÆ½»¬×ªÏò
+                // è®©èˆ¹åªæœç§»åŠ¨æ–¹å‘å¹³æ»‘è½¬å‘
                 steeringBehaviors.LookMoveDirection();
 
-                // ÈÎÎñ³É¹¦£¨ĞĞÎªÊ÷ÒªÇó·µ»Ø TaskStatus£©
+                // ä»»åŠ¡æˆåŠŸï¼ˆè¡Œä¸ºæ ‘è¦æ±‚è¿”å› TaskStatusï¼‰
                 return TaskStatus.Success;
             })
             // ============================================================
-            .Build(); // ¹¹½¨ÍêÕûµÄĞĞÎªÊ÷½á¹¹
+            .Build(); // æ„å»ºå®Œæ•´çš„è¡Œä¸ºæ ‘ç»“æ„
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        healthBar.SetHealth(attributesModule.GetAttributeValue(AttributeType.Hp));
+
+        if(healthBar.gameObject.activeSelf == false)
+            healthBar.gameObject.SetActive(true);
     }
 }
