@@ -206,10 +206,15 @@ public class LoopScrollView : MonoBehaviour
                 return;
             }
 
-            //更新所有cell
-            for (int i = startIndex; i < startIndex + maxShowItemNum; i++)
+            if (showItems == null || showItems.Count == 0)
             {
-                var index = i;
+                return;
+            }
+
+            //更新所有cell
+            for (int i = 0; i < showItems.Count; i++)
+            {
+                var index = startIndex + i;
                 ScrollUpdateCell(index, startIndex);
             }
 
@@ -224,7 +229,13 @@ public class LoopScrollView : MonoBehaviour
     /// <param name="startIndex"></param>
     void ScrollUpdateCell(int index, int startIndex)
     {
-        var scrollViewItem = showItems[index - startIndex];
+        var itemIndex = index - startIndex;
+        if (itemIndex < 0 || itemIndex >= showItems.Count)
+        {
+            return;
+        }
+
+        var scrollViewItem = showItems[itemIndex];
         //超出总数的不显示
         if (index >= totalNum)
         {
@@ -237,6 +248,56 @@ public class LoopScrollView : MonoBehaviour
         UpdateCell(scrollViewItem, index);
     }
 
+    /// <summary>
+    /// 强制刷新当前显示的所有格子内容
+    /// </summary>
+    public void ForceRefreshVisibleItems()
+    {
+        if (showItems == null || showItems.Count == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < showItems.Count; i++)
+        {
+            ScrollUpdateCell(preStartIndex + i, preStartIndex);
+        }
+    }
+
+    /// <summary>
+    /// 刷新数据总数并强制更新当前显示内容，可选保持滚动位置
+    /// </summary>
+    /// <param name="newTotalCount">最新物品总数</param>
+    /// <param name="keepPosition">是否保持当前滚动位置</param>
+    public void RefreshData(int newTotalCount, bool keepPosition = true)
+    {
+        totalNum = Mathf.Max(0, newTotalCount);
+        totalRow = column > 0 ? Mathf.CeilToInt((float)totalNum / column) : 0;
+
+        if (!keepPosition)
+        {
+            preStartIndex = 0;
+            if (contentRect != null)
+            {
+                contentRect.anchoredPosition = Vector2.zero;
+            }
+        }
+        else
+        {
+            int maxStartRow = Mathf.Max(0, totalRow - row);
+            int maxStartIndex = maxStartRow * column;
+            preStartIndex = Mathf.Clamp(preStartIndex, 0, maxStartIndex);
+        }
+
+        if (contentRect != null)
+        {
+            var contentHeight = totalRow * (itemHeight + offsetY);
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, contentHeight);
+        }
+
+        UpdateScrollView(true);
+        ForceRefreshVisibleItems();
+    }
 
     /// <summary>
     /// 清空所有已创建的物品格子，并重置滚动状态

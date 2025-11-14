@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: "\u80CC\u5305"
   m_EditorClassIdentifier: 
   items:
+  - item: {fileID: 11400000, guid: 6a22f77ec7817cd4ba3b211f2bf6001d, type: 2}
+    count: 99
   - item: {fileID: 11400000, guid: 4ac96843ec622e241b25bbccd4c9d08d, type: 2}
     count: 1
   - item: {fileID: 0}
     count: 0
-  - item: {fileID: 11400000, guid: 6a22f77ec7817cd4ba3b211f2bf6001d, type: 2}
-    count: 99
   - item: {fileID: 0}
     count: 0
   - item: {fileID: 0}

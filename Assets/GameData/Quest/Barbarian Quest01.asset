@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: Barbarian Quest01
   m_EditorClassIdentifier: 
   questName: "\u6D88\u706D\u654C\u4EBA"
-  description: "\u91CE\u86EE\u4EBA\u5E0C\u671B\u6211\u4EEC\u5E2E\u4ED6\u6D88\u706D3\u8258\u666E\u901A\u8239\uFF0C\u6D88\u706D\u5B8C\u6210\u540E\u6709\u4E00\u4E9B\u5956\u52B1"
-  isStarted: 1
+  description: "\u91CE\u86EE\u4EBA\u5E0C\u671B\u6211\u4EEC\u5E2E\u4ED6\u6D88\u706D1\u4F4D\u6D41\u6D6A\u9A91\u58EB\uFF0C\u6D88\u706D\u5B8C\u6210\u540E\u6709\u4E00\u4E9B\u5956\u52B1"
+  isStarted: 0
   isCompleted: 0
   isFinished: 0
   questRequires:
-  - name: ShipNPC
+  - name: Knight
     requiteAmount: 1
     currentAmount: 0
   questRewards:
   - item: {fileID: 11400000, guid: 4ac96843ec622e241b25bbccd4c9d08d, type: 2}
     count: 1
-  - item: {fileID: 11400000, guid: 6a22f77ec7817cd4ba3b211f2bf6001d, type: 2}
-    count: 2
+  goldCoinReward: 100
+  gemstoneReward: 0

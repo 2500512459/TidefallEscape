@@ -41,13 +41,18 @@ public class QuestNameButton : MonoBehaviour
         }
 
         // 判断是否显示获取奖励按钮
-        if (currentData != null && currentData.isCompleted)
+        bool canClaimReward = currentData != null && currentData.isCompleted && !currentData.isFinished;
+        if (canClaimReward)
         {
             QuestUI.Instance.getRewardButton.questData = currentData;
             QuestUI.Instance.getRewardButton.gameObject.SetActive(true);
         }
         else
         {
+            if (QuestUI.Instance.getRewardButton != null)
+            {
+                QuestUI.Instance.getRewardButton.questData = null;
+            }
             QuestUI.Instance.getRewardButton.gameObject.SetActive(false);
         }
     }

@@ -16,6 +16,7 @@ public class DialogueUI : MonoSingleton<DialogueUI>
     public OptionUI optionPrefab;
     [Header("对话数据")]
     public DialogueDataSO currentData;
+    private DialogueController currentDialogueController; // 当前活动的对话控制器
 
     int currentIndex = 0;
 
@@ -30,17 +31,24 @@ public class DialogueUI : MonoSingleton<DialogueUI>
     {
         if (currentIndex >= currentData.dialoguePieces.Count)
         {
+            // 对话结束，关闭对话并恢复玩家控制
+            if (currentDialogueController != null)
+            {
+                currentDialogueController.CloseDialogue();
+            }
             dialoguePanel.SetActive(false);
             currentIndex = 0;
+            currentDialogueController = null;
             return;
         }
         DialoguePiece nextPiece = currentData.dialoguePieces[currentIndex];
         UpdateMainDialogue(nextPiece);
     }
-    public void UpdataDialogueData(DialogueDataSO data)
+    public void UpdataDialogueData(DialogueDataSO data, DialogueController controller = null)
     {
         currentData = data;
         currentIndex = 0;
+        currentDialogueController = controller; // 保存对话控制器引用
     }
 
     public void UpdateMainDialogue(DialoguePiece piece)
@@ -108,5 +116,19 @@ public class DialogueUI : MonoSingleton<DialogueUI>
             option.UpdateOption(piece, piece.options[i]);
         }
         
+    }
+
+    /// <summary>
+    /// 结束对话并恢复玩家控制
+    /// </summary>
+    public void EndDialogue()
+    {
+        if (currentDialogueController != null)
+        {
+            currentDialogueController.CloseDialogue();
+        }
+        dialoguePanel.SetActive(false);
+        currentIndex = 0;
+        currentDialogueController = null;
     }
 }

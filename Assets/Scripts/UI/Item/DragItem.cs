@@ -32,7 +32,7 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public void OnBeginDrag(PointerEventData eventData)
     {
         // 如果当前为商店界面，则禁止拖拽
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
         if (shopPanel != null && shopPanel.IsVisible)
             return;
 
@@ -45,7 +45,15 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         // 创建一个临时拖拽图标
         dragIcon = new GameObject("DragIcon");
-        dragIcon.transform.SetParent(UIManger.Instance.InventoryCanvas); // 放在UI根节点
+        var canvasRoot = InventoryUI.Instance != null ? InventoryUI.Instance.GetCanvasRoot() : null;
+        if (canvasRoot == null)
+        {
+            Debug.LogError("InventoryUI 实例不存在或未设置 CanvasRoot");
+            Destroy(dragIcon);
+            dragIcon = null;
+            return;
+        }
+        dragIcon.transform.SetParent(canvasRoot); // 放在UI根节点
         var img = dragIcon.AddComponent<Image>();
         img.sprite = slot.itemIcon.sprite;
         img.raycastTarget = false; // 防止挡住UI交互
@@ -60,7 +68,7 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
         if (shopPanel != null && shopPanel.IsVisible)
             return;
 
@@ -73,7 +81,7 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
         if (shopPanel != null && shopPanel.IsVisible)
             return;
 
@@ -94,7 +102,7 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     /// </summary>
     public void OnDrop(PointerEventData eventData)
     {
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
         if (shopPanel != null && shopPanel.IsVisible)
             return;
 

@@ -156,7 +156,7 @@ public class PlayerShipCtrl : MonoBehaviour
     public void TryOpenInventory(bool isOpen)
     {
         // 优先检查商店是否打开
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
         if (shopPanel != null && shopPanel.IsVisible)
         {
             highlightedShop.HideShopUI();
@@ -166,11 +166,11 @@ public class PlayerShipCtrl : MonoBehaviour
         if (isOpen)
         {
             InventoryManager.Instance.currenContext = setContext;
-            UIManger.Instance.ShowPanel<InventoryPanel>();
+            InventoryUI.Instance?.ShowPanel();
         }
         else
         {
-            UIManger.Instance.HidePanel<InventoryPanel>();
+            InventoryUI.Instance?.HidePanel();
         }
     }
 

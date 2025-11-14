@@ -14,6 +14,7 @@ public class QuestUI : MonoSingleton<QuestUI>
     public GameObject questPanel;           // 任务面板
     public ItemTooltip tooltip;             // 物品提示组件
     bool isOpen = false;                    // 面板是否打开
+    PlayerInput playerInput;
 
     [Header("Quest Name")]
     public RectTransform questListTransform;    // 任务列表容器
@@ -39,6 +40,11 @@ public class QuestUI : MonoSingleton<QuestUI>
 
     void Start()
     {
+        playerInput = PlayerInput.Instance;
+        if (playerInput != null)
+        {
+            playerInput.QuestPressedEvent += OnQuestPressed;
+        }
         questListButton.onClick.AddListener(() =>
         {
             SetupQuestList();
@@ -48,24 +54,53 @@ public class QuestUI : MonoSingleton<QuestUI>
             SetupCompleteQuestList();
         });
     }
-    /// <summary>
-    /// 处理任务面板的打开和关闭
-    /// </summary>
-    void Update()
-    {
-        // 按Q键切换任务面板显示状态
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            isOpen = !isOpen;
-            questPanel.SetActive(isOpen);
-            questContentText.text = "";
-            // 显示面板内容
-            SetupQuestList();
 
-            // 关闭面板时隐藏提示
-            if(!isOpen)
-                tooltip.gameObject.SetActive(false);
+    void OnDestroy()
+    {
+        if (playerInput != null)
+        {
+            playerInput.QuestPressedEvent -= OnQuestPressed;
         }
+    }
+    void OnQuestPressed()
+    {
+        if (isOpen)
+        {
+            CloseQuestPanel();
+        }
+        else
+        {
+            OpenQuestPanel();
+        }
+    }
+
+    void OpenQuestPanel()
+    {
+        isOpen = true;
+        questPanel.SetActive(true);
+        questContentText.text = "";
+        SetupQuestList();
+        playerInput?.DisableMovementAndLook(disableInteractionInput: true);
+        if (playerInput != null)
+        {
+            playerInput.playerInputAction.Control.Fire.Disable();
+        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    void CloseQuestPanel()
+    {
+        isOpen = false;
+        questPanel.SetActive(false);
+        tooltip.gameObject.SetActive(false);
+        playerInput?.EnableMovementAndLook(enableInteractionInput: true);
+        if (playerInput != null)
+        {
+            playerInput.playerInputAction.Control.Fire.Enable();
+        }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     /// <summary>
@@ -123,7 +158,6 @@ public class QuestUI : MonoSingleton<QuestUI>
         {
             var newTask = Instantiate(questNameButton, questListTransform);
             newTask.SetupNameButton(task.questData);
-            newTask.DestroyListener();
         }
     }
     /// <summary>
@@ -141,11 +175,36 @@ public class QuestUI : MonoSingleton<QuestUI>
             Destroy(item.gameObject);
         }
 
+        // 在展示前刷新一次收集类需求的当前数量（基于背包/仓库实际物品）
+        var inventoryManager = InventoryManager.Instance;
+        if (inventoryManager != null)
+        {
+            bool progressUpdated = false;
+            foreach (var require in questData.questRequires)
+            {
+                int actualCount = inventoryManager.GetQuestItemCount(require.name);
+                if (actualCount > 0)
+                {
+                    int clampedAmount = Mathf.Min(actualCount, require.requiteAmount);
+                    if (require.currentAmount != clampedAmount)
+                    {
+                        require.currentAmount = clampedAmount;
+                        progressUpdated = true;
+                    }
+                }
+            }
+            if (progressUpdated)
+            {
+                questData.CheckQuestProgress();
+            }
+        }
+
         // 根据任务要求创建列表项
+        bool showCurrentProgress = !questData.isFinished;
         foreach (var require in questData.questRequires)
         {
             var newRequire = Instantiate(requirement, requireTransform);
-            newRequire.SetupRequirement(require.name, require.requiteAmount, require.currentAmount);
+            newRequire.SetupRequirement(require.name, require.requiteAmount, require.currentAmount, showCurrentProgress);
         }
     }
 

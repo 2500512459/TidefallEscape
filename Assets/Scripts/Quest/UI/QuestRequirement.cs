@@ -26,9 +26,16 @@ public class QuestRequirement : MonoBehaviour
     /// <param name="name">要求名称</param>
     /// <param name="requireAmount">需要完成的数量</param>
     /// <param name="currentAmount">当前已完成的数量</param>
-    public void SetupRequirement(string name, int requireAmount, int currentAmount)
+    public void SetupRequirement(string name, int requireAmount, int currentAmount, bool showCurrentProgress = true)
     {
         requireName.text = name;
-        requireNumber.text = currentAmount.ToString() + " / " + requireAmount.ToString();
+        if (showCurrentProgress)
+        {
+            requireNumber.text = currentAmount.ToString() + " / " + requireAmount.ToString();
+        }
+        else
+        {
+            requireNumber.text = requireAmount.ToString();
+        }
     }
 }

@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
+    public event Action<CameraMode> CameraModeChanged;
+
     public Transform orientation;   // 移动方向
 
     [Header("摄像机模式")]
@@ -31,11 +34,19 @@ public class PlayerCamera : MonoBehaviour
     private float yRotation;
     private Vector3 offset;
     private Coroutine transitionCoroutine;
+    private Camera cachedCamera;
+
+    public Camera UnityCamera => cachedCamera != null ? cachedCamera : Camera.main;
     
     public enum CameraMode
     {
         FirstPerson,
         ThirdPerson
+    }
+
+    void Awake()
+    {
+        cachedCamera = GetComponent<Camera>();
     }
 
     void Start()
@@ -45,6 +56,7 @@ public class PlayerCamera : MonoBehaviour
 
         cameraMode = CameraMode.FirstPerson;
         InitializeCameraPosition();
+        CameraModeChanged?.Invoke(cameraMode);
     }
 
     void Update()
@@ -174,6 +186,7 @@ public class PlayerCamera : MonoBehaviour
         // 更新摄像机模式
         cameraMode = targetMode;
         IsTransitioning = false;
+        CameraModeChanged?.Invoke(cameraMode);
     }
 
     private Vector3 GetTargetCameraPosition(CameraMode targetMode)

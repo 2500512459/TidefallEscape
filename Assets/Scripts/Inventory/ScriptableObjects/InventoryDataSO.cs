@@ -62,9 +62,9 @@ public class InventoryDataSO : ScriptableObject
     }
 
     /// <summary>
-    /// 从指定位置移除物品
+    /// 从指定位置移除物品, 丢弃、使用物品时
     /// </summary>
-    public void RemoveItem(int index, int count, InventoryType type)
+    public void RemoveItem(int index, int count)
     {
         if (index < 0 || index >= items.Count) return;
 
@@ -74,6 +74,7 @@ public class InventoryDataSO : ScriptableObject
         if (stack.count <= 0)
             items.RemoveAt(index);
 
+        QuestManager.Instance.UpdateQuestProgress(stack.item.itemName, -count);     // 更新任务物品数量
         InventoryManager.Instance.OnInventoryChanged(type);
     }
 

@@ -6,11 +6,11 @@ public class ItemDataSO : ScriptableObject
     public string itemID;
     public string itemName;
     public Sprite icon;
-    public ItemType type;           //���ͣ�����������Ʒ��
-    public ItemRarity rarity;       //ϡ�ж�
-    public int maxStack = 99;       //��������
+    public ItemType type;           //类型
+    public ItemRarity rarity;       //稀有度
+    public int maxStack = 99;       //最大堆叠数
     public GameObject worldPrefab;
 
     [TextArea]
-    public string description;      //������Ϣ
+    public string description;      // 描述信息
 }

@@ -6,15 +6,15 @@ public class ItemComparer : IComparer<ItemStack>
 {
     public int Compare(ItemStack a, ItemStack b)
     {
-        // ¿Õ¸ñ×Ó·Å×îºó
+        // ç©ºç‰©å“
         bool aEmpty = (a == null || a.item == null);
         bool bEmpty = (b == null || b.item == null);
 
-        if (aEmpty && bEmpty) return 0;   // ¶¼¿Õ -> ÏàµÈ
-        if (aEmpty) return 1;             // a¿Õ -> ·ÅºóÃæ
-        if (bEmpty) return -1;            // b¿Õ -> ·ÅÇ°Ãæ
+        if (aEmpty && bEmpty) return 0;   // ç©ºç‰©å“ -> ç©ºç‰©å“
+        if (aEmpty) return 1;             // aç©ºç‰©å“ -> å½“å‰ç‰©å“
+        if (bEmpty) return -1;            // bç©ºç‰©å“ -> å½“å‰ç‰©å“
 
-        // ¶¼ÓĞÎïÆ·Ê±£¬°´ itemID ÅÅĞò
+        // æ¯”è¾ƒç‰©å“ID
         return string.Compare(a.item.itemID, b.item.itemID, System.StringComparison.Ordinal);
 
 

@@ -61,7 +61,8 @@ public class OptionUI : MonoBehaviour
 
         if (nextPieceID == "")
         {
-            DialogueUI.Instance.dialoguePanel.SetActive(false);
+            // 对话结束，通过DialogueUI关闭对话并恢复玩家控制
+            DialogueUI.Instance.EndDialogue();
             return;
         }
         else

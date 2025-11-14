@@ -85,15 +85,31 @@ public class ShopShip : AICharacter
     #region 交互UI
     public void ShowShopUI()
     {
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
-        if (shopPanel.IsVisible == false)
-            UIManger.Instance.ShowPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
+        if (shopPanel == null)
+        {
+            Debug.LogError("ShopUI 实例不存在");
+            return;
+        }
+
+        if (!shopPanel.IsVisible)
+        {
+            shopPanel.ShowPanel();
+        }
     }
     public void HideShopUI()
     {
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
+        var shopPanel = ShopUI.Instance;
+        if (shopPanel == null)
+        {
+            Debug.LogError("ShopUI 实例不存在");
+            return;
+        }
+
         if (shopPanel.IsVisible)
-            UIManger.Instance.HidePanel<ShopPanel>();
+        {
+            shopPanel.HidePanel();
+        }
     }
     public void ShowHint()
     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 public class PlayerCtrl : MonoBehaviour
 {
+    public InventoryContext setContext = InventoryContext.Default;  // 当前场景上下文
     [Header("移动参数")]
     private float moveSpeed = 7f;
     public float walkSpeed = 7f;
@@ -53,6 +54,8 @@ public class PlayerCtrl : MonoBehaviour
     // 当前可交互的物体
     private List<IInteractable> interactables = new List<IInteractable>();
     private IInteractable currentInteractTarget;
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -74,8 +77,11 @@ public class PlayerCtrl : MonoBehaviour
         trigger.radius = 0.5f;
         trigger.enabled = true;
 
-
+        // 注册输入事件
         PlayerInput.Instance.OnInteractionEvent += HandleInteract;
+        PlayerInput.Instance.OpenInventoryEvent += TryOpenInventory;
+        
+        EventManager.Listen<CharacterDeathMessage>(this, OnCharacterDeath);
     }
 
     private void OnDisable()
@@ -83,6 +89,8 @@ public class PlayerCtrl : MonoBehaviour
         // 禁用时移除或关闭触发器
         if (trigger != null)
             trigger.enabled = false;
+
+        EventManager.Unlisten<CharacterDeathMessage>(this);
     }
     void Start()
     {
@@ -100,9 +108,10 @@ public class PlayerCtrl : MonoBehaviour
         StateHandler();
         HandleCombatInput();
         //HandleInteract();
-        if (playerInput.Jump && readyToJump && isGround)
+        if (playerInput.Jump && readyToJump && isGround && player.CanUseVitality)
         {
             readyToJump = false;
+            player.ConsumeVitality(15f); // 跳跃消耗体力
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         }
@@ -110,13 +119,13 @@ public class PlayerCtrl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && !PlayerCamera.IsTransitioning)
             PlayerCamera.SwitchCamera();
 
-        // 更新最近目标
+        // 更新最近交互目标
         UpdateClosestInteractable(); 
     }
 
     private void HandleCombatInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (playerInput.Fire)
         {
             if (weaponState == WeaponState.Sheathed)
                 weaponState = WeaponState.Drawing;
@@ -158,17 +167,45 @@ public class PlayerCtrl : MonoBehaviour
         if (isSwimming)
         {
             state = MovementState.swimming;
-            moveSpeed = swimmingSpeed;
+
+            if (player.CanUseVitality)
+            {
+                player.ConsumeVitality(30f * Time.deltaTime);
+                moveSpeed = swimmingSpeed;
+            }
+            else
+            {
+                moveSpeed = swimmingSpeed * 0.5f;
+            }
         }
         else if (isClimbing)
         {
             state = MovementState.climbing;
-            moveSpeed = climbSpeed;
+
+            if (player.CanUseVitality)
+            {
+                player.ConsumeVitality(30f * Time.deltaTime);
+                moveSpeed = climbSpeed;
+            }
+            else
+            {
+                moveSpeed = 0f;
+                rb.velocity = Vector3.zero; // 无体力时停止攀爬
+            }
         }
         else if (isGround && playerInput.Sprint)
         {
-            state = MovementState.sprinting;
-            moveSpeed = sprintSpeed;
+            if (player.CanUseVitality)
+            {
+                state = MovementState.sprinting;
+                player.ConsumeVitality(30f * Time.deltaTime);
+                moveSpeed = sprintSpeed;
+            }
+            else
+            {
+                state = MovementState.walking;
+                moveSpeed = walkSpeed;
+            }
         }
         else if (isGround)
         {
@@ -178,6 +215,12 @@ public class PlayerCtrl : MonoBehaviour
         else
         {
             state = MovementState.air;
+        }
+
+        // 如果没在使用体力的状态，则自动恢复体力
+        if (state == MovementState.walking)
+        {
+            player.RecoverVitality(player.vitalityRecoveryRate * Time.deltaTime);
         }
     }
 
@@ -367,6 +410,9 @@ public class PlayerCtrl : MonoBehaviour
 
     private void UpdateClosestInteractable()
     {
+        // 清理已被销毁的对象
+        interactables.RemoveAll(i => i == null || i.Transform == null);
+
         if (interactables.Count == 0)
         {
             if (currentInteractTarget != null)
@@ -377,10 +423,22 @@ public class PlayerCtrl : MonoBehaviour
             return;
         }
 
-        // 选取最近的可交互对象
-        IInteractable closest = interactables
-            .OrderBy(i => Vector3.Distance(transform.position, i.Transform.position))
-            .FirstOrDefault();
+        // 查找最近的交互对象
+        IInteractable closest = null;
+        float closestDistance = float.MaxValue;
+        Vector3 playerPos = transform.position;
+
+        foreach (var i in interactables)
+        {
+            if (i == null || i.Transform == null) continue;
+
+            float distance = Vector3.Distance(playerPos, i.Transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closest = i;
+            }
+        }
 
         // 如果目标变化了，更新焦点
         if (closest != currentInteractTarget)
@@ -389,7 +447,33 @@ public class PlayerCtrl : MonoBehaviour
                 currentInteractTarget.OnLoseFocus(player);
 
             currentInteractTarget = closest;
-            currentInteractTarget.OnFocus(player);
+
+            if (currentInteractTarget != null)
+                currentInteractTarget.OnFocus(player);
+        }
+    }
+    private void OnCharacterDeath(CharacterDeathMessage msg)
+    {
+        if (msg.DeadCharacter == null)
+            return;
+
+        // 找到死亡对象对应的交互对象（如果有）
+        var toRemove = interactables
+            .FirstOrDefault(i =>
+                i != null &&
+                i.Transform != null &&
+                i.Transform.root == msg.DeadCharacter.transform.root
+            );
+
+        if (toRemove != null)
+        {
+            interactables.Remove(toRemove);
+
+            if (currentInteractTarget == toRemove)
+            {
+                currentInteractTarget.OnLoseFocus(player);
+                currentInteractTarget = null;
+            }
         }
     }
     // ===================== Trigger 检测 =====================
@@ -409,6 +493,26 @@ public class PlayerCtrl : MonoBehaviour
             interactable.OnLoseFocus(player);
             if (currentInteractTarget == interactable)
                 currentInteractTarget = null;
+        }
+    }
+
+    // ===================== Tab键 打开/关闭背包 =====================
+    public void TryOpenInventory(bool isOpen)
+    {
+        if (isOpen)
+        {
+            InventoryManager.Instance.currenContext = setContext;
+            InventoryUI.Instance?.ShowPanel();
+            playerInput.DisableAllInputsExcept(playerInput.playerInputAction.Control.OpenInventory);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            InventoryUI.Instance?.HidePanel();
+            playerInput.EnableAllInputs();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }

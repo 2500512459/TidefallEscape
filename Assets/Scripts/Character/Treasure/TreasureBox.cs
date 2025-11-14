@@ -92,7 +92,7 @@ public class TreasureBox : Character
             // 打开Loot界面
             InventoryManager.Instance.currenContext = InventoryContext.Looting;
             InventoryManager.Instance.OnInventoryChanged(InventoryType.Loot);
-            UIManger.Instance.ShowPanel<InventoryPanel>();
+            InventoryUI.Instance?.ShowPanel();
         }
     }
     // ===================== 生成掉落物 =====================

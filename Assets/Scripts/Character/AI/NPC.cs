@@ -22,6 +22,7 @@ public class NPC : Character
     public Rig lookRig;                        // 子物体下的Rig
     public float rigLerpSpeed = 3f;            // 平滑过渡速度
 
+    [SerializeField] private BaseInteractable interactable;
     private Transform player;
     private bool playerInSight = false;
 
@@ -96,6 +97,8 @@ public class NPC : Character
         {
             animationController.PlayDeath();
             healthBar.gameObject.SetActive(false);
+            if (interactable != null)
+                interactable.OnLoseFocus(this);
         }
     }
 
@@ -118,7 +121,7 @@ public class NPC : Character
             material.SetFloat("_DissolveAmount", dissolveAmount);
             yield return null;
         }
-        material.SetFloat("_DissolveAmount", 0);
+        material.SetFloat("_DissolveAmount", 0f);
         Destroy(gameObject);
     }
 

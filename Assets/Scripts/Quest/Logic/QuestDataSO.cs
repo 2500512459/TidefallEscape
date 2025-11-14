@@ -30,6 +30,9 @@ public class QuestDataSO : ScriptableObject
 
     public List<QuestRequire> questRequires = new List<QuestRequire>();   // 任务要求列表
     public List<ItemStack> questRewards = new List<ItemStack>();          // 任务奖励列表
+    [Header("金钱奖励")]
+    public int goldCoinReward;                                            // 金币奖励数量
+    public int gemstoneReward;                                            // 宝石奖励数量
 
     /// <summary>
     /// 检查任务进度，判断任务是否已完成

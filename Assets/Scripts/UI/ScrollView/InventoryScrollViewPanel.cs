@@ -24,12 +24,14 @@ public class InventoryScrollViewPanel : ScrollViewPanel
     protected override void Start()
     {
         base.Start();
-        
-        loopScrollView.InitXScrollView(InventoryData.maxCount);
-        loopScrollView.AddUpdateCellAction(OnUpdateScrollItemAction);
-        loopScrollView.AddCellClickAction(OnClickScrollItemAction);
+        InventoryManager.Instance.OnInventoryChangedEvent += OnInventoryChanged;
+        SetupScrollView();
     }
-
+    private void OnDestroy()
+    {
+        if (InventoryManager.Instance != null)
+            InventoryManager.Instance.OnInventoryChangedEvent -= OnInventoryChanged;
+    }
     /// <summary>
     /// 更新选中信息
     /// </summary>
@@ -91,5 +93,35 @@ public class InventoryScrollViewPanel : ScrollViewPanel
         UpdateSelectItemInfo();
         loopScrollView.UpdateScrollView(true);
 
+    }
+
+    /// <summary>
+    /// 整理物品后刷新显示，重置选中状态并强制更新滚动视图
+    /// </summary>
+    public void RefreshAfterSort()
+    {
+        curSelectIndex = -1;
+        if (InfoNode != null)
+            InfoNode.SetActive(false);
+
+        if (loopScrollView != null)
+        {
+            loopScrollView.RefreshData(InventoryData.items.Count);
+        }
+    }
+
+    void SetupScrollView()
+    {
+        if (loopScrollView == null || InventoryData == null) return;
+
+        loopScrollView.InitXScrollView(InventoryData.maxCount);
+        loopScrollView.AddUpdateCellAction(OnUpdateScrollItemAction);
+        loopScrollView.AddCellClickAction(OnClickScrollItemAction);
+        loopScrollView.UpdateScrollView(true);
+    }
+    private void OnInventoryChanged(InventoryType type)
+    {
+        if (type != this.type) return; // 只刷新自己对应的类型
+        RefreshAfterSort();
     }
 }

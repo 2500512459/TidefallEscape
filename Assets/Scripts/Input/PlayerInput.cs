@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoSingleton<PlayerInput>
 {
-    private PlayerInputAction playerInputAction;
+    public PlayerInputAction playerInputAction;
 
     // ======================
     // 输入状态属性
@@ -20,14 +21,14 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     public bool StopJump => playerInputAction.Control.Jump.WasReleasedThisFrame();
 
     public bool Sprint => playerInputAction.Control.BoostMove.IsPressed();
-    public bool Fire => playerInputAction.Control.Fire.IsPressed();
+    public bool Fire => playerInputAction.Control.Fire.WasReleasedThisFrame();
 
     public bool Weapon1Pressed => playerInputAction.Control.Weapon.WasPressedThisFrame();
     public bool RotatePressed => playerInputAction.Control.Rotate.IsPressed();
 
     // UI 输入
     public bool InventoryPressed => playerInputAction.Control.OpenInventory.WasPressedThisFrame();
-
+    public bool QuestPressed => playerInputAction.Control.Quest.WasPressedThisFrame();
     // 事件输入
     //public bool OpenEvent => playerInputAction.Control.OpenEvent.WasPressedThisFrame();
     //public bool InteractionEvent => playerInputAction.Control.InteractionEvent.WasPressedThisFrame();
@@ -45,6 +46,7 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     // ======================
     public event Action<bool> OpenInventoryEvent;
     public event Action LootPressedEvent;
+    public event Action QuestPressedEvent;
     //public event Action OnBoardShipEvent;
     //public event Action OnDriveBoatEvent;
     public event Action OnInteractionEvent;
@@ -61,6 +63,7 @@ public class PlayerInput : MonoSingleton<PlayerInput>
         //playerInputAction.Control.InteractionEvent.performed += OnBoardShip;    // 上船E
         //playerInputAction.Control.InteractionEvent.performed += OnDriveBoat;    // 驾驶船E
         playerInputAction.Control.Weapon.performed += OnIsAttackedInput;
+        playerInputAction.Control.Quest.performed += OnQuestInput;
     }
 
     void OnDestroy()
@@ -71,13 +74,15 @@ public class PlayerInput : MonoSingleton<PlayerInput>
         //playerInputAction.Control.InteractionEvent.performed -= OnBoardShip;
         //playerInputAction.Control.InteractionEvent.performed -= OnDriveBoat;
         playerInputAction.Control.Weapon.performed -= OnIsAttackedInput;
+        playerInputAction.Control.Quest.performed -= OnQuestInput;
     }
 
     void OnInventoryInput(InputAction.CallbackContext context)
     {
         // 防止商店打开时切换背包
-        var shopPanel = UIManger.Instance.GetPanel<ShopPanel>();
-        if (shopPanel != null && !shopPanel.IsVisible)
+        var shopPanel = ShopUI.Instance;
+        Debug.Log("shopPanel: " + shopPanel.IsVisible);
+        if (shopPanel == null || !shopPanel.IsVisible)
         {
             isInventoryOpen = !isInventoryOpen;
             isLootOpen = isInventoryOpen;
@@ -94,6 +99,10 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     void OnInteraction(InputAction.CallbackContext context)
     {
         OnInteractionEvent?.Invoke();
+    }
+    void OnQuestInput(InputAction.CallbackContext context)
+    {
+        QuestPressedEvent?.Invoke();
     }
     // void OnBoardShip(InputAction.CallbackContext context)
     // {
@@ -135,15 +144,146 @@ public class PlayerInput : MonoSingleton<PlayerInput>
         Cursor.visible = true;
     }
 
-    public void DisableMovementAndLook()
+    public void DisableMovementAndLook(bool disableQuestInput = false, bool disableInteractionInput = false)
     {
         playerInputAction.Control.Move.Disable();
         playerInputAction.Control.Look.Disable();
+        if (disableQuestInput)
+        {
+            playerInputAction.Control.Quest.Disable();
+        }
+        if (disableInteractionInput)
+        {
+            playerInputAction.Control.InteractionEvent.Disable();
+        }
     }
     
-    public void EnableMovementAndLook()
+    public void EnableMovementAndLook(bool enableQuestInput = false, bool enableInteractionInput = false)
     {
         playerInputAction.Control.Move.Enable();
         playerInputAction.Control.Look.Enable();
+        if (enableQuestInput)
+        {
+            playerInputAction.Control.Quest.Enable();
+        }
+        if (enableInteractionInput)
+        {
+            playerInputAction.Control.InteractionEvent.Enable();
+        }
+    }
+
+
+    /// <summary>
+    /// 禁用除指定按键之外的所有输入动作。
+    /// </summary>
+    /// <param name="allowedActions">允许继续启用的输入动作集合。</param>
+    public void DisableAllInputsExcept(params InputAction[] allowedActions)
+    {
+        if (playerInputAction == null || playerInputAction.asset == null)
+        {
+            Debug.LogWarning("PlayerInputAction 未初始化，无法禁用输入。");
+            return;
+        }
+
+        var allowedSet = new HashSet<InputAction>();
+        if (allowedActions != null)
+        {
+            foreach (var action in allowedActions)
+            {
+                if (action != null)
+                {
+                    allowedSet.Add(action);
+                }
+            }
+        }
+
+        foreach (var actionMap in playerInputAction.asset.actionMaps)
+        {
+            foreach (var action in actionMap.actions)
+            {
+                if (allowedSet.Contains(action))
+                {
+                    if (!action.enabled)
+                    {
+                        action.Enable();
+                    }
+                }
+                else
+                {
+                    if (action.enabled)
+                    {
+                        action.Disable();
+                    }
+                }
+            }
+        }
+    }
+    /// <summary>
+    /// 恢复所有输入动作为启用状态。
+    /// </summary>
+    public void EnableAllInputs()
+    {
+        if (playerInputAction == null || playerInputAction.asset == null)
+        {
+            Debug.LogWarning("PlayerInputAction 未初始化，无法启用输入。");
+            return;
+        }
+
+        foreach (var actionMap in playerInputAction.asset.actionMaps)
+        {
+            foreach (var action in actionMap.actions)
+            {
+                if (!action.enabled)
+                {
+                    action.Enable();
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 启用所有输入动作，除指定输入外维持禁用状态。
+    /// </summary>
+    /// <param name="excludedActions">需要保持禁用的输入动作。</param>
+    public void EnableAllInputsExcept(params InputAction[] excludedActions)
+    {
+        if (playerInputAction == null || playerInputAction.asset == null)
+        {
+            Debug.LogWarning("PlayerInputAction 未初始化，无法启用输入。");
+            return;
+        }
+
+        var excludedSet = new HashSet<InputAction>();
+        if (excludedActions != null)
+        {
+            foreach (var action in excludedActions)
+            {
+                if (action != null)
+                {
+                    excludedSet.Add(action);
+                }
+            }
+        }
+
+        foreach (var actionMap in playerInputAction.asset.actionMaps)
+        {
+            foreach (var action in actionMap.actions)
+            {
+                if (excludedSet.Contains(action))
+                {
+                    if (action.enabled)
+                    {
+                        action.Disable();
+                    }
+                }
+                else
+                {
+                    if (!action.enabled)
+                    {
+                        action.Enable();
+                    }
+                }
+            }
+        }
     }
 }

@@ -65,16 +65,36 @@ public class Character : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
+        if (isDead) return;
+
         // 获取当前角色的属性模块中的生命值属性
         Attribute hp = attributesModule.attributes[AttributeType.Hp];
 
         float hpValue = hp.Value;
         hpValue -= damage;
+        hpValue = Mathf.Max(0, hpValue);
         attributesModule.SetAttributeValue(AttributeType.Hp, hpValue);
         if (hpValue <= 0)
         {
-            // TODO: 角色死亡
-            isDead = true;
+            Die();
         }
+    }
+
+    protected virtual void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+        QuestManager.Instance.UpdateQuestProgress(name, 1);
+        Debug.Log("角色死亡:" + name);
+        EventManager.Raise(new CharacterDeathMessage(this));
+    }
+    public virtual void TakeManaPoints(float manaPoints)
+    {
+        Attribute mp = attributesModule.attributes[AttributeType.MP];
+        
+        float mpValue = mp.Value;
+        mpValue -= manaPoints;
+        attributesModule.SetAttributeValue(AttributeType.MP, mpValue);
     }
 }

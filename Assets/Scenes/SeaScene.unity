@@ -12116,7 +12116,7 @@ GameObject:
   - component: {fileID: 936453050}
   - component: {fileID: 936453051}
   m_Layer: 5
-  m_Name: ShopPanel
+  m_Name: ShopUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17880,7 +17880,7 @@ GameObject:
   - component: {fileID: 1791676144}
   - component: {fileID: 1791676147}
   m_Layer: 5
-  m_Name: InventoryPanel
+  m_Name: InventoryUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18521,7 +18521,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1791676147}
-        m_TargetAssemblyTypeName: InventoryPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: InventoryUI, Assembly-CSharp
         m_MethodName: OnSortBackpackButtonClicked
         m_Mode: 1
         m_Arguments:

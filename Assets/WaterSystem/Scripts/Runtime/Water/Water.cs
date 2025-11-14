@@ -15,11 +15,6 @@ public partial class Water : MonoBehaviour
             if (instance == null)
             {
                 instance = FindObjectOfType<Water>();
-
-                if (instance == null)
-                {
-                    Debug.Log("Water is not exist!");
-                }
             }
             return instance;
         }

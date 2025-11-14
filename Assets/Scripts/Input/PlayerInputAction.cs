@@ -116,6 +116,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quest"",
+                    ""type"": ""Button"",
+                    ""id"": ""a24421b2-2549-4160-804a-08d9100e9569"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -272,6 +281,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""InteractionEvent"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""190cd949-06d2-4a0c-826e-c4f0ed5b4127"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quest"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -290,6 +310,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Control_Weapon = m_Control.FindAction("Weapon", throwIfNotFound: true);
         m_Control_Jump = m_Control.FindAction("Jump", throwIfNotFound: true);
         m_Control_InteractionEvent = m_Control.FindAction("InteractionEvent", throwIfNotFound: true);
+        m_Control_Quest = m_Control.FindAction("Quest", throwIfNotFound: true);
     }
 
     ~@PlayerInputAction()
@@ -366,6 +387,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Control_Weapon;
     private readonly InputAction m_Control_Jump;
     private readonly InputAction m_Control_InteractionEvent;
+    private readonly InputAction m_Control_Quest;
     public struct ControlActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -380,6 +402,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Weapon => m_Wrapper.m_Control_Weapon;
         public InputAction @Jump => m_Wrapper.m_Control_Jump;
         public InputAction @InteractionEvent => m_Wrapper.m_Control_InteractionEvent;
+        public InputAction @Quest => m_Wrapper.m_Control_Quest;
         public InputActionMap Get() { return m_Wrapper.m_Control; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -419,6 +442,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @InteractionEvent.started += instance.OnInteractionEvent;
             @InteractionEvent.performed += instance.OnInteractionEvent;
             @InteractionEvent.canceled += instance.OnInteractionEvent;
+            @Quest.started += instance.OnQuest;
+            @Quest.performed += instance.OnQuest;
+            @Quest.canceled += instance.OnQuest;
         }
 
         private void UnregisterCallbacks(IControlActions instance)
@@ -453,6 +479,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @InteractionEvent.started -= instance.OnInteractionEvent;
             @InteractionEvent.performed -= instance.OnInteractionEvent;
             @InteractionEvent.canceled -= instance.OnInteractionEvent;
+            @Quest.started -= instance.OnQuest;
+            @Quest.performed -= instance.OnQuest;
+            @Quest.canceled -= instance.OnQuest;
         }
 
         public void RemoveCallbacks(IControlActions instance)
@@ -482,5 +511,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnWeapon(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnInteractionEvent(InputAction.CallbackContext context);
+        void OnQuest(InputAction.CallbackContext context);
     }
 }

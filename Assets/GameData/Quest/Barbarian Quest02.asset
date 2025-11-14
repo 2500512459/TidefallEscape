@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64e56353f7e75c3498827a07073025ba, type: 3}
   m_Name: Barbarian Quest02
   m_EditorClassIdentifier: 
-  questName: "\u62FE\u53D6\u5B9D\u7BB1"
-  description: "\u91CE\u86EE\u4EBA\u5E0C\u671B\u6211\u4EEC\u5E2E\u4ED6\u62FE\u53D6\u6D77\u9762\u4E0A\u76843\u4E2A\u5B9D\u7BB1\uFF0C\u5B8C\u6210\u540E\u6709\u4E00\u4E9B\u5956\u52B1"
-  isStarted: 1
+  questName: "\u63D0\u4EA4\u5B9D\u5251"
+  description: "\u91CE\u86EE\u4EBA\u5E0C\u671B\u6211\u4EEC\u5E2E\u4ED6\u627E\u56DE\u5B83\u7684\u4E00\u628A\u5B9D\u5251\uFF0C\u6253\u5F00\u5B9D\u7BB1\u6709\u4E00\u5B9A\u6982\u7387\u6389\u843D\u5B9D\u5251\uFF0C\u5B8C\u6210\u540E\u6709\u4E00\u4E9B\u5956\u52B1"
+  isStarted: 0
   isCompleted: 0
   isFinished: 0
   questRequires:
-  - name: TreasureBox
-    requiteAmount: 3
+  - name: "\u5251"
+    requiteAmount: 1
     currentAmount: 0
   questRewards:
   - item: {fileID: 11400000, guid: 5cec9252918e04747b9d54e835876c92, type: 2}
     count: 1
+  goldCoinReward: 100
+  gemstoneReward: 0

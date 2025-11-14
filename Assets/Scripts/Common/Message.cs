@@ -25,6 +25,15 @@ public class DamageMessage
         Target = am;
     }
 }
+public class CharacterDeathMessage
+{
+    public Character DeadCharacter { get; }
+
+    public CharacterDeathMessage(Character deadCharacter)
+    {
+        DeadCharacter = deadCharacter;
+    }
+}
 public class AttributeChangeMessage
 {
     public AttributeType AT { get; }
@@ -33,5 +42,17 @@ public class AttributeChangeMessage
     {
         AT = at;
         Target = am;
+    }
+}
+
+public class CurrencyAmountChangeMessage
+{
+    public int GoldCoinAmount { get; }
+    public int GemstoneAmount { get; }
+
+    public CurrencyAmountChangeMessage(int goldCoinAmount, int gemstoneAmount)
+    {
+        GoldCoinAmount = goldCoinAmount;
+        GemstoneAmount = gemstoneAmount;
     }
 }
