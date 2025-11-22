@@ -8,6 +8,8 @@ public class GamePanel : MonoSingleton<GamePanel>
 {
     [SerializeField] private CurrencyDataSO currencyData;
 
+    public CurrencyDataSO CurrencyData => currencyData;
+
     private int goldCoinAmount = 0;
     private int gemstoneAmount = 0;
 

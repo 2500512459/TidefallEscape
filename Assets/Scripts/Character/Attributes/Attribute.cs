@@ -49,5 +49,12 @@ public class Attribute
             //Debug.Log("Attribute Change : " + Type.ToString() + Value.ToString());
         }
     }
+
+    public void SetRange(float minValue, float maxValue)
+    {
+        MinValue = minValue;
+        MaxValue = maxValue;
+        UpdateValue(Value);
+    }
 }
 

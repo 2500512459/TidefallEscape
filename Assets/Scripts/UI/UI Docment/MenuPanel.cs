@@ -24,6 +24,13 @@ public class MenuPanel : MonoBehaviour
 
     private void OnNewGameButtonClicked()
     {
-        SceneLoadManager.Instance.SwitchToHome();
+        if (LoadManager.Instance != null)
+        {
+            LoadManager.Instance.LoadScene("HomeScene");
+        }
+        else
+        {
+            Debug.LogError("LoadManager实例不存在，无法加载场景！");
+        }
     }
 }

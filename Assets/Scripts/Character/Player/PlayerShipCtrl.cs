@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -20,6 +21,7 @@ public class PlayerShipCtrl : MonoBehaviour
     private float force = 0f;                                   // 当前施加动力
 
     private bool isBoosting = false;                            // 是否加速
+    private bool isDriving = false;                        // 是否正在驾驶
 
     private Rigidbody rigidbodyComponent;
 
@@ -33,8 +35,9 @@ public class PlayerShipCtrl : MonoBehaviour
     private ShopShip highlightedShop;
     private SphereCollider trigger;
     private GameObject currentPlayer;   // 当前玩家
-    [SerializeField] private GameObject SailModel;
-    [SerializeField] public Transform SailPos;
+    [SerializeField] private GameObject DrivingModel;
+    [SerializeField] public Transform DrivingPos;
+    [SerializeField] private Transform CameraPos;
 
     private void Awake()
     {
@@ -43,9 +46,12 @@ public class PlayerShipCtrl : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerCamera.target = SailPos;
+        PlayerCamera.target = CameraPos;
         if(PlayerCamera.cameraMode != PlayerCamera.CameraMode.ThirdPerson)
             PlayerCamera.SwitchCamera();
+        
+        // 设置开船状态
+        PlayerCamera.isSailing = true;
 
         // 启用时添加触发器
         if (trigger == null)
@@ -60,15 +66,26 @@ public class PlayerShipCtrl : MonoBehaviour
         trigger.enabled = true;
 
         // 注册输入事件
+        PlayerInput.Instance.OnInteractionEvent += HandleInteract;
         PlayerInput.Instance.OpenInventoryEvent += TryOpenInventory;
         PlayerInput.Instance.LootPressedEvent += TryOpenTreasureBox;
     }
 
+
     private void OnDisable()
     {
+        // 设置开船状态为false
+        PlayerCamera.isSailing = false;
+        
         // 禁用时移除或关闭触发器
         if (trigger != null)
             trigger.enabled = false;
+        if (PlayerInput.Instance != null)
+        {
+            PlayerInput.Instance.OnInteractionEvent -= HandleInteract;
+            PlayerInput.Instance.OpenInventoryEvent -= TryOpenInventory;
+            PlayerInput.Instance.LootPressedEvent -= TryOpenTreasureBox;
+        }
     }
 
     private void FixedUpdate()
@@ -112,44 +129,54 @@ public class PlayerShipCtrl : MonoBehaviour
             // 检测最近交互对象
             UpdateNearestTreasure();
             UpdateNearestShop();
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                ExitControl();
-                InteractHintUI.Instance.HideHint();
-            }
         }
+    }
+    
+    private void HandleInteract()
+    {
+        ExitControl();
     }
     public void EnterControl(GameObject player)
     {
         currentPlayer = player;
         // 可在这里启用驾驶UI等
         InteractHintUI.Instance.ShowHint("停止驾驶", "E");
+        isDriving = true;
     }
     public void ExitControl()
     {
+        if (!isDriving)
+            return;
+        isDriving = false;
         // 禁用自己（关闭船控制）
         enabled = false;
-        var weaponInDicator = transform.parent.GetComponent<WeaponIndicator>();
+        rigidbodyComponent.velocity = Vector3.zero; // 停止船只移动
+        // 禁用武器指示器
+        var weaponInDicator = GetComponentInParent<WeaponIndicator>();
         if (weaponInDicator != null)
         {
             weaponInDicator.enabled = false;
         }
-
+        // 冻结船只旋转
         rigidbodyComponent.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        if (SailModel != null)
+        if (DrivingModel != null)
         {
-            SailModel.SetActive(false);
+            DrivingModel.SetActive(false);
         }
 
         // 恢复玩家对象
         if (currentPlayer != null)
         {
-            currentPlayer.transform.position = SailPos.position;
+            currentPlayer.transform.position = DrivingPos.position;
             currentPlayer.SetActive(true);
             PlayerCamera.target = currentPlayer.transform.Find("CameraPos");
-
+            var playerComponent = currentPlayer.GetComponent<Player>();
+            if (playerComponent != null)
+            {
+                playerComponent.SetVitalityBarVisible(true);
+            }
         }
+        InteractHintUI.Instance.ShowHint("开船", "E");
 
     }
     // ===================== Tab键 打开/关闭背包 =====================
@@ -180,7 +207,27 @@ public class PlayerShipCtrl : MonoBehaviour
         // 优先商店
         if (highlightedShop != null)
         {
-            highlightedShop.ShowShopUI();
+            var shopPanel = ShopUI.Instance;
+            if (shopPanel == null)
+            {
+                Debug.LogWarning("ShopUI 实例不存在，无法交互");
+                return;
+            }
+
+            if (shopPanel.IsVisible)
+            {
+                highlightedShop.HideShopUI();
+                PlayerInput.Instance.EnableAllInputs();
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                highlightedShop.ShowShopUI();
+                PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.playerInputAction.Control.OpenEvent);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
             return;
         }
         

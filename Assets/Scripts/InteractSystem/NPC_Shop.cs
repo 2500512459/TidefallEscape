@@ -5,6 +5,62 @@ using UnityEngine;
 public class NPC_Shop : BaseInteractable
 {
     public ShopType shopType = ShopType.WeaponShop;
+    public float buyPriceMultiplier = 1f;
+    public float sellPriceMultiplier = 0.5f;
+
+    [Header("商店库存")]
+    [Tooltip("该NPC的库存数据副本（运行时自动从ShopManager复制）")]
+    [SerializeField] private InventoryDataSO shopInventoryData;
+
+    private void OnEnable()
+    {
+        RefreshShopInventory();
+    }
+
+    private void RefreshShopInventory()
+    {
+        var shopMgr = ShopManager.Instance;
+        if (shopMgr == null)
+        {
+            Debug.LogError($"[NPC_Shop] ShopManager 实例不存在，无法刷新 {shopType} 的库存数据", this);
+            return;
+        }
+
+        var sourceInventory = shopMgr.GetInventory(shopType);
+        if (sourceInventory == null)
+        {
+            Debug.LogError($"[NPC_Shop] 未配置 {shopType} 的商店库存数据", this);
+            return;
+        }
+
+        if (shopInventoryData == null)
+        {
+            shopInventoryData = ScriptableObject.CreateInstance<InventoryDataSO>();
+        }
+
+        shopInventoryData.type = sourceInventory.type;
+        shopInventoryData.maxCount = sourceInventory.maxCount;
+
+        if (shopInventoryData.items == null)
+        {
+            shopInventoryData.items = new List<ItemStack>(sourceInventory.items.Count);
+        }
+        shopInventoryData.items.Clear();
+
+        foreach (var stack in sourceInventory.items)
+        {
+            if (stack != null && stack.item != null)
+            {
+                shopInventoryData.items.Add(new ItemStack(stack.item, stack.count));
+            }
+            else
+            {
+                shopInventoryData.items.Add(null);
+            }
+        }
+
+        shopInventoryData.EnsureSlotCount(shopInventoryData.maxCount);
+    }
     public override void Interact(Character player)
     {
         if (ShopUI.Instance.IsVisible)
@@ -17,7 +73,19 @@ public class NPC_Shop : BaseInteractable
         }
         else
         {
-            ShopUI.Instance.ShowPanel(shopType);
+            if (shopInventoryData == null)
+            {
+                RefreshShopInventory();
+            }
+
+            var shopPanel = ShopUI.Instance;
+            if (shopPanel == null)
+            {
+                Debug.LogError("[NPC_Shop] ShopUI 实例不存在，无法打开商店");
+                return;
+            }
+
+            shopPanel.ShowPanel(shopInventoryData, shopType, buyPriceMultiplier, sellPriceMultiplier);
             InteractHintUI.Instance.ShowHint("进入商店", key);
             PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.playerInputAction.Control.InteractionEvent);
             Cursor.lockState = CursorLockMode.None;

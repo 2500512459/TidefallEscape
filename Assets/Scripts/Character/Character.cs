@@ -13,6 +13,10 @@ public class Character : MonoBehaviour
     protected Animator animator;
     protected Rigidbody rgBody;
     protected bool isDead = false;
+    [Header("Treasure Spawn Timing")]
+    [Tooltip("角色死亡后生成宝箱的延迟时间（秒）")]
+    [SerializeField] protected float treasureSpawnDelay = 1.5f;
+    private Coroutine treasureSpawnCoroutine;
 
     protected virtual void Awake()
     {
@@ -88,6 +92,30 @@ public class Character : MonoBehaviour
         QuestManager.Instance.UpdateQuestProgress(name, 1);
         Debug.Log("角色死亡:" + name);
         EventManager.Raise(new CharacterDeathMessage(this));
+
+        // 生成宝箱（如果配置了预制体和掉落物）
+        if (treasureSpawnCoroutine != null)
+        {
+            StopCoroutine(treasureSpawnCoroutine);
+        }
+        treasureSpawnCoroutine = StartCoroutine(SpawnTreasureBoxAfterDelay());
+    }
+
+    /// <summary>
+    /// 在角色死亡位置生成宝箱（子类可重写）
+    /// </summary>
+    protected virtual void SpawnTreasureBox()
+    {
+        // 基类默认不生成宝箱，由子类实现
+    }
+
+    private IEnumerator SpawnTreasureBoxAfterDelay()
+    {
+        if (treasureSpawnDelay > 0f)
+        {
+            yield return new WaitForSeconds(treasureSpawnDelay);
+        }
+        SpawnTreasureBox();
     }
     public virtual void TakeManaPoints(float manaPoints)
     {
@@ -96,5 +124,22 @@ public class Character : MonoBehaviour
         float mpValue = mp.Value;
         mpValue -= manaPoints;
         attributesModule.SetAttributeValue(AttributeType.MP, mpValue);
+    }
+
+    [ContextMenu("调试/打印角色属性")]
+    protected void PrintAttributes()
+    {
+        if (attributesModule == null || attributesModule.attributes == null)
+        {
+            Debug.LogWarning($"[{name}] AttributesModule 未初始化。");
+            return;
+        }
+
+        foreach (var pair in attributesModule.attributes)
+        {
+            Attribute attribute = pair.Value;
+            string msg = $"{name} 属性 {pair.Key}: 当前 {attribute.Value}, 范围 [{attribute.MinValue}, {attribute.MaxValue}]";
+            Debug.Log(msg);
+        }
     }
 }

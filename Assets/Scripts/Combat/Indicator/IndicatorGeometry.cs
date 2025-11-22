@@ -203,4 +203,190 @@ public class IndicatorGeometry
         mesh.RecalculateNormals();
         return mesh;
     }
+    
+    /// <summary>
+    /// 创建扇形边缘网格（用于表示扇形范围边界）
+    /// </summary>
+    /// <param name="innerRadius">内圆半径</param>
+    /// <param name="outerRadius">外圆半径</param>
+    /// <param name="startAngle">起始角度（度，0度为前方，逆时针为正）</param>
+    /// <param name="endAngle">结束角度（度）</param>
+    /// <param name="segments">分段数</param>
+    /// <returns>扇形边缘网格对象</returns>
+    public static Mesh CreateSectorEdgeMesh(float innerRadius, float outerRadius, float startAngle, float endAngle, int segments)
+    {
+        Mesh mesh = new Mesh();
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        
+        // 将角度转换为弧度
+        float startAngleRad = startAngle * Mathf.Deg2Rad;
+        float endAngleRad = endAngle * Mathf.Deg2Rad;
+        float angleRange = endAngleRad - startAngleRad;
+        float anglePerSegment = angleRange / segments;
+        
+        // 存储内外圆顶点的索引
+        List<int> innerCircleVertices = new List<int>();
+        List<int> outerCircleVertices = new List<int>();
+        
+        // 生成扇形内外圆顶点
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = startAngleRad + anglePerSegment * i;
+            // 计算内外圆上的顶点位置
+            Vector3 innerVertex = new Vector3(innerRadius * Mathf.Cos(angle), 0, innerRadius * Mathf.Sin(angle));
+            Vector3 outerVertex = new Vector3(outerRadius * Mathf.Cos(angle), 0, outerRadius * Mathf.Sin(angle));
+            
+            int innerIndex = vertices.Count;
+            int outerIndex = innerIndex + 1;
+            vertices.Add(innerVertex);
+            vertices.Add(outerVertex);
+            
+            // 设置UV坐标（横向展开纹理）
+            float normalizedAngle = (float)i / (float)segments;
+            uvs.Add(new Vector2(normalizedAngle, 1));
+            uvs.Add(new Vector2(normalizedAngle, 0));
+            
+            innerCircleVertices.Add(innerIndex);
+            outerCircleVertices.Add(outerIndex);
+        }
+        
+        // 构建连接内外圆的四边形面片
+        for (int i = 0; i < segments; i++)
+        {
+            // 获取当前和下一个顶点的索引
+            int innerCurrent = innerCircleVertices[i];
+            int innerNext = innerCircleVertices[i + 1];
+            int outerCurrent = outerCircleVertices[i];
+            int outerNext = outerCircleVertices[i + 1];
+            
+            // 添加两个三角形构成一个四边形
+            triangles.Add(innerCurrent);
+            triangles.Add(outerCurrent);
+            triangles.Add(innerNext);
+            triangles.Add(outerCurrent);
+            triangles.Add(outerNext);
+            triangles.Add(innerNext);
+        }
+        
+        mesh.vertices = vertices.ToArray();
+        mesh.uv = uvs.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        return mesh;
+    }
+
+    /// <summary>
+    /// 创建扇形轮廓网格（包含圆弧和两侧直线）
+    /// </summary>
+    /// <param name="radius">外圆半径</param>
+    /// <param name="thickness">线条宽度</param>
+    /// <param name="startAngle">起始角度</param>
+    /// <param name="endAngle">结束角度</param>
+    /// <param name="segments">圆弧分段数</param>
+    /// <returns>扇形轮廓网格</returns>
+    public static Mesh CreateSectorOutlineMesh(float radius, float thickness, float startAngle, float endAngle, int segments)
+    {
+        Mesh mesh = new Mesh();
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+
+        float innerRadius = radius - thickness;
+        float outerRadius = radius;
+        float halfThickness = thickness * 0.5f;
+
+        // 1. 生成圆弧部分 (复用 CreateSectorEdgeMesh 的逻辑)
+        float startAngleRad = startAngle * Mathf.Deg2Rad;
+        float endAngleRad = endAngle * Mathf.Deg2Rad;
+        float angleRange = endAngleRad - startAngleRad;
+        float anglePerSegment = angleRange / segments;
+
+        List<int> innerCircleVertices = new List<int>();
+        List<int> outerCircleVertices = new List<int>();
+
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = startAngleRad + anglePerSegment * i;
+            Vector3 innerVertex = new Vector3(innerRadius * Mathf.Cos(angle), 0, innerRadius * Mathf.Sin(angle));
+            Vector3 outerVertex = new Vector3(outerRadius * Mathf.Cos(angle), 0, outerRadius * Mathf.Sin(angle));
+
+            int innerIndex = vertices.Count;
+            int outerIndex = innerIndex + 1;
+            vertices.Add(innerVertex);
+            vertices.Add(outerVertex);
+
+            float normalizedAngle = (float)i / segments;
+            uvs.Add(new Vector2(normalizedAngle, 1));
+            uvs.Add(new Vector2(normalizedAngle, 0));
+
+            innerCircleVertices.Add(innerIndex);
+            outerCircleVertices.Add(outerIndex);
+        }
+
+        // 构建圆弧三角形
+        for (int i = 0; i < segments; i++)
+        {
+            int innerCurrent = innerCircleVertices[i];
+            int innerNext = innerCircleVertices[i + 1];
+            int outerCurrent = outerCircleVertices[i];
+            int outerNext = outerCircleVertices[i + 1];
+
+            triangles.Add(innerCurrent);
+            triangles.Add(outerCurrent);
+            triangles.Add(innerNext);
+
+            triangles.Add(outerCurrent);
+            triangles.Add(outerNext);
+            triangles.Add(innerNext);
+        }
+
+        // 2. 生成起始边 (Start Side)
+        // 从中心到外圆，沿着 startAngle 方向
+        AddRadialLine(vertices, triangles, uvs, Vector3.zero, outerRadius, startAngleRad, halfThickness);
+
+        // 3. 生成结束边 (End Side)
+        // 从中心到外圆，沿着 endAngle 方向
+        AddRadialLine(vertices, triangles, uvs, Vector3.zero, outerRadius, endAngleRad, halfThickness);
+
+        mesh.vertices = vertices.ToArray();
+        mesh.uv = uvs.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        return mesh;
+    }
+
+    // 辅助方法：添加径向直线
+    private static void AddRadialLine(List<Vector3> vertices, List<int> triangles, List<Vector2> uvs, Vector3 center, float length, float angleRad, float halfWidth)
+    {
+        Vector3 dir = new Vector3(Mathf.Cos(angleRad), 0, Mathf.Sin(angleRad));
+        Vector3 perp = new Vector3(-Mathf.Sin(angleRad), 0, Mathf.Cos(angleRad));
+
+        // 四个顶点：近端左右，远端左右
+        Vector3 p0 = center - perp * halfWidth;
+        Vector3 p1 = center + perp * halfWidth;
+        Vector3 p2 = center + dir * length - perp * halfWidth;
+        Vector3 p3 = center + dir * length + perp * halfWidth;
+
+        int startIndex = vertices.Count;
+        vertices.Add(p0);
+        vertices.Add(p1);
+        vertices.Add(p2);
+        vertices.Add(p3);
+
+        uvs.Add(new Vector2(0, 0));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+
+        // 两个三角形组成矩形 (0-1-2, 2-1-3)
+        triangles.Add(startIndex);
+        triangles.Add(startIndex + 2);
+        triangles.Add(startIndex + 1);
+
+        triangles.Add(startIndex + 2);
+        triangles.Add(startIndex + 3);
+        triangles.Add(startIndex + 1);
+    }
 }

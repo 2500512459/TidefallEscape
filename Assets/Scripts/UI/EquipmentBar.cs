@@ -14,8 +14,15 @@ public class EquipmentBar : MonoBehaviour
     [Header("模板 StorageItem")]
     public StorageItem StorageItemPref; // 模板预制体（在Hierarchy里放一份并禁用）
 
+    [Header("槽位背景")]
+    public RectTransform EquipSlotCellPref; // EquipSlotCell 预制（包含背景图）
+    [SerializeField] private int defaultSlotCount = 8;
+    [SerializeField] private string equipSlotSpriteResourcesPath = "Icon/Equipment";
+
     private InventoryDataSO equipmentData;  // 装备栏数据
-    private List<StorageItem> slotList = new List<StorageItem>();
+    private readonly List<StorageItem> slotList = new List<StorageItem>();
+    private readonly List<Image> slotBackgroundList = new List<Image>();
+    private Sprite[] equipSlotSprites;
 
     [Header("选中信息显示")]
     public GameObject InfoNode;  // 选中物品面板
@@ -33,7 +40,21 @@ public class EquipmentBar : MonoBehaviour
     private void Awake()
     {
         equipmentData = InventoryManager.Instance.GetInventory(InventoryType.Equipment);
-        equipmentData.EnsureSlotCount(equipmentData.maxCount);
+        int targetCount = Mathf.Max(defaultSlotCount, equipmentData != null ? equipmentData.maxCount : 0);
+        equipmentData.EnsureSlotCount(targetCount);
+
+        LoadEquipSlotSprites();
+    }
+
+    private void LoadEquipSlotSprites()
+    {
+        if (string.IsNullOrEmpty(equipSlotSpriteResourcesPath)) return;
+
+        equipSlotSprites = Resources.LoadAll<Sprite>(equipSlotSpriteResourcesPath);
+        if (equipSlotSprites == null || equipSlotSprites.Length == 0)
+        {
+            Debug.LogWarning($"[EquipmentBar] 未在 Resources/{equipSlotSpriteResourcesPath} 找到任何槽位背景图。");
+        }
     }
 
     private void Start()
@@ -56,28 +77,68 @@ public class EquipmentBar : MonoBehaviour
             Destroy(child.gameObject);
         }
         slotList.Clear();
+        slotBackgroundList.Clear();
 
         if (StorageItemPref == null)
         {
             Debug.LogError("[EquipmentBar] StorageItemPref 未设置");
             return;
         }
+        if (EquipSlotCellPref == null)
+        {
+            Debug.LogError("[EquipmentBar] EquipSlotCellPref 未设置");
+            return;
+        }
 
         StorageItemPref.gameObject.SetActive(false);
 
-        int count = equipmentData != null ? equipmentData.maxCount : 0;
+        int count = Mathf.Max(defaultSlotCount, equipmentData != null ? equipmentData.maxCount : 0);
         for (int i = 0; i < count; i++)
         {
-            var go = Instantiate(StorageItemPref.gameObject, transform);
-            go.name = $"EquipCell_{i}";
-            go.SetActive(true);
+            var slotCell = Instantiate(EquipSlotCellPref, transform);
+            slotCell.name = $"EquipSlotCell_{i}";
+            slotCell.gameObject.SetActive(true);
 
-            var slot = go.GetComponent<StorageItem>();
-            if (slot != null)
+            Image background = slotCell.GetComponent<Image>();
+            if (background == null)
             {
-                slot.AddButtonClickListener(OnSlotClickedInternal);
-                slotList.Add(slot);
+                background = slotCell.GetComponentInChildren<Image>(true);
             }
+            if (background != null && equipSlotSprites != null && equipSlotSprites.Length > 0)
+            {
+                int spriteIndex = i % equipSlotSprites.Length;
+                background.sprite = equipSlotSprites[spriteIndex];
+            }
+            slotBackgroundList.Add(background);
+
+            Transform anchor = slotCell;
+            var anchorTransform = slotCell.Find("ItemAnchor");
+            if (anchorTransform != null)
+            {
+                anchor = anchorTransform;
+            }
+
+            var itemGo = Instantiate(StorageItemPref.gameObject, anchor);
+            itemGo.name = $"EquipItem_{i}";
+            itemGo.SetActive(true);
+
+            // 拉伸到锚点范围
+            var itemRect = itemGo.transform as RectTransform;
+            if (itemRect != null)
+            {
+                itemRect.anchorMin = Vector2.zero;
+                itemRect.anchorMax = Vector2.one;
+                itemRect.offsetMin = Vector2.zero;
+                itemRect.offsetMax = Vector2.zero;
+                itemRect.localScale = Vector3.one;
+                itemRect.localPosition = Vector3.zero;
+            }
+
+            var slot = itemGo.GetComponent<StorageItem>();
+            if (slot == null) continue;
+
+            slot.AddButtonClickListener(OnSlotClickedInternal);
+            slotList.Add(slot);
         }
     }
 
@@ -132,7 +193,7 @@ public class EquipmentBar : MonoBehaviour
     {
         if (equipmentData == null) return;
 
-        EnsureSlotCount(slotList, transform, equipmentData.items.Count);
+        equipmentData.EnsureSlotCount(slotList.Count);
         for (int i = 0; i < slotList.Count; i++)
         {
             var slot = slotList[i];
@@ -141,6 +202,12 @@ public class EquipmentBar : MonoBehaviour
             var stack = equipmentData.items[i];
             slot.SetItem(stack, InventoryType.Equipment, i);
             slot.UpdateCellSelect(i == curSelectIndex);
+
+            bool hasItem = stack != null && stack.item != null;
+            if (i < slotBackgroundList.Count && slotBackgroundList[i] != null)
+            {
+                slotBackgroundList[i].enabled = !hasItem;
+            }
         }
     }
 
@@ -181,19 +248,4 @@ public class EquipmentBar : MonoBehaviour
         onSlotClicked = null;
     }
 
-    /// <summary>
-    /// 确保槽位数量足够
-    /// </summary>
-    /// <param name="list"></param>
-    /// <param name="parent"></param>
-    /// <param name="targetCount"></param>
-    private void EnsureSlotCount(List<StorageItem> list, Transform parent, int targetCount)
-    {
-        while (list.Count < targetCount)
-        {
-            var slot = Instantiate(StorageItemPref.gameObject, transform).GetComponent<StorageItem>();
-            list.Add(slot);
-            slot.ClearSlot();
-        }
-    }
 }

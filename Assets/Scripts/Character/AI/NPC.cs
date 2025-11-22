@@ -22,6 +22,12 @@ public class NPC : Character
     public Rig lookRig;                        // 子物体下的Rig
     public float rigLerpSpeed = 3f;            // 平滑过渡速度
 
+    [Header("死亡掉落设置")]
+    [Tooltip("角色死亡后生成的宝箱预制体（可选）")]
+    public GameObject treasureBoxPrefab;
+    [Tooltip("宝箱的物品生成库（可选）")]
+    public LootContainerSO lootContainerSO;
+
     [SerializeField] private BaseInteractable interactable;
     private Transform player;
     private bool playerInSight = false;
@@ -123,6 +129,32 @@ public class NPC : Character
         }
         material.SetFloat("_DissolveAmount", 0f);
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// 在角色死亡位置生成宝箱
+    /// </summary>
+    protected override void SpawnTreasureBox()
+    {
+        // 如果未配置宝箱预制体或掉落物，则不生成
+        if (treasureBoxPrefab == null || lootContainerSO == null)
+            return;
+
+        // 在角色位置生成宝箱
+        Vector3 spawnPosition = transform.position;
+        GameObject treasureBoxObj = Instantiate(treasureBoxPrefab, spawnPosition, Quaternion.identity);
+
+        // 获取宝箱组件并设置掉落物
+        TreasureBox treasureBox = treasureBoxObj.GetComponent<TreasureBox>();
+        if (treasureBox != null)
+        {
+            treasureBox.lootContainerData = lootContainerSO;
+            Debug.Log($"[NPC] {name} 死亡后生成了宝箱，掉落物库: {lootContainerSO.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[NPC] {name} 生成的宝箱预制体缺少 TreasureBox 组件！");
+        }
     }
 
     // 在Scene中绘制视野范围（辅助）

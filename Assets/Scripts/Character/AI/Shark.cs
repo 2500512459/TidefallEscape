@@ -83,13 +83,25 @@ public class Shark : AICharacter
     //target...
     Character GetNearestAttackTargetInView()
     {
-        CharacterTypeFilter typeFilter = (actor) => actor is PlayerShip;
+        CharacterTypeFilter typeFilter = (actor) => actor is Player;
 
         List<Character> targets = GetCharactersInView(typeFilter);
 
         if (targets.Count == 0) return null;
 
-        targets.Sort((actorA, actorB) =>
+        // 过滤出在水中游泳的玩家
+        List<Character> swimmingTargets = new List<Character>();
+        foreach (Character target in targets)
+        {
+            if (IsPlayerSwimming(target))
+            {
+                swimmingTargets.Add(target);
+            }
+        }
+
+        if (swimmingTargets.Count == 0) return null;
+
+        swimmingTargets.Sort((actorA, actorB) =>
         {
             float distanceA = Vector3.Distance(actorA.transform.position, transform.position);
             float distanceB = Vector3.Distance(actorB.transform.position, transform.position);
@@ -98,20 +110,45 @@ public class Shark : AICharacter
             return distanceA.CompareTo(distanceB);
         });
 
-        return targets[0];
+        return swimmingTargets[0];
     }
 
     void UpdateAttackTarget()
     {
         if (attackTarget)
         {
+            // 如果目标超出视野范围，清除目标
             if (Vector3.Distance(attackTarget.transform.position, transform.position) > viewRadius)
+            {
+                attackTarget = null;
+            }
+            // 如果目标玩家不再在水中，清除目标
+            else if (!IsPlayerSwimming(attackTarget))
             {
                 attackTarget = null;
             }
         }
 
         if (attackTarget == null) attackTarget = GetNearestAttackTargetInView();
+    }
+
+    // 检查玩家是否在水中游泳
+    bool IsPlayerSwimming(Character character)
+    {
+        if (character == null) return false;
+        
+        // 检查是否是Player类型
+        if (character is Player)
+        {
+            // 获取PlayerCtrl组件来检查isSwimming状态
+            PlayerCtrl playerCtrl = character.GetComponent<PlayerCtrl>();
+            if (playerCtrl != null)
+            {
+                return playerCtrl.isSwimming;
+            }
+        }
+        
+        return false;
     }
 
     bool HaveAttackTarget()
@@ -177,18 +214,18 @@ public class Shark : AICharacter
     {
         if (!live) return;
 
-        //if (attributesModule != null)
-        //{
-        //    int blood = (int)attributesModule.GetAttributeValue(AttributeType.Hp);
+        if (attributesModule != null)
+        {
+           int blood = (int)attributesModule.GetAttributeValue(AttributeType.Hp);
 
-        //    attributesModule.SetAttributeValue(AttributeType.Hp, blood - damage);
+           attributesModule.SetAttributeValue(AttributeType.Hp, blood - damage);
 
-        //    if (blood - damage <= 0)
-        //    {
-        //        live = false;
-        //        Dying();
-        //    }
-        //}
+           if (blood - damage <= 0)
+           {
+               live = false;
+               Dying();
+           }
+        }
     }
 
     void Alive()

@@ -14,8 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   k_AssetVersion: 3
   m_RenderingLayerNames:
-  - Default
-  m_ValidRenderingLayers: 1
+  - Light Layer default
+  - Layer 1
+  - Layer 2
+  - Layer 3
+  - Layer 4
+  - Layer 5
+  - Layer 6
+  - Layer 7
+  m_ValidRenderingLayers: 255
   lightLayerName0: 
   lightLayerName1: 
   lightLayerName2: 
@@ -25,7 +32,7 @@ MonoBehaviour:
   lightLayerName6: 
   lightLayerName7: 
   m_StripDebugVariants: 1
-  m_StripUnusedPostProcessingVariants: 0
+  m_StripUnusedPostProcessingVariants: 1
   m_StripUnusedVariants: 1
   m_StripUnusedLODCrossFadeVariants: 1
   m_StripScreenCoordOverrideVariants: 1

@@ -45,6 +45,10 @@ public class PlayerCtrl : MonoBehaviour
     public Rigidbody rb;
     private Player player;
     public Transform interactiveDetection;
+    [Header("宝箱交互")]
+    [SerializeField] private float lootDetectRadius = 2f;
+    private readonly List<TreasureBox> nearbyTreasureBoxes = new List<TreasureBox>();
+    private TreasureBox highlightedTreasureBox;
     private SphereCollider trigger;
     public MovementState state;
     public enum MovementState { walking, sprinting, climbing, swimming, air }
@@ -54,6 +58,9 @@ public class PlayerCtrl : MonoBehaviour
     // 当前可交互的物体
     private List<IInteractable> interactables = new List<IInteractable>();
     private IInteractable currentInteractTarget;
+    [Header("交互判定")]
+    [Range(-1f, 1f)]
+    [SerializeField] private float interactFovThreshold = 0.35f; // 约70度视场
 
 
     private void Awake()
@@ -65,6 +72,9 @@ public class PlayerCtrl : MonoBehaviour
     }
     private void OnEnable()
     {
+        if (playerInput == null)
+            playerInput = PlayerInput.Instance;
+
         // 启用时添加触发器
         if (trigger == null)
         {
@@ -74,12 +84,13 @@ public class PlayerCtrl : MonoBehaviour
         }
 
         trigger.isTrigger = true;
-        trigger.radius = 0.5f;
+        trigger.radius = lootDetectRadius;
         trigger.enabled = true;
 
         // 注册输入事件
-        PlayerInput.Instance.OnInteractionEvent += HandleInteract;
-        PlayerInput.Instance.OpenInventoryEvent += TryOpenInventory;
+        playerInput.OnInteractionEvent += HandleInteract;
+        playerInput.OpenInventoryEvent += TryOpenInventory;
+        playerInput.LootPressedEvent += TryToggleTreasureLoot;
         
         EventManager.Listen<CharacterDeathMessage>(this, OnCharacterDeath);
     }
@@ -91,6 +102,12 @@ public class PlayerCtrl : MonoBehaviour
             trigger.enabled = false;
 
         EventManager.Unlisten<CharacterDeathMessage>(this);
+        if (playerInput != null)
+        {
+            playerInput.OnInteractionEvent -= HandleInteract;
+            playerInput.OpenInventoryEvent -= TryOpenInventory;
+            playerInput.LootPressedEvent -= TryToggleTreasureLoot;
+        }
     }
     void Start()
     {
@@ -120,7 +137,8 @@ public class PlayerCtrl : MonoBehaviour
             PlayerCamera.SwitchCamera();
 
         // 更新最近交互目标
-        UpdateClosestInteractable(); 
+        UpdateClosestInteractable();
+        UpdateClosestTreasureBox();
     }
 
     private void HandleCombatInput()
@@ -157,6 +175,8 @@ public class PlayerCtrl : MonoBehaviour
 
     private bool OnSwimming()
     {
+        if(isClimbing) return false;
+        if(isGround) return false;
         if (Water.Instance == null) return false;
         float waterHeight = Water.Instance.GetWaterHeight(transform.position);
         return transform.position.y < waterHeight + 0.2f;
@@ -291,11 +311,26 @@ public class PlayerCtrl : MonoBehaviour
 
     public void Turn()
     {
-        Vector3 moveDir = MoveDirection();
-        if (moveDir.sqrMagnitude > 0.01f)
+        // 第一人称模式下，让角色面向orientation的方向（由鼠标控制）
+        if (PlayerCamera.cameraMode == PlayerCamera.CameraMode.FirstPerson)
         {
-            Quaternion targetRot = Quaternion.LookRotation(moveDir, Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * 15f);
+            // 使用orientation的方向，这由鼠标输入控制
+            Vector3 orientationForward = orientation.forward;
+            if (orientationForward != Vector3.zero)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(orientationForward);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * 15f);
+            }
+        }
+        else
+        {
+            // 第三人称模式下，正常根据移动方向转向
+            Vector3 moveDir = MoveDirection();
+            if (moveDir.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(moveDir, Vector3.up);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * 15f);
+            }
         }
     }
 
@@ -423,22 +458,44 @@ public class PlayerCtrl : MonoBehaviour
             return;
         }
 
-        // 查找最近的交互对象
-        IInteractable closest = null;
-        float closestDistance = float.MaxValue;
-        Vector3 playerPos = transform.position;
+        Vector3 originPos = interactiveDetection != null ? interactiveDetection.position : transform.position;
+        Vector3 forward = orientation != null ? orientation.forward : transform.forward;
+        forward.y = 0f;
+        if (forward == Vector3.zero)
+            forward = transform.forward;
+        forward.Normalize();
+
+        IInteractable bestInView = null;
+        float bestInViewDist = float.MaxValue;
+        IInteractable bestOverall = null;
+        float bestOverallDist = float.MaxValue;
 
         foreach (var i in interactables)
         {
             if (i == null || i.Transform == null) continue;
 
-            float distance = Vector3.Distance(playerPos, i.Transform.position);
-            if (distance < closestDistance)
+            Vector3 toTarget = i.Transform.position - originPos;
+            float sqrDistance = toTarget.sqrMagnitude;
+
+            if (sqrDistance < bestOverallDist)
             {
-                closestDistance = distance;
-                closest = i;
+                bestOverallDist = sqrDistance;
+                bestOverall = i;
+            }
+
+            if (toTarget == Vector3.zero)
+                continue;
+
+            Vector3 dir = toTarget.normalized;
+            float dot = Vector3.Dot(forward, dir);
+            if (dot >= interactFovThreshold && sqrDistance < bestInViewDist)
+            {
+                bestInViewDist = sqrDistance;
+                bestInView = i;
             }
         }
+
+        IInteractable closest = bestInView ?? bestOverall;
 
         // 如果目标变化了，更新焦点
         if (closest != currentInteractTarget)
@@ -482,6 +539,12 @@ public class PlayerCtrl : MonoBehaviour
         IInteractable interactable = other.GetComponent<IInteractable>();
         if (interactable != null && !interactables.Contains(interactable))
             interactables.Add(interactable);
+
+        TreasureBox treasure = other.GetComponent<TreasureBox>();
+        if (treasure == null)
+            treasure = other.GetComponentInParent<TreasureBox>();
+        if (treasure != null && !nearbyTreasureBoxes.Contains(treasure))
+            nearbyTreasureBoxes.Add(treasure);
     }
 
     private void OnTriggerExit(Collider other)
@@ -490,9 +553,24 @@ public class PlayerCtrl : MonoBehaviour
         if (interactable != null && interactables.Contains(interactable))
         {
             interactables.Remove(interactable);
-            interactable.OnLoseFocus(player);
             if (currentInteractTarget == interactable)
+            {
+                interactable.OnLoseFocus(player);
                 currentInteractTarget = null;
+            }
+        }
+
+        TreasureBox treasure = other.GetComponent<TreasureBox>();
+        if (treasure == null)
+            treasure = other.GetComponentInParent<TreasureBox>();
+        if (treasure != null && nearbyTreasureBoxes.Contains(treasure))
+        {
+            nearbyTreasureBoxes.Remove(treasure);
+            if (highlightedTreasureBox == treasure)
+            {
+                treasure.HideHint();
+                highlightedTreasureBox = null;
+            }
         }
     }
 
@@ -509,10 +587,86 @@ public class PlayerCtrl : MonoBehaviour
         }
         else
         {
-            InventoryUI.Instance?.HidePanel();
-            playerInput.EnableAllInputs();
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            CloseInventoryUIAndRestoreHint();
         }
+    }
+
+    private void TryToggleTreasureLoot()
+    {
+        if (playerInput == null)
+            return;
+
+        if (playerInput.isLootOpen)
+        {
+            playerInput.isInventoryOpen = false;
+            playerInput.isLootOpen = false;
+            CloseInventoryUIAndRestoreHint();
+            return;
+        }
+
+        if (highlightedTreasureBox == null)
+            return;
+
+        highlightedTreasureBox.TryOpen();
+        highlightedTreasureBox.HideHint();
+
+        playerInput.isInventoryOpen = true;
+        playerInput.isLootOpen = true;
+        playerInput.DisableAllInputsExcept(playerInput.playerInputAction.Control.OpenInventory, playerInput.playerInputAction.Control.OpenEvent);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    private void UpdateClosestTreasureBox(bool forceRefresh = false)
+    {
+        nearbyTreasureBoxes.RemoveAll(t => t == null || !t.gameObject.activeInHierarchy);
+
+        if (nearbyTreasureBoxes.Count == 0)
+        {
+            if (highlightedTreasureBox != null)
+            {
+                highlightedTreasureBox.HideHint();
+                highlightedTreasureBox = null;
+            }
+            return;
+        }
+
+        TreasureBox nearest = null;
+        float closestDistance = float.MaxValue;
+        Vector3 playerPos = transform.position;
+
+        foreach (var treasure in nearbyTreasureBoxes)
+        {
+            float distance = Vector3.Distance(playerPos, treasure.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                nearest = treasure;
+            }
+        }
+
+        if (nearest == highlightedTreasureBox)
+        {
+            if (forceRefresh && highlightedTreasureBox != null)
+                highlightedTreasureBox.ShowHint();
+            return;
+        }
+
+        if (highlightedTreasureBox != null)
+            highlightedTreasureBox.HideHint();
+
+        highlightedTreasureBox = nearest;
+
+        if (highlightedTreasureBox != null)
+            highlightedTreasureBox.ShowHint();
+    }
+
+    private void CloseInventoryUIAndRestoreHint()
+    {
+        InventoryUI.Instance?.HidePanel();
+        playerInput?.EnableAllInputs();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        UpdateClosestTreasureBox(true);
     }
 }

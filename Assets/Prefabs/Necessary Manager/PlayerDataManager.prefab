@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6910551540593262103
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 166737789638849285}
+  - component: {fileID: 306199046150514367}
+  m_Layer: 0
+  m_Name: PlayerDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &166737789638849285
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6910551540593262103}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &306199046150514367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6910551540593262103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d93f12d56934a5b41ba14836d9498180, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SelectedProfession: 0
+  professionDataList:
+  - professionType: 0
+    characterPrefab: {fileID: 8703872773199547215, guid: 64c9d96775079344fac674889078804c,
+      type: 3}
+    weaponPrefab: {fileID: 5610884078883986163, guid: 9fbe61d1f4bc091439f25f985dd189a5,
+      type: 3}
+    hipSocketName: WeaponSocket_Hip
+    handSocketName: WeaponSocket_Hand
+    effect1: {fileID: 4833519240736715178, guid: 99d3b8973dc406641adbd3855793a6e7,
+      type: 3}
+    effect2: {fileID: 2719554385063666032, guid: 0408cefa8f4d531459200f737745ea6d,
+      type: 3}
+    effect3: {fileID: 7059629417903061548, guid: 2642f1147e982ee459a12957ec2f7542,
+      type: 3}
+  - professionType: 1
+    characterPrefab: {fileID: 7208776747755970562, guid: 8cf696b9c08c0c5448a1e9be4fd3988f,
+      type: 3}
+    weaponPrefab: {fileID: 919132149155446097, guid: cff72edfa2ba66646aa8a85101974ef6,
+      type: 3}
+    hipSocketName: Back/WeaponSlot
+    handSocketName: LeftHand/WeaponSlot
+    effect1: {fileID: 198659754889719218, guid: 09a2baab97fbf474f9499bf610686e4d,
+      type: 3}
+    effect2: {fileID: 198659754889719218, guid: 09a2baab97fbf474f9499bf610686e4d,
+      type: 3}
+    effect3: {fileID: 198659754889719218, guid: 09a2baab97fbf474f9499bf610686e4d,
+      type: 3}

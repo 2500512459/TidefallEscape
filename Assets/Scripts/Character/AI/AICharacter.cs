@@ -35,6 +35,12 @@ public class AICharacter : Character
     // 存活状态标识
     protected bool live = true;
 
+    [Header("死亡掉落设置")]
+    [Tooltip("角色死亡后生成的宝箱预制体（可选）")]
+    public GameObject treasureBoxPrefab;
+    [Tooltip("宝箱的物品生成库（可选）")]
+    public LootContainerSO lootContainerSO;
+
     /// <summary>
     /// 初始化AI角色，缓存所有AI行为组件。
     /// </summary>
@@ -77,5 +83,31 @@ public class AICharacter : Character
         }
 
         return new List<Character>();
+    }
+
+    /// <summary>
+    /// 在角色死亡位置生成宝箱
+    /// </summary>
+    protected override void SpawnTreasureBox()
+    {
+        // 如果未配置宝箱预制体或掉落物，则不生成
+        if (treasureBoxPrefab == null || lootContainerSO == null)
+            return;
+
+        // 在角色位置生成宝箱
+        Vector3 spawnPosition = transform.position;
+        GameObject treasureBoxObj = Instantiate(treasureBoxPrefab, spawnPosition, Quaternion.identity);
+
+        // 获取宝箱组件并设置掉落物
+        TreasureBox treasureBox = treasureBoxObj.GetComponent<TreasureBox>();
+        if (treasureBox != null)
+        {
+            treasureBox.lootContainerData = lootContainerSO;
+            Debug.Log($"[AICharacter] {name} 死亡后生成了宝箱，掉落物库: {lootContainerSO.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[AICharacter] {name} 生成的宝箱预制体缺少 TreasureBox 组件！");
+        }
     }
 }

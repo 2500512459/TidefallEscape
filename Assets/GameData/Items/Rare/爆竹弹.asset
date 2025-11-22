@@ -20,3 +20,8 @@ MonoBehaviour:
   maxStack: 5
   worldPrefab: {fileID: 0}
   description: "\u7206\u7AF9\u5B50\u5F39"
+  attackBonus: 0
+  defenseBonus: 0
+  extraBackpackSlots: 0
+  extraMaxManaPoints: 0
+  baseValue: 50

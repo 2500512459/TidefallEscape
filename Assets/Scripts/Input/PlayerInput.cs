@@ -23,7 +23,8 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     public bool Sprint => playerInputAction.Control.BoostMove.IsPressed();
     public bool Fire => playerInputAction.Control.Fire.WasReleasedThisFrame();
 
-    public bool Weapon1Pressed => playerInputAction.Control.Weapon.WasPressedThisFrame();
+    public bool WeaponPressed => playerInputAction.Control.Weapon.WasPressedThisFrame();
+    public bool SwitchWeaponPressed => playerInputAction.Control.SwitchWeapon.WasPressedThisFrame();
     public bool RotatePressed => playerInputAction.Control.Rotate.IsPressed();
 
     // UI 输入
@@ -51,6 +52,7 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     //public event Action OnDriveBoatEvent;
     public event Action OnInteractionEvent;
     public event Action<bool> IsAttackedEvent;
+    public event Action OnSwitchWeaponEvent;
 
     protected override void Awake()
     {
@@ -64,17 +66,37 @@ public class PlayerInput : MonoSingleton<PlayerInput>
         //playerInputAction.Control.InteractionEvent.performed += OnDriveBoat;    // 驾驶船E
         playerInputAction.Control.Weapon.performed += OnIsAttackedInput;
         playerInputAction.Control.Quest.performed += OnQuestInput;
+        playerInputAction.Control.SwitchWeapon.performed += OnSwitchWeaponInput;
     }
 
     void OnDestroy()
     {
-        playerInputAction.Control.OpenInventory.performed -= OnInventoryInput;
-        playerInputAction.Control.OpenEvent.performed -= OnLootOpen;
-        playerInputAction.Control.InteractionEvent.performed -= OnInteraction;
-        //playerInputAction.Control.InteractionEvent.performed -= OnBoardShip;
-        //playerInputAction.Control.InteractionEvent.performed -= OnDriveBoat;
-        playerInputAction.Control.Weapon.performed -= OnIsAttackedInput;
-        playerInputAction.Control.Quest.performed -= OnQuestInput;
+        // 移除事件监听器并禁用输入控制
+        if (playerInputAction != null)
+        {
+            try
+            {
+                playerInputAction.Control.OpenInventory.performed -= OnInventoryInput;
+                playerInputAction.Control.OpenEvent.performed -= OnLootOpen;
+                playerInputAction.Control.InteractionEvent.performed -= OnInteraction;
+                //playerInputAction.Control.InteractionEvent.performed -= OnBoardShip;
+                //playerInputAction.Control.InteractionEvent.performed -= OnDriveBoat;
+                playerInputAction.Control.Weapon.performed -= OnIsAttackedInput;
+                playerInputAction.Control.Quest.performed -= OnQuestInput;
+                playerInputAction.Control.SwitchWeapon.performed -= OnSwitchWeaponInput;
+
+                // 禁用输入控制，防止内存泄漏和性能问题
+                // 这是 PlayerInputAction 析构函数的要求
+                if (playerInputAction.Control.enabled)
+                {
+                    playerInputAction.Control.Disable();
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"清理 PlayerInput 时发生错误: {e.Message}");
+            }
+        }
     }
 
     void OnInventoryInput(InputAction.CallbackContext context)
@@ -127,6 +149,12 @@ public class PlayerInput : MonoSingleton<PlayerInput>
             Cursor.visible = false;
         }
     }
+
+    void OnSwitchWeaponInput(InputAction.CallbackContext context)
+    {
+        OnSwitchWeaponEvent?.Invoke();
+    }
+
     // ======================
     // 控制启用/禁用
     // ======================

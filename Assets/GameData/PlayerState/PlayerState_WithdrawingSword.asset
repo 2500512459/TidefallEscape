@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a17bb83bf33b5b4b96d268fd2d95d3d, type: 3}
   m_Name: PlayerState_WithdrawingSword
   m_EditorClassIdentifier: 
-  stateName: Withdrawing Sword
+  stateName: Takeing Weapon
   transitionDuration: 0.1

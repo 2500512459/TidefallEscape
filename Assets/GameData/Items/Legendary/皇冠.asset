@@ -15,8 +15,13 @@ MonoBehaviour:
   itemID: 9
   itemName: "\u7687\u51A0"
   icon: {fileID: 21300000, guid: 0a2f4b14ee7304d95944f7f159ddac75, type: 3}
-  type: 3
+  type: 4
   rarity: 3
   maxStack: 1
   worldPrefab: {fileID: 0}
   description: "\u65E0\u4EF7\u4E4B\u5B9D\uFF0C\u4EF7\u503C<color=\"white\">5000000</color>\u91D1\u5E01"
+  attackBonus: 0
+  defenseBonus: 0
+  extraBackpackSlots: 0
+  extraMaxManaPoints: 100
+  baseValue: 5000000

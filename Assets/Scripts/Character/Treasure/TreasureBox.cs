@@ -21,12 +21,12 @@ public class TreasureBox : Character
     public bool allowDuplicates = true;
 
     [Header("当前宝箱掉落数据")]
-    private InventoryDataSO LootData;   // 每个宝箱自己的掉落数据
+    protected InventoryDataSO LootData;   // 每个宝箱自己的掉落数据
     // UI 是否当前可见（外部只读）
     private bool isUIVisible  = false;
 
     // 是否已被打开（避免重复开箱）
-    private bool opened = false;
+    protected bool opened = false;
 
     protected override void Start()
     {
@@ -79,7 +79,7 @@ public class TreasureBox : Character
     /// <summary>
     /// 打开宝箱
     /// </summary>
-    public void TryOpen()
+    public virtual void TryOpen()
     {
         if (!PlayerInput.Instance.isLootOpen)
         {
@@ -93,6 +93,7 @@ public class TreasureBox : Character
             InventoryManager.Instance.currenContext = InventoryContext.Looting;
             InventoryManager.Instance.OnInventoryChanged(InventoryType.Loot);
             InventoryUI.Instance?.ShowPanel();
+
         }
     }
     // ===================== 生成掉落物 =====================

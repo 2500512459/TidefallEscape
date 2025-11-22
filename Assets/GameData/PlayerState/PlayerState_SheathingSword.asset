@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87297be059ecf424d9c2904c7e584ede, type: 3}
   m_Name: PlayerState_SheathingSword
   m_EditorClassIdentifier: 
-  stateName: Sheathing Sword
+  stateName: Sheathing Weapon
   transitionDuration: 0.1

@@ -125,6 +125,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""f416a4cb-ac58-4f26-a398-66178aa16c87"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -208,7 +217,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0d10ad8f-6f61-46e1-85aa-55a927e49434"",
-                    ""path"": ""<Keyboard>/tab"",
+                    ""path"": ""<Keyboard>/b"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -252,7 +261,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2bda18d8-3fb4-416d-8f83-00f0dfb12354"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -292,6 +301,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Quest"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b9f3960-d077-4d18-a8c2-615b9d40c7c0"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -311,6 +331,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Control_Jump = m_Control.FindAction("Jump", throwIfNotFound: true);
         m_Control_InteractionEvent = m_Control.FindAction("InteractionEvent", throwIfNotFound: true);
         m_Control_Quest = m_Control.FindAction("Quest", throwIfNotFound: true);
+        m_Control_SwitchWeapon = m_Control.FindAction("SwitchWeapon", throwIfNotFound: true);
     }
 
     ~@PlayerInputAction()
@@ -388,6 +409,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Control_Jump;
     private readonly InputAction m_Control_InteractionEvent;
     private readonly InputAction m_Control_Quest;
+    private readonly InputAction m_Control_SwitchWeapon;
     public struct ControlActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -403,6 +425,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Control_Jump;
         public InputAction @InteractionEvent => m_Wrapper.m_Control_InteractionEvent;
         public InputAction @Quest => m_Wrapper.m_Control_Quest;
+        public InputAction @SwitchWeapon => m_Wrapper.m_Control_SwitchWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Control; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -445,6 +468,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Quest.started += instance.OnQuest;
             @Quest.performed += instance.OnQuest;
             @Quest.canceled += instance.OnQuest;
+            @SwitchWeapon.started += instance.OnSwitchWeapon;
+            @SwitchWeapon.performed += instance.OnSwitchWeapon;
+            @SwitchWeapon.canceled += instance.OnSwitchWeapon;
         }
 
         private void UnregisterCallbacks(IControlActions instance)
@@ -482,6 +508,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Quest.started -= instance.OnQuest;
             @Quest.performed -= instance.OnQuest;
             @Quest.canceled -= instance.OnQuest;
+            @SwitchWeapon.started -= instance.OnSwitchWeapon;
+            @SwitchWeapon.performed -= instance.OnSwitchWeapon;
+            @SwitchWeapon.canceled -= instance.OnSwitchWeapon;
         }
 
         public void RemoveCallbacks(IControlActions instance)
@@ -512,5 +541,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnInteractionEvent(InputAction.CallbackContext context);
         void OnQuest(InputAction.CallbackContext context);
+        void OnSwitchWeapon(InputAction.CallbackContext context);
     }
 }

@@ -1,11 +1,24 @@
-//装备类型
+//物品类型
 public enum ItemType
 {
     Weapon,         //武器
+    Helmets,        //头盔
+    Armor,          //盔甲
+    backpacks,      //背包
+    necklaces,      //项链
     Ammo,           //弹药
+    Cannonball,     //炮弹
     Consumable,     //消耗品
     Material        //材料
 }
+
+// 炮弹类型
+public enum CannonballType
+{
+    Normal,         //普通弹
+    ArmorPiercing   //穿甲弹
+}
+
 //物品稀有度
 public enum ItemRarity
 {
@@ -14,14 +27,15 @@ public enum ItemRarity
     Epic,           //史诗级
     Legendary       //传奇级
 }
-//背包类型
+//库类型
 public enum InventoryType
 {
     Backpack,
     Equipment,
     Storage,
     Loot,
-    Shop
+    Shop,
+    CannonBall
 }
 // 背包状态
 public enum InventoryContext
@@ -38,4 +52,12 @@ public enum ShopType
     AmmoShop,       //弹药店
     ConsumableShop,     //消耗品店
     MaterialShop        //材料店
+}
+// 职业类型
+public enum ProfessionType
+{
+    Crewman,        //船员
+    Lookout,        //瞭望员
+    Captain,        //船长
+    Shipwright      //船工
 }

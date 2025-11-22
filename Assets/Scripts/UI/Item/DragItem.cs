@@ -18,6 +18,16 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     private static DragItem draggedItem;    // 当前正在被拖拽的 DragItem（静态，方便全局访问）
     private static GameObject dragIcon;     // 拖拽中跟随鼠标的图标对象
 
+    private const int EquipmentColumnCount = 5;
+    private static readonly ItemType[] EquipmentColumnRules = new ItemType[EquipmentColumnCount]
+    {
+        ItemType.Weapon,
+        ItemType.Helmets,
+        ItemType.Armor,
+        ItemType.backpacks,
+        ItemType.necklaces
+    };
+
     private void Awake()
     {
         slot = GetComponent<StorageItem>();
@@ -131,6 +141,9 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         var InLootType = fromType == InventoryType.Loot || toType == InventoryType.Loot;
         // ==================== 叠加逻辑 ====================
+        if (!IsItemAllowedInEquipmentSlot(toSlot, fromItem))
+            return;
+
         if (toItem != null && fromItem != null &&
             toItem.item == fromItem.item &&
             toItem.count < toItem.item.maxStack)
@@ -180,6 +193,11 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         // ==================== 普通交换逻辑 ====================
 
+        if (!IsItemAllowedInEquipmentSlot(toSlot, fromItem))
+            return;
+        if (!IsItemAllowedInEquipmentSlot(fromSlot, toItem))
+            return;
+
         // 检查任务进度
         // 如果是将某一个物品拖拽到背包或装备栏，就增加fromItemName的的任务进度
         if (InLootType)
@@ -220,7 +238,31 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         // 通知数据更新
         InventoryManager.Instance.OnInventoryChanged(fromType);
         InventoryManager.Instance.OnInventoryChanged(toType);
+    }
 
+    private bool IsItemAllowedInEquipmentSlot(StorageItem targetSlot, ItemStack incomingItem)
+    {
+        if (targetSlot == null)
+            return false;
 
+        if (targetSlot.inventoryType != InventoryType.Equipment)
+            return true;
+
+        if (incomingItem == null || incomingItem.item == null)
+            return true;
+
+        if (EquipmentColumnRules == null || EquipmentColumnRules.Length == 0)
+            return true;
+
+        int columnIndex = Mathf.Abs(targetSlot.slotIndex) % EquipmentColumnRules.Length;
+        var requiredType = EquipmentColumnRules[columnIndex];
+
+        if (incomingItem.item.type != requiredType)
+        {
+            Debug.LogWarning($"[DragItem] 无法放置 {incomingItem.item.itemName} 到装备槽 {targetSlot.slotIndex}，该槽需要 {requiredType}");
+            return false;
+        }
+
+        return true;
     }
 }

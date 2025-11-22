@@ -37,5 +37,17 @@ public class AttributesModule : MonoBehaviour
             Debug.LogError("Attribute not found: " + tp.ToString());
         }
     }
+
+    public void SetAttributeRange(AttributeType tp, float minValue, float maxValue)
+    {
+        if (attributes.TryGetValue(tp, out Attribute attribute))
+        {
+            attribute.SetRange(minValue, maxValue);
+        }
+        else
+        {
+            Debug.LogError("Attribute not found: " + tp.ToString());
+        }
+    }
 }
 

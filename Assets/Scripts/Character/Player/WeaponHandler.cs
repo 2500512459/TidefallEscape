@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponHandler : MonoBehaviour
 {
     public PlayerAttackCheck attackCheck;
-    public Transform weaponSocketHip;   // 腰间挂点
+    public Transform weaponSocketHip;   // 腰间挂点/背后挂点
     public Transform weaponSocketHand;  // 手部挂点
     public GameObject currentWeapon;
 
@@ -14,6 +15,27 @@ public class WeaponHandler : MonoBehaviour
     [SerializeField] private ParticleSystem attackParticle02;
     [SerializeField] private ParticleSystem attackParticle03;
 
+    public void Initialize(GameObject weaponPrefab, Transform hipSocket, Transform handSocket, ParticleSystem p1, ParticleSystem p2, ParticleSystem p3, PlayerAttackCheck attackCheck)
+    {
+        this.weaponSocketHip = hipSocket;
+        this.weaponSocketHand = handSocket;
+        this.attackParticle01 = p1;
+        this.attackParticle02 = p2;
+        this.attackParticle03 = p3;
+        this.attackCheck = attackCheck;
+
+        if (weaponPrefab != null)
+        {
+            // 实例化武器
+            currentWeapon = Instantiate(weaponPrefab);
+            AttachToHip();
+        }
+    }
+
+    private void OnEnable()
+    {
+        StopAllAttackEffects(); 
+    }
     void Start()
     {
         AttachToHip();

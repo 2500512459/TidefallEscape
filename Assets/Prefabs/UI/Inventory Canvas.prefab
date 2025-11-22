@@ -345,6 +345,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StorageItemPref: {fileID: 5383850410999282240, guid: 32d038cd2cea626428346d767b2092e6,
     type: 3}
+  EquipSlotCellPref: {fileID: 721395741116044108, guid: c7c387f347c147b41829f948a3eaf3fb,
+    type: 3}
+  defaultSlotCount: 8
+  equipSlotSpriteResourcesPath: Icon/Equipment
   InfoNode: {fileID: 1474341569679244644}
   selectIcon: {fileID: 4540992956464319804}
   selectItemName: {fileID: 3654402354527004349}
@@ -520,9 +524,9 @@ RectTransform:
   - {fileID: 6643373435537983287}
   m_Father: {fileID: 31432549577212058}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 923.3333, y: -480}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 550, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5702663223891487464
@@ -992,9 +996,9 @@ RectTransform:
   - {fileID: 7819868412320568294}
   m_Father: {fileID: 31432549577212058}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 295, y: -480}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 550, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5882706295365087454
@@ -1500,8 +1504,8 @@ MonoBehaviour:
   RightPanel: {fileID: 6546937382682761325}
   backpackSortButton: {fileID: 6603880023873326050}
   storageSortButton: {fileID: 5927154043260545421}
-  backpackPanel: {fileID: 0}
-  storagePanel: {fileID: 0}
+  backpackPanel: {fileID: 4820116030987360241}
+  storagePanel: {fileID: 3829109464287254396}
 --- !u!1 &6679079921217097466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1641,9 +1645,9 @@ RectTransform:
   - {fileID: 4221127553517017507}
   m_Father: {fileID: 31432549577212058}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1554.1666, y: -480}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 555, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3556534308411786518

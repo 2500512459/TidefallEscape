@@ -12,6 +12,10 @@ public class PlayerState_Run : PlayerState
     }
     public override void LogicUpdate()
     {
+        if (playerCtrl.isAttacking && playerCtrl.weaponState == PlayerCtrl.WeaponState.Armed)
+        {
+            stateMachine.SwitchState(typeof(PlayerState_Attack01));
+        }
         if(playerCtrl.weaponState == PlayerCtrl.WeaponState.Drawing)
         {
             stateMachine.SwitchState(typeof(PlayerState_WithdrawingSword));

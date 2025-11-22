@@ -28,6 +28,12 @@ public class PlayerCamera : MonoBehaviour
     public float lookRotateY = 180f;
     public float lookDistance = 20f;
     public Transform target;            // 摄像机目标
+
+    [Header("第一人称遮挡设置")]
+    public Renderer[] playerBodyRenderers; // 需要在第一人称隐藏的渲染器
+    
+    [Header("开船状态")]
+    public bool isSailing = false; // 是否在开船状态
     
     // 私有变量
     private float xRotation;
@@ -56,6 +62,7 @@ public class PlayerCamera : MonoBehaviour
 
         cameraMode = CameraMode.FirstPerson;
         InitializeCameraPosition();
+        UpdatePlayerBodyVisibility();
         CameraModeChanged?.Invoke(cameraMode);
     }
 
@@ -95,6 +102,29 @@ public class PlayerCamera : MonoBehaviour
     #region 第三人称逻辑
     private void UpdateThirdPerson()
     {
+        // 如果在开船状态，必须按下RotatePressed才能旋转视角
+        if (isSailing && !PlayerInput.Instance.RotatePressed)
+        {
+            // 不开船时仍然更新距离（允许缩放）
+            UpdateDistance();
+            
+            // 保持当前视角不变，只更新位置
+            lookRotateX = Mathf.Clamp(lookRotateX, 60, 80);
+            Quaternion currentRot = Quaternion.Euler(lookRotateX, lookRotateY, 0);
+            offset = currentRot * Vector3.forward * lookDistance;
+            transform.position = target.transform.position - offset;
+            transform.LookAt(target);
+            
+            // 使用摄像机的水平方向来更新orientation
+            Vector3 currentCameraForward = transform.forward;
+            currentCameraForward.y = 0; // 忽略Y轴，只保留水平方向
+            if (currentCameraForward != Vector3.zero)
+            {
+                orientation.rotation = Quaternion.LookRotation(currentCameraForward.normalized);
+            }
+            return;
+        }
+        
         float verticalDelta = PlayerInput.Instance.inputLook.y * rotateSpeed;
         float horizontal = PlayerInput.Instance.inputLook.x * rotateSpeed;
         lookRotateX -= verticalDelta;
@@ -186,6 +216,7 @@ public class PlayerCamera : MonoBehaviour
         // 更新摄像机模式
         cameraMode = targetMode;
         IsTransitioning = false;
+        UpdatePlayerBodyVisibility();
         CameraModeChanged?.Invoke(cameraMode);
     }
 
@@ -193,8 +224,8 @@ public class PlayerCamera : MonoBehaviour
     {
         if (targetMode == CameraMode.FirstPerson)
         {
-            // 第一人称摄像机位置是玩家的眼睛位置
-            return target.position; 
+            // 第一人称摄像机位置是 cameraPosition 的位置
+            return cameraPosition != null ? cameraPosition.position : (target != null ? target.position : transform.position);
         }
         else
         {
@@ -234,6 +265,33 @@ public class PlayerCamera : MonoBehaviour
             transform.rotation = GetTargetCameraRotation(CameraMode.ThirdPerson);
         }
     }
+    
+    // 将欧拉角归一化到 -180 到 180 度范围
+    private float NormalizeAngle(float angle)
+    {
+        while (angle > 180f) angle -= 360f;
+        while (angle < -180f) angle += 360f;
+        return angle;
+    }
 
+    #endregion
+
+    #region 玩家身体可见性控制
+    private void UpdatePlayerBodyVisibility()
+    {
+        if (playerBodyRenderers == null || playerBodyRenderers.Length == 0) return;
+
+        bool shouldHide = (cameraMode == CameraMode.FirstPerson);
+
+        foreach (Renderer renderer in playerBodyRenderers)
+        {
+            if (renderer != null)
+            {
+                renderer.enabled = !shouldHide;
+                // 同时禁用阴影投射，避免第一人称模式下产生奇怪的阴影
+                renderer.shadowCastingMode = shouldHide ? UnityEngine.Rendering.ShadowCastingMode.Off : UnityEngine.Rendering.ShadowCastingMode.On;
+            }
+        }
+    }
     #endregion
 }

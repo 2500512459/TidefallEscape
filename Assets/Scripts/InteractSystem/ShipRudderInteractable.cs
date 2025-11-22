@@ -11,8 +11,14 @@ public class ShipRudderInteractable : BaseInteractable
     private GameObject currentPlayer;
     public override void Interact(Character player)
     {
+        Debug.Log("ShipRudderInteractable: Interact");
         InteractHintUI.Instance.HideHint();
         currentPlayer = player.gameObject;
+        var playerComponent = currentPlayer.GetComponent<Player>();
+        if (playerComponent != null)
+        {
+            playerComponent.SetVitalityBarVisible(false);
+        }
         currentPlayer.SetActive(false);
 
         if (shipDriverModel != null)

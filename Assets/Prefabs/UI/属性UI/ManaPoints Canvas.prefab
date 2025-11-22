@@ -221,15 +221,15 @@ MonoBehaviour:
   slider: {fileID: 4166589835627626486}
   gradient:
     serializedVersion: 2
-    key0: {r: 0, g: 0.49381238, b: 0.98742133, a: 1}
-    key1: {r: 1, g: 0, b: 0.7789283, a: 1}
-    key2: {r: 1, g: 0.32551846, b: 0, a: 0}
+    key0: {r: 0.9559748, g: 0.6025058, b: 0.32166442, a: 1}
+    key1: {r: 0.9433962, g: 0.43016484, b: 0.8796652, a: 1}
+    key2: {r: 0, g: 0.43249822, b: 1, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 20046
+    ctime0: 19789
     ctime1: 39321
     ctime2: 65535
     ctime3: 0

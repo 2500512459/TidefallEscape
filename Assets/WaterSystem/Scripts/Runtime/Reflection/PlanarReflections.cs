@@ -236,16 +236,45 @@ public class PlanarReflections : MonoBehaviour
     /// </summary>
     private void UpdateReflectionCameraTransform(Camera sourceCamera, Vector3 normal)
     {
+        // 验证输入参数
+        if (sourceCamera == null || normal == Vector3.zero ||
+            float.IsNaN(normal.x) || float.IsNaN(normal.y) || float.IsNaN(normal.z) ||
+            float.IsInfinity(normal.x) || float.IsInfinity(normal.y) || float.IsInfinity(normal.z))
+        {
+            Debug.LogWarning("PlanarReflections: Invalid parameters for reflection camera transform update");
+            return;
+        }
+
         // 主相机到平面的投影距离
         Vector3 proj = normal * Vector3.Dot(
             normal, sourceCamera.transform.position - transform.position);
 
         // 将相机位置沿法线方向对称
-        reflectionCamera.transform.position = sourceCamera.transform.position - 2 * proj;
+        Vector3 reflectionPos = sourceCamera.transform.position - 2 * proj;
+
+        // 验证计算结果是否有效
+        if (float.IsNaN(reflectionPos.x) || float.IsNaN(reflectionPos.y) || float.IsNaN(reflectionPos.z) ||
+            float.IsInfinity(reflectionPos.x) || float.IsInfinity(reflectionPos.y) || float.IsInfinity(reflectionPos.z))
+        {
+            Debug.LogWarning("PlanarReflections: Invalid reflection camera position calculated");
+            return;
+        }
+
+        reflectionCamera.transform.position = reflectionPos;
 
         // 将相机方向向量沿法线反射
         Vector3 forward = Vector3.Reflect(sourceCamera.transform.forward, normal);
         Vector3 up = Vector3.Reflect(sourceCamera.transform.up, normal);
+
+        // 验证反射向量是否有效
+        if (float.IsNaN(forward.x) || float.IsNaN(forward.y) || float.IsNaN(forward.z) ||
+            float.IsInfinity(forward.x) || float.IsInfinity(forward.y) || float.IsInfinity(forward.z) ||
+            float.IsNaN(up.x) || float.IsNaN(up.y) || float.IsNaN(up.z) ||
+            float.IsInfinity(up.x) || float.IsInfinity(up.y) || float.IsInfinity(up.z))
+        {
+            Debug.LogWarning("PlanarReflections: Invalid reflection vectors calculated");
+            return;
+        }
 
         // 设置反射相机的朝向
         reflectionCamera.transform.LookAt(
@@ -258,11 +287,27 @@ public class PlanarReflections : MonoBehaviour
     /// </summary>
     private void SetupObliqueProjMatrix(Vector3 normal)
     {
+        // 验证法线向量是否有效
+        if (normal == Vector3.zero || float.IsNaN(normal.x) || float.IsNaN(normal.y) || float.IsNaN(normal.z) ||
+            float.IsInfinity(normal.x) || float.IsInfinity(normal.y) || float.IsInfinity(normal.z))
+        {
+            Debug.LogWarning("PlanarReflections: Invalid reflection normal, skipping oblique projection setup");
+            return;
+        }
+
         Matrix4x4 viewMatrix = reflectionCamera.worldToCameraMatrix;
 
         // 将平面位置与法线从世界空间转换到相机空间
         Vector3 viewPosition = viewMatrix.MultiplyPoint(transform.position);
         Vector3 viewNormal = viewMatrix.MultiplyVector(normal).normalized;
+
+        // 再次验证转换后的法线
+        if (viewNormal == Vector3.zero || float.IsNaN(viewNormal.x) || float.IsNaN(viewNormal.y) || float.IsNaN(viewNormal.z) ||
+            float.IsInfinity(viewNormal.x) || float.IsInfinity(viewNormal.y) || float.IsInfinity(viewNormal.z))
+        {
+            Debug.LogWarning("PlanarReflections: Invalid view space normal, skipping oblique projection setup");
+            return;
+        }
 
         // 定义相机空间下的裁剪平面 (Ax + By + Cz + D = 0)
         Vector4 plane = new Vector4(
@@ -272,8 +317,15 @@ public class PlanarReflections : MonoBehaviour
             -Vector3.Dot(viewPosition, viewNormal)
         );
 
-        // 设置带有此平面裁剪的投影矩阵
-        reflectionCamera.projectionMatrix = reflectionCamera.CalculateObliqueMatrix(plane);
+        try
+        {
+            // 设置带有此平面裁剪的投影矩阵
+            reflectionCamera.projectionMatrix = reflectionCamera.CalculateObliqueMatrix(plane);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"PlanarReflections: Failed to set oblique projection matrix: {e.Message}");
+        }
     }
 
     #endregion

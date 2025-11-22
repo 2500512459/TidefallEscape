@@ -19,6 +19,19 @@ public class ShopShip : AICharacter
     public float maxHealth = 100f;
     public HealthBar healthBar;
 
+    [Header("商店类型")]
+    public ShopType shopType = ShopType.WeaponShop;
+
+    [Header("交易倍率")]
+    [Tooltip("玩家从此商人购买时的倍率")]
+    public float buyPriceMultiplier = 1f;
+    [Tooltip("玩家向此商人出售时的倍率")]
+    public float sellPriceMultiplier = 0.5f;
+
+    [Header("商店库存")]
+    [Tooltip("当前商人的库存数据副本（运行时自动从ShopManager复制）")]
+    private InventoryDataSO shopInventoryData;
+
     [Header("商船检测参数")]
     [Tooltip("检测到玩家后开始靠近的范围")]
     public float detectPlayerRange = 15f;
@@ -35,6 +48,7 @@ public class ShopShip : AICharacter
     private bool isApproachingPlayer = false;
     // 提示UI 是否当前可见
     private bool isUIVisible  = false;
+    private bool isTrading = false;
     /// <summary>
     /// Awake：初始化组件
     /// </summary>
@@ -61,6 +75,56 @@ public class ShopShip : AICharacter
 
         InitAI();
     }
+
+    /// <summary>
+    /// OnEnable：每次激活时刷新商店库存数据
+    /// </summary>
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        RefreshShopInventory();
+    }
+
+    /// <summary>
+    /// 从ShopManager复制对应的库存数据到本地副本
+    /// </summary>
+    private void RefreshShopInventory()
+    {
+        var shopMgr = ShopManager.Instance;
+        if (shopMgr == null)
+        {
+            Debug.LogError($"[ShopShip] ShopManager 实例不存在，无法刷新 {shopType} 的库存数据", this);
+            return;
+        }
+
+        var sourceInventory = shopMgr.GetInventory(shopType);
+        if (sourceInventory == null)
+        {
+            Debug.LogError($"[ShopShip] 未配置 {shopType} 的商店库存数据", this);
+            return;
+        }
+
+        // 创建运行时副本
+        shopInventoryData = ScriptableObject.CreateInstance<InventoryDataSO>();
+        shopInventoryData.type = sourceInventory.type;
+        shopInventoryData.maxCount = sourceInventory.maxCount;
+
+        // 深拷贝物品列表
+        shopInventoryData.items = new System.Collections.Generic.List<ItemStack>();
+        foreach (var stack in sourceInventory.items)
+        {
+            if (stack != null && stack.item != null)
+            {
+                shopInventoryData.items.Add(new ItemStack(stack.item, stack.count));
+            }
+            else
+            {
+                shopInventoryData.items.Add(null);
+            }
+        }
+
+        shopInventoryData.EnsureSlotCount(shopInventoryData.maxCount);
+    }
     /// <summary>
     /// Update：每帧调用（此处未额外逻辑，保留父类更新）
     /// </summary>
@@ -78,6 +142,13 @@ public class ShopShip : AICharacter
     /// </summary>
     private void FixedUpdate()
     {
+        if (isTrading)
+        {
+            steeringBehaviors.Steer(Vector3.zero);
+            steeringBehaviors.LookMoveDirection();
+            return;
+        }
+
         if (brain != null && live)
             brain.Tick();
     }
@@ -92,9 +163,19 @@ public class ShopShip : AICharacter
             return;
         }
 
-        if (!shopPanel.IsVisible)
+        if (shopInventoryData == null)
         {
-            shopPanel.ShowPanel();
+            Debug.LogWarning($"[ShopShip] 商店库存数据未初始化，正在刷新...", this);
+            RefreshShopInventory();
+        }
+
+        shopPanel.ShowPanel(shopInventoryData, shopType, buyPriceMultiplier, sellPriceMultiplier);
+
+        if (!isTrading)
+        {
+            isTrading = true;
+            steeringBehaviors.Steer(Vector3.zero);
+            steeringBehaviors.LookMoveDirection();
         }
     }
     public void HideShopUI()
@@ -109,6 +190,11 @@ public class ShopShip : AICharacter
         if (shopPanel.IsVisible)
         {
             shopPanel.HidePanel();
+        }
+
+        if (isTrading)
+        {
+            isTrading = false;
         }
     }
     public void ShowHint()

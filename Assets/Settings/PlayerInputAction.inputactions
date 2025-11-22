@@ -103,6 +103,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchWeapon",
+                    "type": "Button",
+                    "id": "f416a4cb-ac58-4f26-a398-66178aa16c87",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -186,7 +195,7 @@
                 {
                     "name": "",
                     "id": "0d10ad8f-6f61-46e1-85aa-55a927e49434",
-                    "path": "<Keyboard>/tab",
+                    "path": "<Keyboard>/b",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -230,7 +239,7 @@
                 {
                     "name": "",
                     "id": "2bda18d8-3fb4-416d-8f83-00f0dfb12354",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -268,6 +277,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Quest",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b9f3960-d077-4d18-a8c2-615b9d40c7c0",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

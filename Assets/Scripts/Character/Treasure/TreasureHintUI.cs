@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class TreasureHintUI : MonoBehaviour
 {
-    [Header("UI���")]
+    [Header("UI")]
     public CanvasGroup canvasGroup;
     public RectTransform rectTransform;
 
-    [Header("��������")]
-    public float heightOffset = 3f;  // �뱦�䶥����ƫ��
-    public float lookLerpSpeed = 5f;   // UI�����������ƽ���ٶ�
+    [Header("偏移量")]
+    public float heightOffset = 3f;  // 高度偏移
+    public float lookLerpSpeed = 5f;   // UI平滑移动速度
 
     private Tween currentTween;
 
