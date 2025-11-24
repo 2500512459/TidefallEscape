@@ -6423,13 +6423,16 @@ MonoBehaviour:
     m_RotationOrder: 4
   sensX: 1
   sensY: 1
-  cameraPosition: {fileID: 966719376}
+  CrewmanCameraPosition: {fileID: 1846832868}
+  LookoutCameraPosition: {fileID: 1846832867}
+  CaptainCameraPosition: {fileID: 1846832866}
+  ShipwrightCameraPosition: {fileID: 1846832865}
   rotateSpeed: 1
   scrollSpeed: 3
   lookRotateX: 60
   lookRotateY: 180
   lookDistance: 20
-  target: {fileID: 966719376}
+  target: {fileID: 0}
   playerBodyRenderers: []
   isSailing: 0
 --- !u!1001 &347378904
@@ -8785,12 +8788,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a6bf990833d38a4bac845028445558a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &966719376 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5844773144816365358, guid: f3c8f83e5bcba264d8253f3f5b587159,
-    type: 3}
-  m_PrefabInstance: {fileID: 1846832864}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &986566245
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11328,6 +11325,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3c8f83e5bcba264d8253f3f5b587159, type: 3}
+--- !u!4 &1846832865 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6084883130357556897, guid: f3c8f83e5bcba264d8253f3f5b587159,
+    type: 3}
+  m_PrefabInstance: {fileID: 1846832864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1846832866 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9185370441075449855, guid: f3c8f83e5bcba264d8253f3f5b587159,
+    type: 3}
+  m_PrefabInstance: {fileID: 1846832864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1846832867 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6829759889709187287, guid: f3c8f83e5bcba264d8253f3f5b587159,
+    type: 3}
+  m_PrefabInstance: {fileID: 1846832864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1846832868 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9091334601349324750, guid: f3c8f83e5bcba264d8253f3f5b587159,
+    type: 3}
+  m_PrefabInstance: {fileID: 1846832864}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1897152187
 GameObject:
   m_ObjectHideFlags: 0

@@ -42,6 +42,16 @@ public class WeaponHandler : MonoBehaviour
         StopAllAttackEffects();
     }
 
+    // 供动画事件调用：射击
+    public void Shoot()
+    {
+        var shooter = GetComponentInParent<ThirdPersonShooterController>();
+        if (shooter != null)
+        {
+            shooter.Shoot();
+        }
+    }
+
     // 供动画事件调用：在拔剑动画中调用
     public void AttachToHand()
     {

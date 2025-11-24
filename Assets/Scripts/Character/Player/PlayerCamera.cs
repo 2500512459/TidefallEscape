@@ -19,7 +19,13 @@ public class PlayerCamera : MonoBehaviour
     [Header("第一人称参数")]
     public float sensX;
     public float sensY;
-    public Transform cameraPosition;    // 摄像机位置
+    public Transform cameraPosition;
+    public Transform FirstPersonAimPosition;   // 第一人称瞄准位置
+    public Transform ThirdPersonAimPosition;   // 第三人称瞄准位置
+    public Transform CrewmanCameraPosition;    // Crewman摄像机位置
+    public Transform LookoutCameraPosition;    // Lookout摄像机位置
+    public Transform CaptainCameraPosition;    // Captain摄像机位置
+    public Transform ShipwrightCameraPosition;    // Shipwright摄像机位置
     
     [Header("第三人称参数")]
     public float rotateSpeed = 1.0f;
@@ -27,6 +33,13 @@ public class PlayerCamera : MonoBehaviour
     public float lookRotateX = 60f;
     public float lookRotateY = 180f;
     public float lookDistance = 20f;
+    public float minLookDistance = 2f;
+    public float maxLookDistance = 16f;
+    
+    [Header("开船视角参数")]
+    public float sailingMinLookDistance = 4f;
+    public float sailingMaxLookDistance = 100f;
+
     public Transform target;            // 摄像机目标
 
     [Header("第一人称遮挡设置")]
@@ -47,7 +60,8 @@ public class PlayerCamera : MonoBehaviour
     public enum CameraMode
     {
         FirstPerson,
-        ThirdPerson
+        ThirdPerson,
+        AimPerson
     }
 
     void Awake()
@@ -64,6 +78,27 @@ public class PlayerCamera : MonoBehaviour
         InitializeCameraPosition();
         UpdatePlayerBodyVisibility();
         CameraModeChanged?.Invoke(cameraMode);
+
+        if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Crewman)
+        {
+            cameraPosition = CrewmanCameraPosition;
+            target = CrewmanCameraPosition;
+        }
+        else if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Lookout)
+        {
+            cameraPosition = LookoutCameraPosition;
+            target = LookoutCameraPosition;
+        }
+        else if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Captain)
+        {
+            cameraPosition = CaptainCameraPosition;
+            target = CaptainCameraPosition;
+        }
+        else if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Shipwright)
+        {
+            cameraPosition = ShipwrightCameraPosition;
+            target = ShipwrightCameraPosition;
+        }
     }
 
     void Update()
@@ -149,8 +184,11 @@ public class PlayerCamera : MonoBehaviour
 
     void UpdateDistance()
     {
-        lookDistance += Input.mouseScrollDelta.y * scrollSpeed;
-        lookDistance = Mathf.Clamp(lookDistance, 4, 100);
+        float currentMin = isSailing ? sailingMinLookDistance : minLookDistance;
+        float currentMax = isSailing ? sailingMaxLookDistance : maxLookDistance;
+
+        lookDistance -= Input.mouseScrollDelta.y * scrollSpeed;
+        lookDistance = Mathf.Clamp(lookDistance, currentMin, currentMax);
     }
     #endregion
 
@@ -251,7 +289,7 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
-    private void InitializeCameraPosition()
+    public void InitializeCameraPosition()
     {
         // 根据初始模式设置摄像机位置
         if (cameraMode == CameraMode.FirstPerson)
@@ -272,6 +310,40 @@ public class PlayerCamera : MonoBehaviour
         while (angle > 180f) angle -= 360f;
         while (angle < -180f) angle += 360f;
         return angle;
+    }
+
+    /// <summary>
+    /// 动态调整第一人称摄像机的高度
+    /// </summary>
+    /// <param name="height">新的高度（本地坐标Y轴）</param>
+    public void SetFirstPersonHeight(float height)
+    {
+        if (cameraPosition != null)
+        {
+            Vector3 localPos = cameraPosition.localPosition;
+            localPos.y = height;
+            cameraPosition.localPosition = localPos;
+        }
+    }
+
+    /// <summary>
+    /// 设置新的摄像机目标点（用于切换角色模型时更新头部锚点）
+    /// </summary>
+    /// <param name="newCameraPosition">新的摄像机位置锚点</param>
+    public void SetCameraPositionAnchor(Transform newCameraPosition)
+    {
+        cameraPosition = newCameraPosition;
+        target = newCameraPosition;
+    }
+
+    /// <summary>
+    /// 更新玩家身体渲染器列表（切换模型后需要调用此方法以正确隐藏/显示身体）
+    /// </summary>
+    /// <param name="newRenderers">新的渲染器数组</param>
+    public void UpdatePlayerRenderers(Renderer[] newRenderers)
+    {
+        playerBodyRenderers = newRenderers;
+        UpdatePlayerBodyVisibility();
     }
 
     #endregion

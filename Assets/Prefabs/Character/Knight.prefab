@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 4250414753165875863}
   - component: {fileID: 5525777655120337686}
   - component: {fileID: 275896768087270152}
+  - component: {fileID: 8967906151286106843}
   m_Layer: 11
   m_Name: Knight
   m_TagString: Untagged
@@ -430,8 +431,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4657644337709868826}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 100
+  m_Drag: 1000
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -484,6 +485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3782fbd9a3ad07b4cbfe9886de15af14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  treasureSpawnDelay: 1.5
   healthBar: {fileID: 2585615415513404234}
   material: {fileID: 2100000, guid: 4650ef8487ff8b44fb31fd0b30fbd43a, type: 2}
   maxHealth: 100
@@ -540,7 +542,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hintText: "\u8D2D\u4E70"
   key: E
-  shopType: 0
+  shopType: 3
+  buyPriceMultiplier: 1
+  sellPriceMultiplier: 0.5
+  shopInventoryData: {fileID: 0}
+--- !u!114 &8967906151286106843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657644337709868826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae1c8c690f20c3c4998bc7459a01801d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7490566737190170189
 GameObject:
   m_ObjectHideFlags: 0

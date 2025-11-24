@@ -22,11 +22,18 @@ public class PlayerState_IdleArmed : PlayerState
             return;
         }
 
-        // 如果按下攻击
-        if (playerCtrl.isAttacking)
+        // 如果按下攻击（仅Crewman使用攻击键）
+        if (playerCtrl.isAttacking && stateMachine.ProfessionType == ProfessionType.Crewman)
         {
             playerCtrl.isAttacking = false; // 消耗这次攻击输入
             stateMachine.SwitchState(typeof(PlayerState_Attack01));
+            return;
+        }
+
+        // Lookout通过鼠标右键进入拉弓状态
+        if (input.RotatePressed && stateMachine.ProfessionType == ProfessionType.Lookout && playerCtrl.isGround)
+        {
+            stateMachine.SwitchState(typeof(PlayerState_DrawArrow));
             return;
         }
 

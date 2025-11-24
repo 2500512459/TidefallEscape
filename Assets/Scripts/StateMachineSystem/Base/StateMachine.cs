@@ -6,6 +6,7 @@ using UnityEngine;
 public class StateMachine : MonoBehaviour
 {
     IState currentState;
+    public IState CurrentState => currentState;
 
     protected Dictionary<Type, IState> stateTable;
     void Update()

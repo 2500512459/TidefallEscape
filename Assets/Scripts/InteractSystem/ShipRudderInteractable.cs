@@ -6,7 +6,14 @@ public class ShipRudderInteractable : BaseInteractable
 {
     [Header("关联对象")]
     [SerializeField] private GameObject playerShip; // 船控制脚本所在对象
-    [SerializeField] private GameObject shipDriverModel;       // 船上驾驶员模型
+    [Header("船员模型")]
+    [SerializeField] private GameObject CrewmanModel;       
+    [Header("瞭望员模型")]
+    [SerializeField] private GameObject LookoutModel;
+    [Header("船长模型")]
+    [SerializeField] private GameObject CaptainModel;
+    [Header("船工模型")]
+    [SerializeField] private GameObject ShipwrightModel;
 
     private GameObject currentPlayer;
     public override void Interact(Character player)
@@ -21,9 +28,21 @@ public class ShipRudderInteractable : BaseInteractable
         }
         currentPlayer.SetActive(false);
 
-        if (shipDriverModel != null)
+        if (PlayerDataManager.Instance.SelectedProfession == ProfessionType.Crewman)
         {
-            shipDriverModel.SetActive(true);
+            CrewmanModel.SetActive(true);
+        }
+        else if (PlayerDataManager.Instance.SelectedProfession == ProfessionType.Lookout)
+        {
+            LookoutModel.SetActive(true);
+        }
+        else if (PlayerDataManager.Instance.SelectedProfession == ProfessionType.Captain)
+        {
+            CaptainModel.SetActive(true);
+        }
+        else if (PlayerDataManager.Instance.SelectedProfession == ProfessionType.Shipwright)
+        {
+            ShipwrightModel.SetActive(true);
         }
 
         if (playerShip != null)

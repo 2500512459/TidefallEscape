@@ -47,7 +47,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Rotate"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""8a1f9a94-491c-4c63-95da-0566b315442f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -74,7 +74,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""BoostMove"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""3db3a38c-693b-4bde-9a7c-1760237e169c"",
                     ""expectedControlType"": """",
                     ""processors"": """",

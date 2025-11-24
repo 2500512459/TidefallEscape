@@ -12,9 +12,16 @@ public class PlayerState_Run : PlayerState
     }
     public override void LogicUpdate()
     {
-        if (playerCtrl.isAttacking && playerCtrl.weaponState == PlayerCtrl.WeaponState.Armed)
+        // Crewman通过攻击键进入攻击状态
+        if (playerCtrl.isAttacking && playerCtrl.weaponState == PlayerCtrl.WeaponState.Armed && stateMachine.ProfessionType == ProfessionType.Crewman)
         {
             stateMachine.SwitchState(typeof(PlayerState_Attack01));
+        }
+
+        // Lookout通过鼠标右键进入拉弓状态
+        if (input.RotatePressed && playerCtrl.weaponState == PlayerCtrl.WeaponState.Armed && stateMachine.ProfessionType == ProfessionType.Lookout && playerCtrl.isGround)
+        {
+            stateMachine.SwitchState(typeof(PlayerState_DrawArrow));
         }
         if(playerCtrl.weaponState == PlayerCtrl.WeaponState.Drawing)
         {

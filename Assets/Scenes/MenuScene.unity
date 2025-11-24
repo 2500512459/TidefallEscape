@@ -311838,12 +311838,7 @@ Animator:
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform '601.joint_LeftPinky3'\n\tTransform '20.joint_RightFoot'\n\tTransform
-    '581.joint_RightRing2'\n\tTransform '594.joint_LeftThumb1'\n\tTransform '62.joint_Head'\n\tTransform
-    '29.joint_Torso2'\n\tTransform '592.joint_LeftIndex3'\n\tTransform '54.joint_LeftElbow'\n\tTransform
-    '600.joint_LeftPinky2'\n\tTransform '59.joint_LeftWrist'\n\tand more ..."
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -315855,6 +315850,16 @@ PrefabInstance:
     - target: {fileID: 166737789638849285, guid: fbb7055bfd021c045a186669b50a367d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 306199046150514367, guid: fbb7055bfd021c045a186669b50a367d,
+        type: 3}
+      propertyPath: SelectedProfession
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 306199046150514367, guid: fbb7055bfd021c045a186669b50a367d,
+        type: 3}
+      propertyPath: professionDataList.Array.data[0].professionType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6910551540593262103, guid: fbb7055bfd021c045a186669b50a367d,
@@ -439195,12 +439200,7 @@ Animator:
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform '46.joint_LeftArm'\n\tTransform '51.joint_LeftElbow'\n\tTransform
-    '44.joint_LeftShoulder'\n\tTransform '78.joint_RightKneeD'\n\tTransform '63.joint_RightEye'\n\tTransform
-    '14.joint_HipMaster'\n\tTransform '56.joint_LeftWrist'\n\tTransform '79.joint_RightFootD'\n\tTransform
-    '15.!joint_HipMasterTip'\n\tTransform '40.joint_RightWrist'\n\tand more ..."
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -531730,7 +531730,12 @@ Animator:
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform '91.joint_LeftRing2'\n\tTransform '60.joint_RightIndex1'\n\tTransform
+    '116.joint_FrontHair2Tip'\n\tTransform '152.joint_LeftHipD'\n\tTransform '29.joint_Torso2'\n\tTransform
+    '81.joint_LeftWrist'\n\tTransform '62.joint_RightIndex3'\n\tTransform '94.joint_LeftMiddle1'\n\tTransform
+    '53.joint_RightRing2'\n\tTransform '16.!joint_HipMasterTip'\n\tand more ..."
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0

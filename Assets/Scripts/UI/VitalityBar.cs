@@ -39,6 +39,16 @@ public class VitalityBar : MonoBehaviour
     [SerializeField, Tooltip("布局过渡使用的插值曲线")] 
     AnimationCurve layoutTransitionCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
+    [Header("第三人称距离缩放")]
+    [SerializeField, Tooltip("是否启用随距离缩放")]
+    bool enableDistanceScaling = true;
+    [SerializeField, Tooltip("参考距离（在此距离下缩放为1倍基准大小）")]
+    float referenceDistance = 5f;
+    [SerializeField, Tooltip("最小缩放值")]
+    float minScale = 0.3f;
+    [SerializeField, Tooltip("最大缩放值")]
+    float maxScale = 1.5f;
+
     // ======================
     // 内部状态
     // ======================
@@ -54,6 +64,7 @@ public class VitalityBar : MonoBehaviour
     private RectTransformState initialLayoutState; // 初始UI布局状态
     private bool capturedInitialLayout;          // 是否成功捕获初始布局
     private Coroutine layoutTransitionCoroutine; // 布局过渡动画协程
+    private Vector3 currentBaseScale = Vector3.one; // 当前模式的基准缩放（用于距离缩放计算）
 
     // ======================
     // RectTransform 状态结构体
@@ -195,6 +206,42 @@ public class VitalityBar : MonoBehaviour
         {
             rectTransform.anchoredPosition = targetPosition;
         }
+
+        // 处理距离缩放
+        if (enableDistanceScaling)
+        {
+            UpdateDistanceScale();
+        }
+    }
+
+    private void UpdateDistanceScale()
+    {
+        if (thirdPersonFollowTarget == null || playerCamera == null)
+            return;
+
+        Camera activeCamera = playerCamera.UnityCamera != null ? playerCamera.UnityCamera : Camera.main;
+        if (activeCamera == null)
+            return;
+
+        // 计算跟随目标的世界位置（复用TryGetWorldFollowLocalPoint中的逻辑）
+        Vector3 offset = thirdPersonWorldOffset;
+        if (thirdPersonOffsetInLocalSpace)
+            offset = thirdPersonFollowTarget.TransformDirection(thirdPersonWorldOffset);
+
+        Vector3 targetWorldPos = thirdPersonFollowTarget.position + offset;
+
+        // 计算距离
+        float distance = Vector3.Distance(activeCamera.transform.position, targetWorldPos);
+        
+        // 防止除以零
+        if (distance < 0.01f) distance = 0.01f;
+
+        // 计算缩放比例
+        float scaleMultiplier = referenceDistance / distance;
+        scaleMultiplier = Mathf.Clamp(scaleMultiplier, minScale, maxScale);
+
+        // 应用缩放（基于当前模式的基准缩放）
+        rectTransform.localScale = currentBaseScale * scaleMultiplier;
     }
 
     // ======================
@@ -264,6 +311,9 @@ public class VitalityBar : MonoBehaviour
         RectTransformState targetState = mode == PlayerCamera.CameraMode.FirstPerson
             ? GetFirstPersonTargetState()
             : GetThirdPersonTargetState();
+
+        // 记录目标状态的缩放作为基准缩放
+        currentBaseScale = targetState.localScale;
 
         // 若为第三人称并启用跟随，则激活world follow
         bool enableWorldFollow = mode == PlayerCamera.CameraMode.ThirdPerson &&

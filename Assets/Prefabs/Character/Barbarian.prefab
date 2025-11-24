@@ -532,6 +532,7 @@ GameObject:
   - component: {fileID: 599425571759281236}
   - component: {fileID: 5631345662953577086}
   - component: {fileID: 3249708283492477325}
+  - component: {fileID: 7967179125464221239}
   m_Layer: 11
   m_Name: Barbarian
   m_TagString: Untagged
@@ -564,8 +565,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8565737182357414507}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 100
+  m_Drag: 1000
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -708,6 +709,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hintText: "\u4EA4\u4E92"
   key: E
+--- !u!114 &7967179125464221239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8565737182357414507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae1c8c690f20c3c4998bc7459a01801d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7018511032432605347
 PrefabInstance:
   m_ObjectHideFlags: 0

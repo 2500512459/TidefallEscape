@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// 玩家数据管理器：保存玩家选择的职业等数据，使用DontDestroyOnLoad确保场景切换时数据不丢失
 /// </summary>
+[DefaultExecutionOrder(-100)]
 public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager Instance { get; private set; }

@@ -17,7 +17,7 @@ public class PlayerCtrl : MonoBehaviour
     public bool isGround => groundDetector.IsGrounded;
     public bool isOnShip => false;
     public bool isFalling => !isGround && rb.velocity.y < 0f && !isSwimming;
-    public bool isClimbing => wallDetector.IsTouchingWall;
+    public bool isClimbing => wallDetector.IsTouchingWall && PlayerCamera.cameraMode != PlayerCamera.CameraMode.AimPerson;
     public bool isClimbOver => wallDetector.IsClimbOver;
     public bool isSwimming;
     public bool isAttacking;
@@ -38,6 +38,8 @@ public class PlayerCtrl : MonoBehaviour
     [SerializeField] LayerMask obstacleLayer = -1;
 
     public PlayerCamera PlayerCamera;
+    public PlayerAimCamera PlayerAimCamera;
+    private ThirdPersonShooterController thirdPersonShooterController;
     public Transform orientation;
     public PlayerGroundDetector groundDetector;
     public PlayerWallDetector wallDetector;
@@ -69,6 +71,7 @@ public class PlayerCtrl : MonoBehaviour
         playerInput = PlayerInput.Instance;
         groundDetector = GetComponentInChildren<PlayerGroundDetector>();
         player = GetComponent<Player>();
+        thirdPersonShooterController = GetComponent<ThirdPersonShooterController>();
     }
     private void OnEnable()
     {
@@ -120,12 +123,12 @@ public class PlayerCtrl : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0f;
-
+        
         SpeedControl();
         StateHandler();
         HandleCombatInput();
         //HandleInteract();
-        if (playerInput.Jump && readyToJump && isGround && player.CanUseVitality)
+        if (playerInput.Jump && readyToJump && isGround && player.CanUseVitality && PlayerCamera.cameraMode != PlayerCamera.CameraMode.AimPerson)
         {
             readyToJump = false;
             player.ConsumeVitality(15f); // 跳跃消耗体力
@@ -281,9 +284,8 @@ public class PlayerCtrl : MonoBehaviour
             Vector3 airVel = moveDir * moveSpeed * airMultiplier;
             newVelocity = new Vector3(airVel.x, rb.velocity.y, airVel.z);
         }
-
-        rb.velocity = Vector3.Lerp(rb.velocity, newVelocity, Time.fixedDeltaTime * 10f);
         Turn();
+        rb.velocity = Vector3.Lerp(rb.velocity, newVelocity, Time.fixedDeltaTime * 10f);
     }
 
     public void SetVelocityY(float newVelocityY)
@@ -311,20 +313,27 @@ public class PlayerCtrl : MonoBehaviour
 
     public void Turn()
     {
-        // 第一人称模式下，让角色面向orientation的方向（由鼠标控制）
+        // ================================
+        // 第一人称：面向 orientation.forward
+        // ================================
         if (PlayerCamera.cameraMode == PlayerCamera.CameraMode.FirstPerson)
         {
-            // 使用orientation的方向，这由鼠标输入控制
-            Vector3 orientationForward = orientation.forward;
-            if (orientationForward != Vector3.zero)
+            Vector3 forward = orientation.forward;
+            forward.y = 0f;
+
+            if (forward != Vector3.zero)
             {
-                Quaternion targetRot = Quaternion.LookRotation(orientationForward);
+                Quaternion targetRot = Quaternion.LookRotation(forward);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * 15f);
             }
+            return;
         }
-        else
+        
+        // ================================
+        // 普通第三人称：根据移动方向转向
+        // ================================
+        if (PlayerCamera.cameraMode == PlayerCamera.CameraMode.ThirdPerson)
         {
-            // 第三人称模式下，正常根据移动方向转向
             Vector3 moveDir = MoveDirection();
             if (moveDir.sqrMagnitude > 0.01f)
             {
@@ -332,7 +341,50 @@ public class PlayerCtrl : MonoBehaviour
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * 15f);
             }
         }
+        
+        // ================================
+        // 瞄准模式：Orientation 跟随人物朝向
+        // ================================
+        if (PlayerCamera.cameraMode == PlayerCamera.CameraMode.AimPerson)
+        {
+            orientation.rotation = transform.rotation;
+        }
     }
+
+    /// <summary>
+    /// 瞄准状态下的转向逻辑：
+    /// 根据 TPS 控制器计算出的瞄准目标点旋转角色，仅在 AimPerson 模式下生效。
+    /// 设计给各个瞄准状态的 PhysicsUpdate 调用，避免和普通移动转向混用。
+    /// </summary>
+    public void AimTurn()
+    {
+        // 只有瞄准相机模式才旋转
+        if (PlayerCamera == null || PlayerCamera.cameraMode != PlayerCamera.CameraMode.AimPerson)
+            return;
+
+        if (thirdPersonShooterController == null || thirdPersonShooterController.AimTarget == null)
+            return;
+
+        Vector3 worldAimTarget = thirdPersonShooterController.AimTarget.position;
+        worldAimTarget.y = transform.position.y;
+
+        Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
+        if (aimDirection.sqrMagnitude <= 0.0001f)
+            return;
+
+        Quaternion targetRot = Quaternion.LookRotation(aimDirection, Vector3.up);
+        // 使用 fixedDeltaTime 以匹配状态机 PhysicsUpdate（通常在 FixedUpdate 中调用）
+        float rotateLerpSpeed = 20f;
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * rotateLerpSpeed);
+
+        // 确保 orientation 始终跟随角色朝向
+        if (orientation != null)
+        {
+            orientation.rotation = transform.rotation;
+        }
+    }
+
+
 
     public Vector3 MoveDirection()
     {

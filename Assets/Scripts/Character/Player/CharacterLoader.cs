@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class CharacterLoader : MonoBehaviour
 {
@@ -59,8 +60,14 @@ public class CharacterLoader : MonoBehaviour
              Debug.LogError("CharacterLoader: PlayerAttackCheck component not found on Player!");
         }
         weaponHandler.Initialize(data.weaponPrefab, hipSocket, handSocket, p1, p2, p3, attackCheck);
+
+        // 8. 设置Lookout职业的Rig (如果在Lookout职业且存在Rig配置)
+        if (currentProfession == ProfessionType.Lookout)
+        {
+            SetupLookoutRig(modelInstance);
+        }
         
-        // 8. 初始化状态机 (确保在模型加载后执行)
+        // 9. 初始化状态机 (确保在模型加载后执行)
         var stateMachine = GetComponent<PlayerStateMachine>();
         if (stateMachine != null)
         {
@@ -85,6 +92,60 @@ public class CharacterLoader : MonoBehaviour
         return instance;
     }
 
+    private void SetupLookoutRig(GameObject modelInstance)
+    {
+        var tpsController = GetComponent<ThirdPersonShooterController>();
+        if (tpsController == null) return;
+
+        // 查找名为 "Rig 1" 的子物体
+        Transform rigTrans = FindDeepChild(modelInstance.transform, "Rig 1");
+        Transform bodyAimTrans = FindDeepChild(rigTrans, "BodyAim");
+        Transform handleAimTrans = FindDeepChild(rigTrans, "HandleAim");
+        Transform handAimTrans = FindDeepChild(rigTrans, "HandAim");
+        if (rigTrans != null && bodyAimTrans != null && handleAimTrans != null && handAimTrans != null)
+        {
+            Rig rig = rigTrans.GetComponent<Rig>();
+            MultiAimConstraint bodyAimRig = bodyAimTrans.GetComponent<MultiAimConstraint>();
+            MultiAimConstraint handleAimRig = handleAimTrans.GetComponent<MultiAimConstraint>();
+            TwoBoneIKConstraint handAimRig = handAimTrans.GetComponent<TwoBoneIKConstraint>();
+            if (rig != null)
+            {
+                // 1. 设置初始权重为0
+                rig.weight = 0f;
+                
+                // 2. 传递Rig给Controller
+                tpsController.SetAimRig(rig, bodyAimRig, handleAimRig, handAimRig);
+
+                // 3. 设置BodyAim和Aim的目标
+                Transform target = tpsController.AimTarget;
+                SetupConstraintTarget(rigTrans, "BodyAim", target);
+                SetupConstraintTarget(rigTrans, "HandleAim", target);
+            }
+        }
+
+        // 4.重建 RigBuilder
+        RigBuilder rigBuilder = modelInstance.GetComponent<RigBuilder>();
+        if (rigBuilder != null)
+        {
+            rigBuilder.Build();
+        }
+    }
+
+    private void SetupConstraintTarget(Transform parent, string name, Transform target)
+    {
+        Transform t = FindDeepChild(parent, name);
+        if (t != null)
+        {
+            var constraint = t.GetComponent<MultiAimConstraint>();
+            if (constraint != null)
+            {
+                var data = constraint.data;
+                data.sourceObjects = new WeightedTransformArray { new WeightedTransform(target, 1f) };
+                constraint.data = data;
+            }
+        }
+    }
+
     // 递归查找子物体辅助方法
     private Transform FindDeepChild(Transform parent, string name)
     {
@@ -98,4 +159,3 @@ public class CharacterLoader : MonoBehaviour
         return null;
     }
 }
-

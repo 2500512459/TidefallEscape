@@ -7,6 +7,8 @@ public class PlayerStateMachine : StateMachine
     private Animator animator;
     private PlayerInput input;
     private PlayerCtrl playerCtrl;
+    private ProfessionType professionType;
+    public ProfessionType ProfessionType => professionType;
     [SerializeField] private PlayerState[] States;
 
     private bool isInitialized = false;
@@ -30,6 +32,7 @@ public class PlayerStateMachine : StateMachine
 
         input = PlayerInput.Instance;
         playerCtrl = GetComponent<PlayerCtrl>();
+        professionType = PlayerDataManager.Instance.SelectedProfession;
         stateTable = new Dictionary<Type, IState>(States.Length);
         
         // 初始化状态

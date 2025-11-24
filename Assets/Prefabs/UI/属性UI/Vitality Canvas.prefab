@@ -315,3 +315,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  enableDistanceScaling: 1
+  referenceDistance: 5
+  minScale: 0.5
+  maxScale: 1
