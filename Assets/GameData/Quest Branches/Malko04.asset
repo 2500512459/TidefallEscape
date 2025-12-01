@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf59c9549b51e8e4280b6534f796eb9b, type: 3}
+  m_Name: Malko04
+  m_EditorClassIdentifier: 
+  startDialogue: {fileID: 11400000, guid: 37f52a6cc6eeae74c882582f09ef5d54, type: 2}
+  progressDialogue: {fileID: 11400000, guid: df48cc87b8b672b4da917e8f1cdd1e42, type: 2}
+  completeDialogue: {fileID: 11400000, guid: 9f9fae4ee4d1db242978514020a79b5c, type: 2}
+  finishDialogue: {fileID: 11400000, guid: b241336399e47d74ea65e7d2ccc598d1, type: 2}

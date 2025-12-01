@@ -7,7 +7,8 @@ using DG.Tweening;
 public class DialogueUI : MonoSingleton<DialogueUI>
 {
     [Header("基本组件")]
-    public Image icon;
+    // 显示说话者姓名
+    public TextMeshProUGUI speakerNameText;
     public TextMeshProUGUI mainText;
     public Button nextButton;
     public GameObject dialoguePanel;
@@ -56,15 +57,9 @@ public class DialogueUI : MonoSingleton<DialogueUI>
         dialoguePanel.SetActive(true);
         currentIndex++;
 
-        if (piece.image != null)
-        {
-            icon.enabled = true;
-            icon.sprite = piece.image;
-        }
-        else
-        {
-            icon.enabled = false;
-        }
+        // 更新说话者姓名（如果有）
+        if (speakerNameText != null)
+            speakerNameText.text = string.IsNullOrEmpty(piece.characterName) ? string.Empty : piece.characterName;
         
         string text = piece.text;
 

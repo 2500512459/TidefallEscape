@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad20eb1992c5d7642af9271b8026b817, type: 3}
+  m_Name: Malko03 Finish
+  m_EditorClassIdentifier: 
+  dialoguePieces:
+  - ID: Piece01
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: "\u4F60\u542C\u8BF4\u2018\u8840\u5203\u2019\u7F57\u5FB7\u91CC\u683C\u65AF\u7684\u4E8B\u6CA1\uFF1F\u90A3\u53DB\u5F92\u4E0A\u4E2A\u6708\u5377\u4E86\"\u9ED1\u5E06\u8054\u76DF\"\u7684\u8D21\u91D1\u8DD1\u4E86\uFF0C\u542C\u8BF4\u4ED6\u6B7B\u5728\u4E86\u79D8\u5883\u4E4B\u4E2D\u3002"
+    quest: {fileID: 0}
+    options:
+    - text: "\u548C\u6211\u6709\u4EC0\u4E48\u5173\u7CFB"
+      targetID: Piece02
+      takeQuest: 0
+  - ID: Piece02
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: "\u53EA\u8981\u627E\u5230\u5B83\u7684\u4F69\u5251\uFF0C\u5728\"\u9ED1\u5E06\u8054\u76DF\"\u5C31\u80FD\u9886\u53D6\u9AD8\u989D\u7684\u8D4F\u91D1\uFF0C\u4F60\u53BB\u5E2E\u6211\u5728\u79D8\u5883\u4E2D\u641E\u5230\u4E00\u628A\u5251\uFF0C\u51ED\u6211\u9AD8\u8D85\u7684\u6280\u827A\uFF0C\u5251\u81EA\u7136\u5C31\u51FA\u6765\u4E86\u3002"
+    quest: {fileID: 11400000, guid: 68bca81bab8949d4a873e55fa615cdae, type: 2}
+    options:
+    - text: "\u9020\u5047\u662F\u5427"
+      targetID: Piece03
+      takeQuest: 0
+    - text: "\u6CA1\u95EE\u9898"
+      targetID: 
+      takeQuest: 1
+  - ID: Piece03
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: "\u6B38\u6B38\u6B38\uFF01\u522B\u8BF4\u7684\u8FD9\u4E48\u4F4E\u4FD7\uFF0C\u51ED\u672C\u4E8B\u641E\u6765\u7684\u5251\u600E\u4E48\u80FD\u53EB\u9020\u5047\u561E\uFF0C\u5C31\u95EE\u4F60\u5E72\u4E0D\u5E72\u561B\uFF0C\u4E0D\u5E72\u6211\u627E\u522B\u4EBA\u53BB\u4E86"
+    quest: {fileID: 11400000, guid: 68bca81bab8949d4a873e55fa615cdae, type: 2}
+    options:
+    - text: "\u5E72\u5E72\u5E72"
+      targetID: 
+      takeQuest: 1

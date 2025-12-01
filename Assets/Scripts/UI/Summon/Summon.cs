@@ -184,6 +184,10 @@ public class Summon : MonoBehaviour, IEndDragHandler
             {
                 // 设置当前船只类型
                 PlayerDataManager.Instance.SetCurrentShipType(shipType);
+
+                // 更新与“召唤船只”相关的任务进度
+                QuestManager.Instance.UpdateQuestProgress("Summon", 1);
+
                 // 使能 Intro Director 对象以播放 Timeline 动画
                 if (introDirector != null)
                 {

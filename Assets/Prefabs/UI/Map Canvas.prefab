@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3a33ce1591cda2447ace36686d3a40cc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c69502a3c010b824cbc713970342b722, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -318,3 +318,7 @@ MonoBehaviour:
   islandIconSize: {x: 50, y: 50}
   referenceSquareSize: 900
   islandManager: {fileID: 0}
+  playerTransform: {fileID: 0}
+  playerSprite: {fileID: 21300000, guid: 165a1e4181f191c4ba080c2323a50999, type: 3}
+  playerShipTransform: {fileID: 0}
+  playerShipSprite: {fileID: 21300000, guid: a4ce9b536d8fb514ca15a53e06ca69b9, type: 3}

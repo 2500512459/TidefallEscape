@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad20eb1992c5d7642af9271b8026b817, type: 3}
+  m_Name: Malko01 Finish
+  m_EditorClassIdentifier: 
+  dialoguePieces:
+  - ID: Piece01
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: "\u542C\u7740\uFF0C\u8FD9\u5EA7\u5C9B\u5C7F\u9644\u8FD1\u57CB\u85CF\u7740\u4E09\u5904\u5B9D\u85CF\uFF0C\u4F60\u53BB\u627E\u5230\u4ED6\u4EEC\u8BC1\u660E\u4F60\u4E0D\u662F\u4E00\u4E2A\u770B\u4E0D\u61C2\u5730\u56FE\u7684\u50BB\u5B50"
+    quest: {fileID: 11400000, guid: 3a35578c074e6ee4695e2f9c0ae590c3, type: 2}
+    options:
+    - text: "\u50BB\u5B50\u5728\u8BF4\u8C01\uFF1F"
+      targetID: Piece02
+      takeQuest: 0
+    - text: "\u597D\u7684\uFF01"
+      targetID: 
+      takeQuest: 1
+  - ID: Piece02
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: ".........???......!!!\uFF0C\u4F60\u5230\u5E95\u53BB\u4E0D\u53BB"
+    quest: {fileID: 11400000, guid: 3a35578c074e6ee4695e2f9c0ae590c3, type: 2}
+    options:
+    - text: "\u53BB\uFF0C\u4E3A\u4EC0\u4E48\u4E0D\u53BB"
+      targetID: 
+      takeQuest: 1

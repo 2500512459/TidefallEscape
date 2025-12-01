@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95e5dd9e969de7469a37264b9594e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  islandCount: 18
+  islandCount: 17
   cellSize: 100
   gridSide: 20
   center: {fileID: 0}
@@ -85,18 +85,27 @@ MonoBehaviour:
   - {fileID: 469126492308649794, guid: 4eb264e492bca454b883d55f5f0708ab, type: 3}
   - {fileID: 2648622892452884300, guid: 4167327be8991a24bb332be175cbe008, type: 3}
   - {fileID: 6466484110858323619, guid: 104aa21515b7e3d4a8299e621972c831, type: 3}
-  - {fileID: 9198335328987584964, guid: b955499e8d4f0964cadfbfb9f1955a90, type: 3}
   - {fileID: 5015860314977103195, guid: 31ffb0d36d21a93459eee778165ea1e6, type: 3}
   - {fileID: 2469416744734823244, guid: 760fe000e51596a4bbbb7e8764aec8bd, type: 3}
   sceneSpecificIslands:
   - sceneName: SeaScene_1
+    islandSprites:
+    - {fileID: 21300000, guid: 85a37b834ebbaad4ebf66247ad03ebd6, type: 3}
+    - {fileID: 21300000, guid: 88c676216106e944b98c47374e539074, type: 3}
+    - {fileID: 21300000, guid: 6e869483e24f13e4eaeb530e8fd61f8c, type: 3}
     requiredIslands:
     - {fileID: 5228430774295132731, guid: 0a0e6beb58c77ef41af4d133320bad3d, type: 3}
     - {fileID: 7924378244842159042, guid: 7b90bca612430494db049f28ab2f17ea, type: 3}
+    - {fileID: 9198335328987584964, guid: b955499e8d4f0964cadfbfb9f1955a90, type: 3}
   - sceneName: SeaScene_2
+    islandSprites:
+    - {fileID: 21300000, guid: 85a37b834ebbaad4ebf66247ad03ebd6, type: 3}
+    - {fileID: 21300000, guid: 88c676216106e944b98c47374e539074, type: 3}
+    - {fileID: 21300000, guid: 6e869483e24f13e4eaeb530e8fd61f8c, type: 3}
     requiredIslands:
     - {fileID: 5228430774295132731, guid: 0a0e6beb58c77ef41af4d133320bad3d, type: 3}
     - {fileID: 7924378244842159042, guid: 7b90bca612430494db049f28ab2f17ea, type: 3}
+    - {fileID: 9198335328987584964, guid: b955499e8d4f0964cadfbfb9f1955a90, type: 3}
   autoGenerateOnStart: 1
   useFixedSeed: 0
   seed: 0

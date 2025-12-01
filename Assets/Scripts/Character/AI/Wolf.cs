@@ -716,6 +716,11 @@ public class Wolf : AICharacter
 			StopCoroutine(deathSequenceCoroutine);
 		}
 		deathSequenceCoroutine = StartCoroutine(DeathSequenceCoroutine());
+
+		if (QuestManager.Instance != null)
+		{
+			QuestManager.Instance.UpdateQuestProgress("Wolf", 1);
+		}
 	}
 
 	private IEnumerator DeathSequenceCoroutine()

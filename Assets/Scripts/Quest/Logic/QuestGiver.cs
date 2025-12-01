@@ -110,6 +110,8 @@ public class QuestGiver : MonoBehaviour
     {
         if (UseBranches())
         {
+            // 根据已完成的任务推断当前应该处于任务链的哪一个分支
+            ResolveBranchIndexFromQuestProgress();
             var set = CurrentSet();
             ApplySetToFields(set);
         }
@@ -159,6 +161,49 @@ public class QuestGiver : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// 根据 QuestManager 中已完成的任务，推断当前任务链应该处于哪一段分支
+    /// 规则：从第 0 条分支开始，只要该分支的 finish 对应任务已 Finished，就推进到下一条分支
+    /// </summary>
+    void ResolveBranchIndexFromQuestProgress()
+    {
+        if (!UseBranches()) return;
+        if (QuestManager.Instance == null) return;
+
+        int resolvedIndex = 0;
+        for (int i = 0; i < questBranches.Count; i++)
+        {
+            var set = questBranches[i];
+            if (set == null || set.finishDialogue == null)
+            {
+                break;
+            }
+
+            var finishQuest = set.finishDialogue.GetQuest();
+            if (finishQuest == null)
+            {
+                break;
+            }
+
+            // 在完成任务列表中查找是否存在对应的已完成任务
+            var finishedTask = QuestManager.Instance.CompleteTaskList
+                .Find(q => q.questData.questName == finishQuest.questName && q.IsFinished);
+
+            if (finishedTask != null)
+            {
+                // 该分支的任务链已经走完，尝试推进到下一条
+                resolvedIndex = Mathf.Min(i + 1, questBranches.Count - 1);
+            }
+            else
+            {
+                // 当前分支尚未完成，停止推进
+                break;
+            }
+        }
+
+        currentBranchIndex = resolvedIndex;
     }
 
 }

@@ -56,6 +56,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-6d9416be860f5e747bded045900a56ed-32923200-0
         - globalObjectIdString: GlobalObjectId_V1-2-6d9416be860f5e747bded045900a56ed-7185325544470509915-847903420
         - globalObjectIdString: GlobalObjectId_V1-2-6d9416be860f5e747bded045900a56ed-1200276788195610043-1222149818
+        - globalObjectIdString: GlobalObjectId_V1-2-6d9416be860f5e747bded045900a56ed-7656313268822205292-2050896742
         values:
         - colorIndex: 0
           iconNameOrGuid: Camera Icon
@@ -127,6 +128,8 @@ MonoBehaviour:
           iconNameOrGuid: 
         - colorIndex: 0
           iconNameOrGuid: Canvas Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
     - goDatas_byGlobalId:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-2273282725586896789-235307949
@@ -150,6 +153,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-4461126968602953849-1776444854
         - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-1741700072500671090-2085593042
         - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-1200276788195610043-572081680
+        - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-7656313268822205292-986842421
         values:
         - colorIndex: 4
           iconNameOrGuid: Canvas Icon
@@ -187,6 +191,8 @@ MonoBehaviour:
           iconNameOrGuid: Camera Icon
         - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
         - colorIndex: 0
           iconNameOrGuid: Canvas Icon
         - colorIndex: 0

@@ -401,10 +401,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f479ec25831f7d488231e9ca5c4da51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  treasureSpawnDelay: 1.5
+  treasureBoxQuestRequireName: "\u666E\u901A\u6B66\u5668\u7BB1"
   lootContainerData: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
   HintUI: {fileID: 3878809822212881564}
   lootMaxSlotCount: 5
   allowDuplicates: 1
+  lastPlayedMaskIndex: -1
   openedMesh: {fileID: 4300000, guid: 5c509bc9e3ce92e418aac359ebdf4281, type: 3}
 --- !u!1 &7760224354017579746
 GameObject:

@@ -30,7 +30,5 @@ public class DialogueController : MonoBehaviour
         PlayerInput.Instance.FireInput?.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        InteractHintUI.Instance.HideHint();
     }
 }

@@ -318,6 +318,7 @@ MonoBehaviour:
   treasureBoxPrefab: {fileID: 2704006021686220995, guid: 755afaab5bd1b2e49b0b4598a1f70e33,
     type: 3}
   lootContainerSO: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
+  enemyShipQuestRequireName: MediumPirateShip
   maxHealth: 100
   shipType: 1
   hpInfoPrefab: {fileID: 9143422354485476187, guid: 66fd548ff8131044c8e34022d515b873,
@@ -362,7 +363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0e5942af3bc46af94137db46b4c6fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 0
+  maxVelocity: 5
   maxAcceleration: 10
   turnSpeed: 5
   targetRadius: 5

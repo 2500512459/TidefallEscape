@@ -8,6 +8,7 @@ using CleverCrow.Fluid.BTs.Trees;
 
 public class EnemyShip : AICharacter
 {
+    [SerializeField] private string enemyShipQuestRequireName = "EnemyShip";
     [SerializeField] public float maxHealth = 100f;
     [SerializeField] public EnemyShipType shipType = EnemyShipType.Small;
     [SerializeField] private GameObject hpInfoPrefab;
@@ -572,6 +573,11 @@ public class EnemyShip : AICharacter
         
         // 启动溶解效果（材质替换 + 参数驱动）
         StartDissolve();
+
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.UpdateQuestProgress(enemyShipQuestRequireName, 1);
+        }
 
         // 保持原有的延迟回收逻辑（5 秒后回收到对象池）
         Dying();

@@ -6,7 +6,8 @@ using UnityEngine;
 public class DialoguePiece
 {
     public string ID;
-    public Sprite image;
+    // 角色姓名（用于替代原来的头像 Sprite）
+    public string characterName;
     [TextArea]
     public string text;
     public QuestDataSO quest;

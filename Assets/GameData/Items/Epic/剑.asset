@@ -18,6 +18,7 @@ MonoBehaviour:
   type: 0
   rarity: 2
   maxStack: 1
+  cannonballType: 0
   worldPrefab: {fileID: 0}
   description: "\u653B\u51FB\u76EE\u6807\u9020\u6210<color=\"white\">10</color>\u70B9\u4F24\u5BB3"
   attackBonus: 10

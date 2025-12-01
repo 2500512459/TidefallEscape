@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64e56353f7e75c3498827a07073025ba, type: 3}
+  m_Name: Malko Quest03
+  m_EditorClassIdentifier: 
+  questName: "\u730E\u6740\u94F6\u80CC\u72FC"
+  description: "\u9A6C\u5C14\u79D1\u5728\u5728\u79D8\u5883\u4E2D\u906D\u94F6\u80CC\u72FC\u88AD\u51FB\uFF0C\u4E0D\u614E\u88AB\u54AC\u4F24\uFF0C\u4ED6\u8981\u4F60\u5E2E\u4ED6\u51FB\u67403\u5339\u72FC\u6765\u62A5\u6614\u65E5\u4E4B\u4EC7\u3002"
+  isStarted: 0
+  isCompleted: 0
+  isFinished: 0
+  questRequires:
+  - name: Wolf
+    requiteAmount: 3
+    currentAmount: 0
+  questRewards:
+  - item: {fileID: 11400000, guid: 845e326b3c846564eb62bb570e27ef5c, type: 2}
+    count: 10
+  goldCoinReward: 300
+  gemstoneReward: 0

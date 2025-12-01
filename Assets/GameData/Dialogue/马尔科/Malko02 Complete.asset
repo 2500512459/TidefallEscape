@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad20eb1992c5d7642af9271b8026b817, type: 3}
-  m_Name: Barbarian02 Finish
+  m_Name: Malko02 Complete
   m_EditorClassIdentifier: 
   dialoguePieces:
   - ID: Piece01
-    image: {fileID: 21300000, guid: 1eb5cb1305d974fb28c5be63d13e787f, type: 3}
-    text: "\u6211\u6709\u4E00\u8258\u8001\u65E7\u7684\u5C0F\u8239\uFF0C\u4F60\u53EF\u4EE5\u8BD5\u8BD5\u5728\u6D77\u9762\u4E0A\u6253\u635E\u51E0\u4E2A\u7BB1\u5B50"
-    quest: {fileID: 11400000, guid: 79bad394a3830df4b9b468fe88dd6e9c, type: 2}
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: "\u54E6\uFF0C\u8FD8\u4E0D\u9519\uFF0C\u770B\u6765\u4F60\u8FD8\u4E0D\u50BB"
+    quest: {fileID: 0}
     options:
-    - text: "\u6211\u8FD8\u6709\u5176\u4ED6\u7684\u4E8B\u60C5"
+    - text: "(\u7ED9\u4ED6\u4E00\u5DF4\u638C)"
       targetID: 
       takeQuest: 0
-    - text: "\u597D\u7684\uFF01"
+    - text: "(\u5FCD\u4F4F)"
       targetID: 
-      takeQuest: 1
+      takeQuest: 0

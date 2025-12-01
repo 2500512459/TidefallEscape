@@ -17,8 +17,17 @@ public class MapUI : MonoBehaviour
     [SerializeField] private float referenceSquareSize = 400f; // 用作地图正方形区域的参考边长（像素）
     [SerializeField] private IslandManager islandManager;
 
-    // 运行时生成的小岛图标，用于刷新时清理
-    private readonly List<GameObject> _islandIcons = new List<GameObject>();
+    [Header("角色与船只")]
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Sprite playerSprite;
+    [SerializeField] private Transform playerShipTransform;
+    [SerializeField] private Sprite playerShipSprite;
+
+    // 运行时生成的图标，用于刷新时清理
+    private readonly List<GameObject> _icons = new List<GameObject>();
+
+    // 标记当前场景的动态地图是否已经生成过（每个场景首次打开地图时生成一次）
+    private bool _hasGeneratedDynamicMapInThisScene = false;
 
     private void OnEnable()
     {
@@ -122,8 +131,15 @@ public class MapUI : MonoBehaviour
         if (DynamicMapPanel != null)
             DynamicMapPanel.SetActive(true);
 
-        // 预留接口：以后在这里生成 / 刷新动态地图内容
-        RefreshDynamicMap();
+        // 动态地图只在当前场景第一次打开地图时生成一次
+        if (!_hasGeneratedDynamicMapInThisScene)
+        {
+            RefreshDynamicMap();
+            _hasGeneratedDynamicMapInThisScene = true;
+        }
+
+        // 生成 / 刷新人物和船只
+        RefreshCharactersAndShips();
     }
 
     /// <summary>
@@ -157,7 +173,7 @@ public class MapUI : MonoBehaviour
         if (!hasRequired && !hasRandom)
         {
             // 没有真实生成的岛屿，直接清空图标即可
-            ClearIslandIcons();
+            ClearIcons();
             return;
         }
 
@@ -169,7 +185,7 @@ public class MapUI : MonoBehaviour
         }
 
         // 先清理旧的图标
-        ClearIslandIcons();
+        ClearIcons();
 
         // 计算真实岛屿在世界坐标中的边界，用于归一化到面板大小（包含特定岛屿和随机岛屿）
         float minX = float.MaxValue, maxX = float.MinValue;
@@ -223,28 +239,14 @@ public class MapUI : MonoBehaviour
             for (int i = 0; i < randomPositions.Count; i++)
             {
                 Vector3 worldPos = randomPositions[i];
-
-                // 归一化到 [0,1]
-                float nx = (worldPos.x - minX) / (maxX - minX);
-                float nz = (worldPos.z - minZ) / (maxZ - minZ);
-
-                // 转换到 [-0.5, 0.5]，再乘以正方形边长，得到 anchoredPosition
-                float localX = (nx - 0.5f) * squareSize;
-                float localY = (nz - 0.5f) * squareSize;
-
-                GameObject iconGO = new GameObject($"IslandIcon_Random_{iconIndex++}", typeof(RectTransform));
-                var rt = iconGO.GetComponent<RectTransform>();
-                rt.SetParent(panelRect, false);
-                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.anchoredPosition = new Vector2(localX, localY);
-                rt.sizeDelta = islandIconSize;
-
-                var img = iconGO.AddComponent<Image>();
-                img.sprite = islandSprite;
-                img.raycastTarget = false;
-
-                _islandIcons.Add(iconGO);
+                CreateMapIcon(
+                    panelRect,
+                    worldPos,
+                    islandSprite,
+                    $"IslandIcon_Random_{iconIndex++}",
+                    minX, maxX, minZ, maxZ,
+                    squareSize,
+                    clampToBounds: false, true);
             }
         }
 
@@ -257,23 +259,6 @@ public class MapUI : MonoBehaviour
             {
                 Vector3 worldPos = requiredPositions[i];
 
-                // 归一化到 [0,1]
-                float nx = (worldPos.x - minX) / (maxX - minX);
-                float nz = (worldPos.z - minZ) / (maxZ - minZ);
-
-                // 转换到 [-0.5, 0.5]，再乘以正方形边长，得到 anchoredPosition
-                float localX = (nx - 0.5f) * squareSize;
-                float localY = (nz - 0.5f) * squareSize;
-
-                GameObject iconGO = new GameObject($"IslandIcon_Required_{iconIndex++}", typeof(RectTransform));
-                var rt = iconGO.GetComponent<RectTransform>();
-                rt.SetParent(panelRect, false);
-                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.anchoredPosition = new Vector2(localX, localY);
-                rt.sizeDelta = islandIconSize;
-
-                var img = iconGO.AddComponent<Image>();
                 Sprite spriteToUse = null;
                 if (requiredSprites != null && i < requiredSprites.Count)
                 {
@@ -286,27 +271,168 @@ public class MapUI : MonoBehaviour
                     spriteToUse = islandSprite;
                 }
 
-                img.sprite = spriteToUse;
-                img.raycastTarget = false;
-
-                _islandIcons.Add(iconGO);
+                CreateMapIcon(
+                    panelRect,
+                    worldPos,
+                    spriteToUse,
+                    $"IslandIcon_Required_{iconIndex++}",
+                    minX, maxX, minZ, maxZ,
+                    squareSize,
+                    clampToBounds: false, true);
             }
         }
     }
 
     /// <summary>
-    /// 清理当前动态地图上的所有岛屿图标
+    /// 在已经绘制好的动态地图上，叠加玩家与船只的位置图标
     /// </summary>
-    private void ClearIslandIcons()
+    public void RefreshCharactersAndShips()
     {
-        for (int i = 0; i < _islandIcons.Count; i++)
+        // 先清理旧的图标
+        ClearIcons();
+
+        if (DynamicMapPanel == null)
         {
-            if (_islandIcons[i] != null)
+            Debug.LogWarning("[MapUI] DynamicMapPanel 未设置，无法刷新角色与船只图标。");
+            return;
+        }
+
+        if (islandManager == null)
+        {
+            islandManager = FindObjectOfType<IslandManager>();
+            if (islandManager == null)
             {
-                Destroy(_islandIcons[i]);
+                Debug.LogWarning("[MapUI] 未找到 IslandManager，无法获取岛屿位置用于坐标映射。");
+                return;
             }
         }
-        _islandIcons.Clear();
+
+        // 使用岛屿的范围来映射角色与船只位置
+        var requiredPositions = islandManager.SpawnedRequiredIslandPositions;
+        var randomPositions = islandManager.SpawnedRandomIslandPositions;
+
+        bool hasRequired = requiredPositions != null && requiredPositions.Count > 0;
+        bool hasRandom = randomPositions != null && randomPositions.Count > 0;
+
+        if (!hasRequired && !hasRandom)
+        {
+            // 没有岛屿，无法确定地图边界，就不绘制角色与船只
+            return;
+        }
+
+        var panelRect = DynamicMapPanel.GetComponent<RectTransform>();
+        if (panelRect == null)
+        {
+            Debug.LogWarning("[MapUI] DynamicMapPanel 上缺少 RectTransform，无法进行 UI 映射。");
+            return;
+        }
+
+        // 计算与 RefreshDynamicMap 相同的世界坐标边界
+        float minX = float.MaxValue, maxX = float.MinValue;
+        float minZ = float.MaxValue, maxZ = float.MinValue;
+
+        if (hasRandom)
+        {
+            for (int i = 0; i < randomPositions.Count; i++)
+            {
+                Vector3 p = randomPositions[i];
+                if (p.x < minX) minX = p.x;
+                if (p.x > maxX) maxX = p.x;
+                if (p.z < minZ) minZ = p.z;
+                if (p.z > maxZ) maxZ = p.z;
+            }
+        }
+
+        if (hasRequired)
+        {
+            for (int i = 0; i < requiredPositions.Count; i++)
+            {
+                Vector3 p = requiredPositions[i];
+                if (p.x < minX) minX = p.x;
+                if (p.x > maxX) maxX = p.x;
+                if (p.z < minZ) minZ = p.z;
+                if (p.z > maxZ) maxZ = p.z;
+            }
+        }
+
+        // 防止所有点在同一条线上导致除以 0
+        if (Mathf.Approximately(maxX, minX)) { maxX = minX + 1f; }
+        if (Mathf.Approximately(maxZ, minZ)) { maxZ = minZ + 1f; }
+
+        float panelWidth = panelRect.rect.width;
+        float panelHeight = panelRect.rect.height;
+
+        float referenceSize = referenceSquareSize > 0f ? referenceSquareSize : Screen.height * 0.5f;
+        float squareSize = Mathf.Min(referenceSize, panelWidth, panelHeight);
+
+        // 玩家
+        if (playerTransform != null && playerSprite != null)
+        {
+            CreateMapIcon(panelRect, playerTransform.position, playerSprite, "PlayerIcon",
+                minX, maxX, minZ, maxZ, squareSize, clampToBounds: true, false);
+        }
+
+        // 船只
+        if (playerShipTransform != null && playerShipSprite != null)
+        {
+            CreateMapIcon(panelRect, playerShipTransform.position, playerShipSprite, "PlayerShipIcon",
+                minX, maxX, minZ, maxZ, squareSize, clampToBounds: true, false);
+        }
+    }
+
+    /// <summary>
+    /// 创建一个小地图图标（岛屿/角色/船只通用），并添加到清理列表中
+    /// </summary>
+    private void CreateMapIcon(RectTransform panelRect, Vector3 worldPos, Sprite sprite,
+        string name, float minX, float maxX, float minZ, float maxZ, float squareSize, bool clampToBounds, bool isIsland)
+    {
+        if (sprite == null)
+            return;
+
+        // 归一化到 [0,1]
+        float nx = (worldPos.x - minX) / (maxX - minX);
+        float nz = (worldPos.z - minZ) / (maxZ - minZ);
+
+        if (clampToBounds)
+        {
+            // 对角色/船只做 Clamp，保证即使在岛屿范围之外也不会跑出地图区域之外太多
+            nx = Mathf.Clamp01(nx);
+            nz = Mathf.Clamp01(nz);
+        }
+
+        // 转换到 [-0.5, 0.5]，再乘以正方形边长，得到 anchoredPosition
+        float localX = (nx - 0.5f) * squareSize;
+        float localY = (nz - 0.5f) * squareSize;
+
+        GameObject iconGO = new GameObject(name, typeof(RectTransform));
+        var rt = iconGO.GetComponent<RectTransform>();
+        rt.SetParent(panelRect, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = new Vector2(localX, localY);
+        rt.sizeDelta = islandIconSize;
+
+        var img = iconGO.AddComponent<Image>();
+        img.sprite = sprite;
+        img.raycastTarget = false;
+
+        if (!isIsland)
+            _icons.Add(iconGO);
+    }
+
+    /// <summary>
+    /// 清理当前动态地图上的所有岛屿图标
+    /// </summary>
+    private void ClearIcons()
+    {
+        for (int i = 0; i < _icons.Count; i++)
+        {
+            if (_icons[i] != null)
+            {
+                Destroy(_icons[i]);
+            }
+        }
+        _icons.Clear();
     }
 }
 

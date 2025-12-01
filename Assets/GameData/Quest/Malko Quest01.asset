@@ -10,19 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64e56353f7e75c3498827a07073025ba, type: 3}
-  m_Name: Barbarian Quest03
+  m_Name: Malko Quest01
   m_EditorClassIdentifier: 
-  questName: "\u62FE\u53D6\u5B9D\u7BB1"
-  description: "\u91CE\u86EE\u4EBA\u5E0C\u671B\u6211\u4EEC\u5E2E\u4ED6\u62FE\u53D6\u6D77\u9762\u4E0A\u76843\u4E2A\u5B9D\u7BB1\uFF0C\u5B8C\u6210\u540E\u6709\u4E00\u4E9B\u5956\u52B1"
+  questName: "\u6D77\u76D7\u7684\u5165\u573A\u5238"
+  description: "\u9A6C\u5C14\u79D1\u7ED9\u4E86\u4F60\u4E00\u9762\u9ED1\u65D7\uFF0C\u8BA9\u4F60\u5230\u6E2F\u53E3\u7684\u53E6\u4E00\u4FA7\u53BB\u53EC\u5524\u6BCF\u4E00\u4E2A\u4EBA\u90FD\u62E5\u6709\u7684\u521D\u59CB\u8239\u53EA\u3002"
   isStarted: 0
   isCompleted: 0
   isFinished: 0
   questRequires:
-  - name: TreasureBox
-    requiteAmount: 3
+  - name: Summon
+    requiteAmount: 1
     currentAmount: 0
-  questRewards:
-  - item: {fileID: 11400000, guid: 5cec9252918e04747b9d54e835876c92, type: 2}
-    count: 1
+  questRewards: []
   goldCoinReward: 100
-  gemstoneReward: 100
+  gemstoneReward: 0

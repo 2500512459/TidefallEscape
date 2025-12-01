@@ -54,6 +54,8 @@ public class OptionUI : MonoBehaviour
                     {
                         InventoryManager.Instance.CheckQuestItem(require);
                     }
+                    // 接取新任务后立即保存一次任务状态
+                    QuestManager.Instance.SaveState();
                 }
             }
         }

@@ -28,7 +28,10 @@ public class ExcavationInteractable : BaseInteractable
         Quaternion spawnRot = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
         spawnedChest = Instantiate(chestPrefab, spawnPos, spawnRot);
-
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.UpdateQuestProgress("ExcavationPoint", 1);
+        }
         Destroy(gameObject);
     }
 }

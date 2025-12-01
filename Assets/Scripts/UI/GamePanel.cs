@@ -25,6 +25,8 @@ public class GamePanel : MonoSingleton<GamePanel>
         gemstoneLabel = rootElement.Q<Label>("GemstoneAmount");
         InitializeCurrencyData();
         SyncCurrencyFromData();
+        UpdateCurrencyLabels();
+
     }
 
     private void OnEnable()
@@ -94,10 +96,12 @@ public class GamePanel : MonoSingleton<GamePanel>
     {
         if (goldCoinLabel != null)
         {
+            Debug.Log("UpdateCurrencyLabels: " + goldCoinAmount);
             goldCoinLabel.text = goldCoinAmount.ToString();
         }
         if (gemstoneLabel != null)
         {
+            Debug.Log("UpdateCurrencyLabels: " + gemstoneAmount);
             gemstoneLabel.text = gemstoneAmount.ToString();
         }
     }

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf59c9549b51e8e4280b6534f796eb9b, type: 3}
-  m_Name: Barbarian02
+  m_Name: Malko03
   m_EditorClassIdentifier: 
-  startDialogue: {fileID: 11400000, guid: 4afe70f8c9c8fa74c879ca80a6bac2f1, type: 2}
-  progressDialogue: {fileID: 11400000, guid: d2381baebf8278c42ac7cf6f2e1db111, type: 2}
-  completeDialogue: {fileID: 11400000, guid: beceeaebf35549b498b3f074cc591596, type: 2}
-  finishDialogue: {fileID: 11400000, guid: 3bd8abf2fe7585646a6252c09ad1162d, type: 2}
+  startDialogue: {fileID: 11400000, guid: 3bd8abf2fe7585646a6252c09ad1162d, type: 2}
+  progressDialogue: {fileID: 11400000, guid: 20908413143008c4b8ca0d4b61ebd24b, type: 2}
+  completeDialogue: {fileID: 11400000, guid: defa659e35a163c4a8ed99c5c557d24b, type: 2}
+  finishDialogue: {fileID: 11400000, guid: 37f52a6cc6eeae74c882582f09ef5d54, type: 2}

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64e56353f7e75c3498827a07073025ba, type: 3}
+  m_Name: Malko Quest04
+  m_EditorClassIdentifier: 
+  questName: "\u63D0\u4EA4\u4E00\u67C4\u5251"
+  description: "\u53DB\u5F92\u201C\u8840\u5203\u201D\u7F57\u5FB7\u91CC\u683C\u65AF\u5377\u6B3E\u6F5C\u9003\u3002\u9A6C\u5C14\u79D1\u9700\u8981\u8FD9\u628A\u5251\u4F5C\u4E3A\u7F57\u5FB7\u91CC\u683C\u65AF\u5DF2\u6B7B\u7684\u8BC1\u636E\uFF0C\u4EE5\u9886\u53D6\u9ED1\u5E06\u8054\u76DF\u7684\u60AC\u8D4F\u3002"
+  isStarted: 1
+  isCompleted: 0
+  isFinished: 0
+  questRequires:
+  - name: "\u5251"
+    requiteAmount: 1
+    currentAmount: 0
+  questRewards:
+  - item: {fileID: 11400000, guid: cd468b5f4b4bdb044b91d8d5e120d563, type: 2}
+    count: 10
+  goldCoinReward: 300
+  gemstoneReward: 0

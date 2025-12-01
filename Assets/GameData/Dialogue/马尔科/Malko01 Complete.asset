@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad20eb1992c5d7642af9271b8026b817, type: 3}
-  m_Name: Barbarian02 Complete
+  m_Name: Malko01 Complete
   m_EditorClassIdentifier: 
   dialoguePieces:
   - ID: Piece01
-    image: {fileID: 21300000, guid: 1eb5cb1305d974fb28c5be63d13e787f, type: 3}
-    text: "\u8C22\u8C22\u4F60\u5E2E\u6211\u627E\u56DE\u4E86\u6211\u7684\u5B9D\u5251\uFF0C\u505A\u4E3A\u611F\u8C22\u6211\u9001\u4F60\u4E00\u628A\u5168\u65B0\u7684\u5251\uFF01"
+    characterName: "\u9A6C\u5C14\u79D1"
+    text: "\u54C8\uFF01\u5C45\u7136\u4E70\u4F60\u7684\u8D26\u2026\u2026\u6709\u610F\u601D\u3002\u770B\u4F60\u7684\u6837\u5B50\u4E00\u770B\u5C31\u6CA1\u94B1\u5403\u996D\uFF0C\u8FD9\u4E9B\u7ED9\u4F60\u4E86"
     quest: {fileID: 0}
     options:
-    - text: "\u8C22\u8C22\u4F60"
+    - text: "\u8FD9\u4E48\u597D\u5FC3\uFF1F"
       targetID: 
       takeQuest: 0

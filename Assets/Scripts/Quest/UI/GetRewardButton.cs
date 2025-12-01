@@ -99,6 +99,9 @@ public class GetRewardButton : MonoBehaviour
         QuestManager.Instance.CompleteTaskList.Add(task);
         QuestManager.Instance.tasks.Remove(task);
 
+        // 保存任务状态
+        QuestManager.Instance.SaveState();
+
         // 刷新任务列表
         QuestUI.Instance.SetupQuestList();
     }

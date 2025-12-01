@@ -48,5 +48,27 @@ public class MenuUI : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// 新游戏按键点击事件
+    /// </summary>
+    public void OnNewGameButtonClicked()
+    {
+
+        // 删除任务存档
+        if (PlayerPrefs.HasKey("QuestManagerState"))
+        {
+            PlayerPrefs.DeleteKey("QuestManagerState");
+        }
+
+
+        // 货币数据
+        PlayerDataManager.Instance.currencyData.SetGoldCoins(0, true);
+        PlayerDataManager.Instance.currencyData.SetGemstones(0, true);
+
+        // 交所有 PlayerPrefs 修改
+        PlayerPrefs.Save();
+
+        OnStartGameButtonClicked();
+    }
 }
 

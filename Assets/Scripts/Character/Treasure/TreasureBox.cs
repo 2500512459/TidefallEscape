@@ -8,6 +8,7 @@ using static UnityEditor.Progress;
 /// </summary>
 public class TreasureBox : Character
 {
+    [SerializeField] private string treasureBoxQuestRequireName = "TreasureBox";
     [Header("物品生成库")]
     public LootContainerSO lootContainerData;
 
@@ -125,7 +126,7 @@ public class TreasureBox : Character
         if (QuestManager.Instance != null)
         {
             Debug.Log($"[TreasureBox] {name} 通知任务系统已开启宝箱。");
-            QuestManager.Instance.UpdateQuestProgress("TreasureBox", 1);
+            QuestManager.Instance.UpdateQuestProgress(treasureBoxQuestRequireName, 1);
         }
 
         if (lootContainerData == null)
