@@ -15,6 +15,7 @@ public class PlayerState_ClimbOver : PlayerState
         if (IsAnimationFinished)
         {
             stateMachine.SwitchState(typeof(PlayerState_Idle));
+            return;
         }
     }
 }

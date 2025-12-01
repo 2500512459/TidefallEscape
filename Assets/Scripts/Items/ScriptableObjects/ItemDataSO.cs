@@ -23,8 +23,8 @@ public class ItemDataSO : ScriptableObject
     public float defenseBonus;
     [Tooltip("仅 backpacks 类型生效，增加背包容量")]
     public int extraBackpackSlots;
-    [Tooltip("仅 necklaces 类型生效，提升最大法力值")]
-    public float extraMaxManaPoints;
+    [Tooltip("仅 necklaces 类型生效，提升最大水分")]
+    public float extraMaxMoisture;
 
     [Header("交易属性")]
     [Tooltip("基础价值，买卖价格将基于此值计算")]

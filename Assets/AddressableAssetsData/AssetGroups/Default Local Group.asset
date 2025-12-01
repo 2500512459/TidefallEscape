@@ -18,12 +18,22 @@ MonoBehaviour:
   m_GUID: 8894326bf8896a24aa538264c5bfa407
   m_SerializeEntries:
   - m_GUID: 6d9416be860f5e747bded045900a56ed
-    m_Address: HomeScene
+    m_Address: SeaScene_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82fa3652acb40114593a2316bb7d5f4a
+    m_Address: MenuScene
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 99c9720ab356a0642a771bea13969a05
-    m_Address: SeaScene
+    m_Address: SeaScene_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d46c3ef31e37a61448ee13cd94bf89a0
+    m_Address: HomeScene
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

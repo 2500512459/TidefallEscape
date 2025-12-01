@@ -35,6 +35,7 @@ public class PlayerShipCtrl : MonoBehaviour
     private ShopShip highlightedShop;
     private SphereCollider trigger;
     private GameObject currentPlayer;   // 当前玩家
+    private ShipRudderInteractable shipRudderInteractable; // 舵轮交互对象引用
     [SerializeField] private GameObject DrivingModel;
     [SerializeField] public Transform DrivingPos;
     [SerializeField] private Transform CameraPos;
@@ -136,18 +137,37 @@ public class PlayerShipCtrl : MonoBehaviour
     {
         ExitControl();
     }
-    public void EnterControl(GameObject player)
+
+    /// <summary>
+    /// 进入驾驶状态：由交互逻辑调用
+    /// </summary>
+    public void EnterControl(GameObject player, ShipRudderInteractable rudderInteractable = null)
     {
         currentPlayer = player;
+        shipRudderInteractable = rudderInteractable; // 保存引用以便退出时关闭模型
         // 可在这里启用驾驶UI等
         InteractHintUI.Instance.ShowHint("停止驾驶", "E");
         isDriving = true;
+
+        // 通知 CharacterManager：距离计算的中心切换为船
+        if (CharacterManager.Instance != null)
+        {
+            CharacterManager.Instance.playerTransform = transform;
+        }
     }
+
+    /// <summary>
+    /// 退出驾驶状态：还原到玩家控制
+    /// </summary>
     public void ExitControl()
     {
         if (!isDriving)
             return;
         isDriving = false;
+        
+        // 先隐藏"停止驾驶"提示
+        InteractHintUI.Instance.HideHint();
+        
         // 禁用自己（关闭船控制）
         enabled = false;
         rigidbodyComponent.velocity = Vector3.zero; // 停止船只移动
@@ -163,21 +183,64 @@ public class PlayerShipCtrl : MonoBehaviour
         {
             DrivingModel.SetActive(false);
         }
+        
+        // 关闭职业模型
+        if (shipRudderInteractable != null)
+        {
+            shipRudderInteractable.DisableAllModels();
+        }
 
         // 恢复玩家对象
         if (currentPlayer != null)
         {
             currentPlayer.transform.position = DrivingPos.position;
             currentPlayer.SetActive(true);
-            PlayerCamera.target = currentPlayer.transform.Find("CameraPos");
+
+            // 通知 CharacterManager：距离计算的中心切换回玩家
+            if (CharacterManager.Instance != null)
+            {
+                CharacterManager.Instance.playerTransform = currentPlayer.transform;
+            }
+            
+            // 根据职业设置相机目标，使用 PlayerCamera 中已配置的引用字段
+            if (PlayerCamera != null)
+            {
+                Transform targetTransform = null;
+                
+                if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Crewman)
+                {
+                    targetTransform = PlayerCamera.CrewmanCameraPosition;
+                }
+                else if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Lookout)
+                {
+                    targetTransform = PlayerCamera.LookoutCameraPosition;
+                }
+                else if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Captain)
+                {
+                    targetTransform = PlayerCamera.CaptainCameraPosition;
+                }
+                else if(PlayerDataManager.Instance.SelectedProfession == ProfessionType.Shipwright)
+                {
+                    targetTransform = PlayerCamera.ShipwrightCameraPosition;
+                }
+                
+                // 设置相机目标（如果找到了有效的 Transform）
+                if (targetTransform != null)
+                {
+                    PlayerCamera.target = targetTransform;
+                }
+                else
+                {
+                    Debug.LogWarning($"无法找到 {PlayerDataManager.Instance.SelectedProfession} 职业的相机位置，请检查 PlayerCamera 组件配置或 Player 预制体结构");
+                }
+            }
+            
             var playerComponent = currentPlayer.GetComponent<Player>();
             if (playerComponent != null)
             {
                 playerComponent.SetVitalityBarVisible(true);
             }
         }
-        InteractHintUI.Instance.ShowHint("开船", "E");
-
     }
     // ===================== Tab键 打开/关闭背包 =====================
     public void TryOpenInventory(bool isOpen)
@@ -224,21 +287,59 @@ public class PlayerShipCtrl : MonoBehaviour
             else
             {
                 highlightedShop.ShowShopUI();
-                PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.playerInputAction.Control.OpenEvent);
+                PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.OpenEventInput);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
             return;
         }
         
+        // 检查是否已经打开了宝箱界面（如果是则关闭）
+        if (PlayerInput.Instance.isLootOpen)
+        {
+            PlayerInput.Instance.isInventoryOpen = false;
+            PlayerInput.Instance.isLootOpen = false;
+            InventoryUI.Instance?.HidePanel();
+            // 恢复输入
+            PlayerInput.Instance.EnableAllInputs();
+            // 恢复鼠标锁定
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            // 恢复 Context
+            if (PlayerDataManager.Instance != null)
+            {
+                PlayerDataManager.Instance.RestoreContext();
+            }
+            
+            // 记录当前播放进度到宝箱
+            if (highlightedBox != null)
+            {
+                highlightedBox.lastPlayedMaskIndex = StorageItem.GetCurrentPlayedIndex();
+            }
+
+            // 清理宝箱遮罩播放队列，防止下一个宝箱动画出错
+            StorageItem.ClearPlayedMaskRecords();
+
+            // 重新显示提示
+            if (highlightedBox != null)
+                highlightedBox.ShowHint();
+
+            return;
+        }
+
         // 然后宝箱
         if (highlightedBox != null)
         {
             Debug.Log($"打开最近的宝箱：{highlightedBox.name}");
             highlightedBox.TryOpen();
-
+            highlightedBox.HideHint();
+    
             PlayerInput.Instance.isInventoryOpen = true;
             PlayerInput.Instance.isLootOpen = true;
+            PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.OpenInventoryInput, PlayerInput.Instance.OpenEventInput);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 

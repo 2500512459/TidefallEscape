@@ -57,7 +57,20 @@ public class RarityMaskFill : MonoBehaviour
 
         // 确保GameObject激活
         if (!gameObject.activeInHierarchy)
+        {
             gameObject.SetActive(true);
+            
+            // 如果仍然未激活（例如父物体被禁用了），则无法启动协程，直接返回并触发完成回调
+            if (!gameObject.activeInHierarchy)
+            {
+                // 恢复状态以防万一
+                HideMaskImmediate();
+                
+                OnFillComplete?.Invoke();
+                OnFillComplete = null;
+                return;
+            }
+        }
 
         if (fillRoutine != null)
             StopCoroutine(fillRoutine);

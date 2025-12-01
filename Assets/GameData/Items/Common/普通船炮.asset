@@ -24,5 +24,5 @@ MonoBehaviour:
   attackBonus: 0
   defenseBonus: 0
   extraBackpackSlots: 0
-  extraMaxManaPoints: 0
+  extraMaxMoisture: 0
   baseValue: 10

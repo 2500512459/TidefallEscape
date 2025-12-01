@@ -12,6 +12,15 @@ public class NewGameMessage
         SceneName = sceneName;
     }
 }
+
+public class SceneLoadedMessage
+{
+    public string SceneName { get; }
+    public SceneLoadedMessage(string sceneName)
+    {
+        SceneName = sceneName;
+    }
+}
 #endregion
 
 

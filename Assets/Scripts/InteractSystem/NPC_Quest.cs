@@ -15,7 +15,7 @@ public class NPC_Quest : BaseInteractable
         if (dialogueController.canTalk)
         {
             dialogueController.OpenDialogue();
-            InteractHintUI.Instance.ShowHint("结束对话", key);
+            InteractHintUI.Instance.HideHint();
         }
         else
         {

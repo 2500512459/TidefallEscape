@@ -28,6 +28,10 @@ public class TreasureBox : Character
     // 是否已被打开（避免重复开箱）
     protected bool opened = false;
 
+    // 记录该宝箱遮罩动画已播放到的索引位置（下一次打开时从这里继续）
+    // 初始为 -1 表示从未播放过，0 表示第0格已播放或正要播放
+    public int lastPlayedMaskIndex = -1;
+
     protected override void Start()
     {
         base.Start();
@@ -87,13 +91,30 @@ public class TreasureBox : Character
                 GenerateLootItems();
 
             // 将 InventoryManager 的 LootData 指向本宝箱的 LootData
-            InventoryManager.Instance.LootData = LootData;
+            if (InventoryManager.Instance != null)
+            {
+                InventoryManager.Instance.LootData = LootData;
+                InventoryManager.Instance.currenContext = InventoryContext.Looting;
+                InventoryManager.Instance.OnInventoryChanged(InventoryType.Loot);
+            }
+            else
+            {
+                Debug.LogError("InventoryManager instance is null!");
+            }
+
+            // 临时修改 PlayerDataManager 的 context 为 Looting
+            if (PlayerDataManager.Instance != null)
+            {
+                PlayerDataManager.Instance.currentContext = InventoryContext.Looting;
+            }
+
+            // 每次打开新宝箱时，清除旧的播放记录，确保动画能正常播放
+            StorageItem.ClearPlayedMaskRecords();
+            // 设置起始播放索引：只有大于此索引的格子才播放动画
+            StorageItem.SetStartPlayIndex(lastPlayedMaskIndex);
 
             // 打开Loot界面
-            InventoryManager.Instance.currenContext = InventoryContext.Looting;
-            InventoryManager.Instance.OnInventoryChanged(InventoryType.Loot);
             InventoryUI.Instance?.ShowPanel();
-
         }
     }
     // ===================== 生成掉落物 =====================
@@ -125,7 +146,15 @@ public class TreasureBox : Character
         // 将掉落按顺序写入前 N 个格子
         for (int i = 0; i < lootItems.Count; i++)
         {
-            LootData.items[i] = lootItems[i];
+            if (i < LootData.items.Count)
+            {
+                LootData.items[i] = lootItems[i];
+            }
+            else
+            {
+                Debug.LogWarning($"[TreasureBox] 掉落物品数量超出容量限制，部分物品被丢弃。LootItems: {lootItems.Count}, Capacity: {LootData.items.Count}");
+                break;
+            }
         }
     }
 

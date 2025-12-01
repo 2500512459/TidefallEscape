@@ -11,6 +11,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform debugTransform;
     [SerializeField] private Transform bulletPrefab;
     [SerializeField] private Transform bulletSpawnPoint;
+    [SerializeField] private Canvas crosshairCanvas;
     private Vector3 mouseWorldPosition = Vector3.zero;
     [SerializeField] private float aimSmoothTime = 0.02f;   // 瞄准点平滑时间
     private Vector3 aimSmoothVelocity = Vector3.zero;       // SmoothDamp 速度缓存
@@ -189,6 +190,11 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     private void EnterAimMode()
     {
+        crosshairCanvas.gameObject.SetActive(true);
+
+        // 同步摄像机角度，防止角色突然转向
+        SyncAimCameraOrientation();
+
         isAiming = true;
         lastCameraMode = playerCamera.cameraMode; // 记录进入前的模式
         aimVirtualCamera.gameObject.SetActive(true);
@@ -196,8 +202,26 @@ public class ThirdPersonShooterController : MonoBehaviour
         SetAimRig(1f);
     }
 
+    private void SyncAimCameraOrientation()
+    {
+        var pov = aimVirtualCamera.GetCinemachineComponent<CinemachinePOV>();
+        if (pov == null) return;
+    
+        Vector3 camForward = Camera.main.transform.forward;
+    
+        // 水平角（yaw）
+        float yaw = Mathf.Atan2(camForward.x, camForward.z) * Mathf.Rad2Deg;
+    
+        // 垂直角（pitch）
+        float pitch = -Mathf.Asin(camForward.y) * Mathf.Rad2Deg;
+    
+        pov.m_HorizontalAxis.Value = yaw;
+        pov.m_VerticalAxis.Value = pitch;
+    }
+
     private void ExitAimMode()
     {
+        crosshairCanvas.gameObject.SetActive(false);
         isAiming = false;
         aimVirtualCamera.gameObject.SetActive(false);
         

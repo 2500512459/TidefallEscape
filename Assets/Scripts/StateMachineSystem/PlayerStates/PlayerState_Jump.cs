@@ -16,14 +16,17 @@ public class PlayerState_Jump : PlayerState
         if (playerCtrl.isFalling)
         {
             stateMachine.SwitchState(typeof(PlayerState_Fall));
+            return;
         }
         if (playerCtrl.isClimbing)
         {
             stateMachine.SwitchState(typeof(PlayerState_Climb));
+            return;
         }
         if(IsAnimationFinished)
         {
             stateMachine.SwitchState(typeof(PlayerState_Idle));
+            return;
         }
     }
 

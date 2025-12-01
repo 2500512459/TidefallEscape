@@ -7,9 +7,18 @@ using System.Collections.Generic;
 /// </summary>
 public class WaypointManager : MonoSingleton<WaypointManager>
 {
-    // 当前场景中的所有 Waypoint
-    private List<Waypoint> waypoints = new List<Waypoint>();
+    // 当前场景中的所有 Waypoint (按区域分组)
+    private Dictionary<int, List<Waypoint>> waypointsByZone = new Dictionary<int, List<Waypoint>>();
 
+    // --- 寻路数据结构缓存 (减少 GC Alloc) ---
+    // frontier：待探索的节点列表
+    private List<PathNode> frontier = new List<PathNode>();
+    // visitedNodes：已探索节点集合
+    private HashSet<Waypoint> visitedNodes = new HashSet<Waypoint>();
+    // cameFrom：用于记录每个节点的前驱节点
+    private Dictionary<Waypoint, Waypoint> cameFrom = new Dictionary<Waypoint, Waypoint>();
+    // costSoFar：记录从起点到某节点的累计代价
+    private Dictionary<Waypoint, float> costSoFar = new Dictionary<Waypoint, float>();
 
     private void Start()
     {
@@ -19,54 +28,121 @@ public class WaypointManager : MonoSingleton<WaypointManager>
 
 
     /// <summary>
-    /// 初始化路径点：收集所有 Waypoint，并自动生成连接关系
+    /// 初始化路径点：收集所有 Waypoint，并按区域自动生成连接关系
     /// </summary>
     public void InitializeWaypoints()
     {
-        waypoints.Clear();
+        waypointsByZone.Clear();
 
         // 找出场景中所有的 Waypoint
         Waypoint[] waypointArray = FindObjectsOfType<Waypoint>();
 
-        // 对每个节点自动建立与附近节点的连接
-        foreach (Waypoint wp in waypointArray)
+        // 将 Waypoint 按 ZoneID 分组
+        foreach (var wp in waypointArray)
         {
-            wp.AutoGenerateConnections(waypointArray);
+            if (!waypointsByZone.ContainsKey(wp.ZoneID))
+            {
+                waypointsByZone[wp.ZoneID] = new List<Waypoint>();
+            }
+            waypointsByZone[wp.ZoneID].Add(wp);
         }
 
-        // 加入管理列表
-        waypoints.AddRange(waypointArray);
+        // 对每个区域内的节点自动建立连接
+        foreach (var zoneID in waypointsByZone.Keys)
+        {
+            // 获取该区域的所有路点
+            List<Waypoint> zoneWaypoints = waypointsByZone[zoneID];
+            Waypoint[] zoneWaypointsArray = zoneWaypoints.ToArray();
+
+            // 仅在同区域内寻找连接
+            foreach (Waypoint wp in zoneWaypoints)
+            {
+                wp.AutoGenerateConnections(zoneWaypointsArray);
+            }
+        }
     }
 
 
     /// <summary>
-    /// 获取当前所有 Waypoint 列表
+    /// 获取所有 Waypoint 列表（聚合所有区域）
     /// 若列表为空，则重新初始化
     /// </summary>
     public List<Waypoint> GetWaypoints()
     {
-        if (waypoints.Count == 0)
+        if (waypointsByZone.Count == 0)
         {
             InitializeWaypoints();
         }
-        return waypoints;
+        
+        // 聚合所有区域的路点
+        List<Waypoint> allWaypoints = new List<Waypoint>();
+        foreach(var list in waypointsByZone.Values)
+        {
+            allWaypoints.AddRange(list);
+        }
+        return allWaypoints;
+    }
+
+    /// <summary>
+    /// 获取指定区域的所有 Waypoint
+    /// </summary>
+    public List<Waypoint> GetWaypoints(int zoneID)
+    {
+        if (waypointsByZone.Count == 0)
+        {
+            InitializeWaypoints();
+        }
+
+        if (waypointsByZone.ContainsKey(zoneID))
+        {
+            return waypointsByZone[zoneID];
+        }
+        return new List<Waypoint>();
     }
 
 
     /// <summary>
-    /// 获取距离某个位置最近的 Waypoint
+    /// 获取距离某个位置最近的 Waypoint (全图搜索)
     /// </summary>
     public Waypoint GetNearestWaypoint(Vector3 position)
     {
         Waypoint nearestWaypoint = null;
-        float minDistance = float.MaxValue;
+        float minDistanceSqr = float.MaxValue; // 使用距离平方
 
-        foreach (var waypoint in waypoints)
+        foreach (var list in waypointsByZone.Values)
         {
-            float distance = Vector3.Distance(waypoint.Position, position);
-            if (distance < minDistance)
+            foreach (var waypoint in list)
             {
-                minDistance = distance;
+                // 优化：使用 sqrMagnitude 避免开方
+                float distSqr = (waypoint.Position - position).sqrMagnitude;
+                if (distSqr < minDistanceSqr)
+                {
+                    minDistanceSqr = distSqr;
+                    nearestWaypoint = waypoint;
+                }
+            }
+        }
+
+        return nearestWaypoint;
+    }
+
+    /// <summary>
+    /// 获取距离某个位置最近的 Waypoint (指定区域)
+    /// </summary>
+    public Waypoint GetNearestWaypoint(Vector3 position, int zoneID)
+    {
+        if (!waypointsByZone.ContainsKey(zoneID))
+            return null;
+
+        Waypoint nearestWaypoint = null;
+        float minDistanceSqr = float.MaxValue;
+
+        foreach (var waypoint in waypointsByZone[zoneID])
+        {
+            float distSqr = (waypoint.Position - position).sqrMagnitude;
+            if (distSqr < minDistanceSqr)
+            {
+                minDistanceSqr = distSqr;
                 nearestWaypoint = waypoint;
             }
         }
@@ -84,18 +160,11 @@ public class WaypointManager : MonoSingleton<WaypointManager>
         if (start == null || goal == null)
             return new List<Waypoint>();
 
-        // frontier：待探索的节点列表（相当于 openList）
-        var frontier = new List<PathNode>();
-
-        // visitedNodes：已探索节点集合（closeList）
-        var visitedNodes = new HashSet<Waypoint>();
-
-        // cameFrom：用于记录每个节点的前驱节点（用于回溯路径）
-        var cameFrom = new Dictionary<Waypoint, Waypoint>();
-
-        // costSoFar：记录从起点到某节点的累计代价
-        var costSoFar = new Dictionary<Waypoint, float>();
-
+        // 清理缓存的数据结构，复用内存
+        frontier.Clear();
+        visitedNodes.Clear();
+        cameFrom.Clear();
+        costSoFar.Clear();
 
         // 起点节点初始化
         var startNode = new PathNode(start, 0, Vector3.Distance(start.Position, goal.Position));

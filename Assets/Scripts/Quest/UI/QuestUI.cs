@@ -81,9 +81,9 @@ public class QuestUI : MonoSingleton<QuestUI>
         questContentText.text = "";
         SetupQuestList();
         playerInput?.DisableMovementAndLook(disableInteractionInput: true);
-        if (playerInput != null)
+        if (playerInput != null && playerInput.FireInput != null)
         {
-            playerInput.playerInputAction.Control.Fire.Disable();
+            playerInput.FireInput.Disable();
         }
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -95,9 +95,9 @@ public class QuestUI : MonoSingleton<QuestUI>
         questPanel.SetActive(false);
         tooltip.gameObject.SetActive(false);
         playerInput?.EnableMovementAndLook(enableInteractionInput: true);
-        if (playerInput != null)
+        if (playerInput != null && playerInput.FireInput != null)
         {
-            playerInput.playerInputAction.Control.Fire.Enable();
+            playerInput.FireInput.Enable();
         }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

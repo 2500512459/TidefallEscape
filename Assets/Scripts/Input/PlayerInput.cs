@@ -5,35 +5,63 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoSingleton<PlayerInput>
 {
-    public PlayerInputAction playerInputAction;
+    // 使用 InputActionAsset，而不是自动生成的 PlayerInputAction C# 类
+    [Header("Input System")]
+    [Tooltip("拖拽你的 Input Actions 资源（.inputactions）到这里")]
+    [SerializeField] private InputActionAsset inputActionAsset;
+
+    // 对应 Control Action Map 里的各个 Action
+    private InputAction moveAction;
+    private InputAction lookAction;
+    private InputAction jumpAction;
+    private InputAction boostMoveAction;
+    private InputAction fireAction;
+    private InputAction weaponAction;
+    private InputAction switchWeaponAction;
+    private InputAction rotateAction;
+    private InputAction settingAction;
+    private InputAction mapAction;
+
+    // UI / 交互
+    private InputAction openInventoryAction;
+    private InputAction questAction;
+    private InputAction openEventAction;
+    private InputAction interactionEventAction;
 
     // ======================
     // 输入状态属性
     // ======================
-    public Vector2 axes => playerInputAction.Control.Move.ReadValue<Vector2>();
-    public Vector2 inputLook => playerInputAction.Control.Look.ReadValue<Vector2>();
+    public Vector2 axes => moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
+    public Vector2 inputLook => lookAction != null ? lookAction.ReadValue<Vector2>() : Vector2.zero;
 
     public bool Move => axes.sqrMagnitude > 0.01f;
     public float AxesX => axes.x;
     public float AxesY => axes.y;
 
-    public bool Jump => playerInputAction.Control.Jump.WasPressedThisFrame();
-    public bool StopJump => playerInputAction.Control.Jump.WasReleasedThisFrame();
+    public bool Jump => jumpAction != null && jumpAction.WasPressedThisFrame();
+    public bool StopJump => jumpAction != null && jumpAction.WasReleasedThisFrame();
 
-    public bool Sprint => playerInputAction.Control.BoostMove.IsPressed();
-    public bool Fire => playerInputAction.Control.Fire.WasReleasedThisFrame();
+    public bool Sprint => boostMoveAction != null && boostMoveAction.IsPressed();
+    public bool Fire => fireAction != null && fireAction.WasReleasedThisFrame();
 
-    public bool WeaponPressed => playerInputAction.Control.Weapon.WasPressedThisFrame();
-    public bool SwitchWeaponPressed => playerInputAction.Control.SwitchWeapon.WasPressedThisFrame();
-    public bool RotatePressed => playerInputAction.Control.Rotate.IsPressed();
+    public bool WeaponPressed => weaponAction != null && weaponAction.WasPressedThisFrame();
+    public bool SwitchWeaponPressed => switchWeaponAction != null && switchWeaponAction.WasPressedThisFrame();
+    public bool RotatePressed => rotateAction != null && rotateAction.IsPressed();
 
     // UI 输入
-    public bool InventoryPressed => playerInputAction.Control.OpenInventory.WasPressedThisFrame();
-    public bool QuestPressed => playerInputAction.Control.Quest.WasPressedThisFrame();
+    public bool InventoryPressed => openInventoryAction != null && openInventoryAction.WasPressedThisFrame();
+    public bool QuestPressed => questAction != null && questAction.WasPressedThisFrame();
     // 事件输入
     //public bool OpenEvent => playerInputAction.Control.OpenEvent.WasPressedThisFrame();
     //public bool InteractionEvent => playerInputAction.Control.InteractionEvent.WasPressedThisFrame();
 
+    // 对外暴露用于禁用/启用的关键 Action（用于其它系统调用）
+    public InputAction FireInput => fireAction;
+    public InputAction OpenInventoryInput => openInventoryAction;
+    public InputAction OpenEventInput => openEventAction;
+    public InputAction InteractionEventInput => interactionEventAction;
+    public InputAction SettingInput => settingAction;
+    public InputAction MapInput => mapAction;
 
     // ======================
     // 状态标志
@@ -53,44 +81,96 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     public event Action OnInteractionEvent;
     public event Action<bool> IsAttackedEvent;
     public event Action OnSwitchWeaponEvent;
+    public event Action EscPressedEvent;
+    public event Action MapPressedEvent;
 
     protected override void Awake()
     {
-        playerInputAction = new PlayerInputAction();
+        base.Awake();
+
+        if (inputActionAsset == null)
+        {
+            Debug.LogError("PlayerInput: 未在 Inspector 中指定 InputActionAsset，输入功能将无法工作。");
+            return;
+        }
+
+        // 获取 Control Action Map（名字需要与你的 Input Actions 中的 Map 名一致）
+        var controlMap = inputActionAsset.FindActionMap("Control", true);
+        if (controlMap == null)
+        {
+            Debug.LogError("PlayerInput: 在 InputActionAsset 中未找到名为 \"Control\" 的 Action Map。");
+            return;
+        }
+
+        // 根据 Action 名称获取各个 InputAction（名称需与 Input Actions 资源里一致）
+        moveAction = controlMap.FindAction("Move", true);
+        lookAction = controlMap.FindAction("Look", true);
+        jumpAction = controlMap.FindAction("Jump", true);
+        boostMoveAction = controlMap.FindAction("BoostMove", true);
+        fireAction = controlMap.FindAction("Fire", true);
+        weaponAction = controlMap.FindAction("Weapon", true);
+        switchWeaponAction = controlMap.FindAction("SwitchWeapon", true);
+        rotateAction = controlMap.FindAction("Rotate", true);
+        settingAction = controlMap.FindAction("Setting", true);
+        // 地图（M 键，对应 Control Action Map 中名为 \"Map\" 的 Action）
+        mapAction = controlMap.FindAction("Map", true);
+
+        openInventoryAction = controlMap.FindAction("OpenInventory", true);
+        questAction = controlMap.FindAction("Quest", true);
+        openEventAction = controlMap.FindAction("OpenEvent", true);
+        interactionEventAction = controlMap.FindAction("InteractionEvent", true);
 
         // 注册事件监听
-        playerInputAction.Control.OpenInventory.performed += OnInventoryInput;
-        playerInputAction.Control.OpenEvent.performed += OnLootOpen;            // 打开宝箱F
-        playerInputAction.Control.InteractionEvent.performed += OnInteraction;
-        //playerInputAction.Control.InteractionEvent.performed += OnBoardShip;    // 上船E
-        //playerInputAction.Control.InteractionEvent.performed += OnDriveBoat;    // 驾驶船E
-        playerInputAction.Control.Weapon.performed += OnIsAttackedInput;
-        playerInputAction.Control.Quest.performed += OnQuestInput;
-        playerInputAction.Control.SwitchWeapon.performed += OnSwitchWeaponInput;
+        if (openInventoryAction != null)
+            openInventoryAction.performed += OnInventoryInput;
+        if (openEventAction != null)
+            openEventAction.performed += OnLootOpen;            // 打开宝箱 F
+        if (interactionEventAction != null)
+            interactionEventAction.performed += OnInteraction;  // 交互 E
+        //interactionEventAction.performed += OnBoardShip;    // 上船E
+        //interactionEventAction.performed += OnDriveBoat;    // 驾驶船E
+        if (weaponAction != null)
+            weaponAction.performed += OnIsAttackedInput;
+        if (questAction != null)
+            questAction.performed += OnQuestInput;
+        if (switchWeaponAction != null)
+            switchWeaponAction.performed += OnSwitchWeaponInput;
+        if (settingAction != null)
+            settingAction.performed += OnEscInput;
+        if (mapAction != null)
+            mapAction.performed += OnMapInput;
     }
 
     void OnDestroy()
     {
         // 移除事件监听器并禁用输入控制
-        if (playerInputAction != null)
+        if (inputActionAsset != null)
         {
             try
             {
-                playerInputAction.Control.OpenInventory.performed -= OnInventoryInput;
-                playerInputAction.Control.OpenEvent.performed -= OnLootOpen;
-                playerInputAction.Control.InteractionEvent.performed -= OnInteraction;
-                //playerInputAction.Control.InteractionEvent.performed -= OnBoardShip;
-                //playerInputAction.Control.InteractionEvent.performed -= OnDriveBoat;
-                playerInputAction.Control.Weapon.performed -= OnIsAttackedInput;
-                playerInputAction.Control.Quest.performed -= OnQuestInput;
-                playerInputAction.Control.SwitchWeapon.performed -= OnSwitchWeaponInput;
+                if (openInventoryAction != null)
+                    openInventoryAction.performed -= OnInventoryInput;
+                if (openEventAction != null)
+                    openEventAction.performed -= OnLootOpen;
+                if (interactionEventAction != null)
+                    interactionEventAction.performed -= OnInteraction;
+                //if (interactionEventAction != null)
+                //    interactionEventAction.performed -= OnBoardShip;
+                //if (interactionEventAction != null)
+                //    interactionEventAction.performed -= OnDriveBoat;
+                if (weaponAction != null)
+                    weaponAction.performed -= OnIsAttackedInput;
+                if (questAction != null)
+                    questAction.performed -= OnQuestInput;
+                if (switchWeaponAction != null)
+                    switchWeaponAction.performed -= OnSwitchWeaponInput;
+                if (settingAction != null)
+                    settingAction.performed -= OnEscInput;
+                if (mapAction != null)
+                    mapAction.performed -= OnMapInput;
 
                 // 禁用输入控制，防止内存泄漏和性能问题
-                // 这是 PlayerInputAction 析构函数的要求
-                if (playerInputAction.Control.enabled)
-                {
-                    playerInputAction.Control.Disable();
-                }
+                inputActionAsset.Disable();
             }
             catch (System.Exception e)
             {
@@ -155,48 +235,70 @@ public class PlayerInput : MonoSingleton<PlayerInput>
         OnSwitchWeaponEvent?.Invoke();
     }
 
+    void OnEscInput(InputAction.CallbackContext context)
+    {
+        EscPressedEvent?.Invoke();
+    }
+
+    void OnMapInput(InputAction.CallbackContext context)
+    {
+        MapPressedEvent?.Invoke();
+    }
+
     // ======================
     // 控制启用/禁用
     // ======================
     public void EnableControlInput()
     {
-        playerInputAction.Enable();
+        if (inputActionAsset == null)
+        {
+            Debug.LogWarning("PlayerInput: InputActionAsset 未初始化，无法启用输入。");
+            return;
+        }
+
+        inputActionAsset.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     public void DisableControlInput()
     {
-        playerInputAction.Disable();
+        if (inputActionAsset == null)
+        {
+            Debug.LogWarning("PlayerInput: InputActionAsset 未初始化，无法禁用输入。");
+            return;
+        }
+
+        inputActionAsset.Disable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void DisableMovementAndLook(bool disableQuestInput = false, bool disableInteractionInput = false)
     {
-        playerInputAction.Control.Move.Disable();
-        playerInputAction.Control.Look.Disable();
+        moveAction?.Disable();
+        lookAction?.Disable();
         if (disableQuestInput)
         {
-            playerInputAction.Control.Quest.Disable();
+            questAction?.Disable();
         }
         if (disableInteractionInput)
         {
-            playerInputAction.Control.InteractionEvent.Disable();
+            interactionEventAction?.Disable();
         }
     }
     
     public void EnableMovementAndLook(bool enableQuestInput = false, bool enableInteractionInput = false)
     {
-        playerInputAction.Control.Move.Enable();
-        playerInputAction.Control.Look.Enable();
+        moveAction?.Enable();
+        lookAction?.Enable();
         if (enableQuestInput)
         {
-            playerInputAction.Control.Quest.Enable();
+            questAction?.Enable();
         }
         if (enableInteractionInput)
         {
-            playerInputAction.Control.InteractionEvent.Enable();
+            interactionEventAction?.Enable();
         }
     }
 
@@ -207,9 +309,9 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     /// <param name="allowedActions">允许继续启用的输入动作集合。</param>
     public void DisableAllInputsExcept(params InputAction[] allowedActions)
     {
-        if (playerInputAction == null || playerInputAction.asset == null)
+        if (inputActionAsset == null)
         {
-            Debug.LogWarning("PlayerInputAction 未初始化，无法禁用输入。");
+            Debug.LogWarning("PlayerInput: InputActionAsset 未初始化，无法禁用输入。");
             return;
         }
 
@@ -225,7 +327,7 @@ public class PlayerInput : MonoSingleton<PlayerInput>
             }
         }
 
-        foreach (var actionMap in playerInputAction.asset.actionMaps)
+        foreach (var actionMap in inputActionAsset.actionMaps)
         {
             foreach (var action in actionMap.actions)
             {
@@ -251,13 +353,13 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     /// </summary>
     public void EnableAllInputs()
     {
-        if (playerInputAction == null || playerInputAction.asset == null)
+        if (inputActionAsset == null)
         {
-            Debug.LogWarning("PlayerInputAction 未初始化，无法启用输入。");
+            Debug.LogWarning("PlayerInput: InputActionAsset 未初始化，无法启用输入。");
             return;
         }
 
-        foreach (var actionMap in playerInputAction.asset.actionMaps)
+        foreach (var actionMap in inputActionAsset.actionMaps)
         {
             foreach (var action in actionMap.actions)
             {
@@ -275,9 +377,9 @@ public class PlayerInput : MonoSingleton<PlayerInput>
     /// <param name="excludedActions">需要保持禁用的输入动作。</param>
     public void EnableAllInputsExcept(params InputAction[] excludedActions)
     {
-        if (playerInputAction == null || playerInputAction.asset == null)
+        if (inputActionAsset == null)
         {
-            Debug.LogWarning("PlayerInputAction 未初始化，无法启用输入。");
+            Debug.LogWarning("PlayerInput: InputActionAsset 未初始化，无法启用输入。");
             return;
         }
 
@@ -293,7 +395,7 @@ public class PlayerInput : MonoSingleton<PlayerInput>
             }
         }
 
-        foreach (var actionMap in playerInputAction.asset.actionMaps)
+        foreach (var actionMap in inputActionAsset.actionMaps)
         {
             foreach (var action in actionMap.actions)
             {

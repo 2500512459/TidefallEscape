@@ -13,6 +13,12 @@ public class Character : MonoBehaviour
     protected Animator animator;
     protected Rigidbody rgBody;
     protected bool isDead = false;
+
+    /// <summary>
+    /// 当前角色的激活等级（用于根据与玩家距离控制 AI/动画 等开销）
+    /// 默认完全激活
+    /// </summary>
+    protected CharacterActiveLevel activeLevel = CharacterActiveLevel.Full;
     [Header("Treasure Spawn Timing")]
     [Tooltip("角色死亡后生成宝箱的延迟时间（秒）")]
     [SerializeField] protected float treasureSpawnDelay = 1.5f;
@@ -66,6 +72,14 @@ public class Character : MonoBehaviour
     /// </summary>
     public Rigidbody GetRigidBody() { return rgBody; }
 
+    /// <summary>
+    /// 设置当前角色的激活等级（可被子类重写，做更精细的启用/禁用）
+    /// 默认只记录状态，不做额外操作。
+    /// </summary>
+    public virtual void SetActiveLevel(CharacterActiveLevel level)
+    {
+        activeLevel = level;
+    }
 
     public virtual void TakeDamage(float damage)
     {
@@ -117,13 +131,13 @@ public class Character : MonoBehaviour
         }
         SpawnTreasureBox();
     }
-    public virtual void TakeManaPoints(float manaPoints)
+    public virtual void TakeMoisture(float moisture)
     {
-        Attribute mp = attributesModule.attributes[AttributeType.MP];
+        Attribute moistureAttr = attributesModule.attributes[AttributeType.Moisture];
         
-        float mpValue = mp.Value;
-        mpValue -= manaPoints;
-        attributesModule.SetAttributeValue(AttributeType.MP, mpValue);
+        float moistureValue = moistureAttr.Value;
+        moistureValue -= moisture;
+        attributesModule.SetAttributeValue(AttributeType.Moisture, moistureValue);
     }
 
     [ContextMenu("调试/打印角色属性")]

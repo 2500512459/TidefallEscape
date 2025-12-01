@@ -30,16 +30,20 @@ public class NPC : Character
 
     [SerializeField] private BaseInteractable interactable;
     private Transform player;
+    private Collider npcCollider;
     private bool playerInSight = false;
 
     private bool isDissolving = false;
     private float dissolveSpeed = 3f;
     private float dissolveAmount = 0f;
+    private Renderer re;
 
     protected override void Awake()
     {
         base.Awake();
         animationController = GetComponent<NPCAnimationController>();
+        npcCollider = GetComponent<Collider>();
+        re = GetComponentInChildren<Renderer>();
     }
 
     protected override void Start()
@@ -47,7 +51,7 @@ public class NPC : Character
         base.Start();
         attributesModule.AddAttribute(AttributeType.Hp, maxHealth, 0, maxHealth);
         healthBar.SetMaxHealth(maxHealth);
-        healthBar.gameObject.SetActive(true);
+        healthBar.gameObject.SetActive(false);
 
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
     }
@@ -97,6 +101,7 @@ public class NPC : Character
     {
         base.TakeDamage(damage);
         animationController.PlayHit();
+        healthBar.gameObject.SetActive(true);
         healthBar.SetHealth(attributesModule.GetAttributeValue(AttributeType.Hp));
 
         if (isDead)
@@ -107,12 +112,26 @@ public class NPC : Character
                 interactable.OnLoseFocus(this);
         }
     }
-
+    protected override void Die()
+    {
+        base.Die();
+        if (npcCollider != null)
+            npcCollider.enabled = false;
+    }
     // 动画事件中调用
     public void Dissolution()
     {
         if (!isDissolving)
         {
+             // 保存原贴图
+            Texture tex = re.material.GetTexture("_MainTex");
+            // 克隆一个 Dissolve 材质实例避免互相影响
+            Material dissolveMat = new Material(material);
+            dissolveMat.SetTexture("_MainTex", tex);
+            // 切换材质
+            re.material = dissolveMat;
+            // 使用这个实例进行溶解
+            material = dissolveMat;
             StartCoroutine(DissolveCoroutine());
         }
     }

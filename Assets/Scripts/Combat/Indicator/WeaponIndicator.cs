@@ -52,6 +52,10 @@ public class WeaponIndicator : MonoBehaviour
     [SerializeField] private GameObject cannonBallPrefab;  // 普通弹预制体
     [SerializeField] private GameObject armorPiercingCannonBallPrefab;  // 穿甲弹预制体
 
+    [Header("炮弹物品数据")]
+    [SerializeField] private ItemDataSO normalCannonballData;
+    [SerializeField] private ItemDataSO armorPiercingCannonballData;
+
     [Header("炮库")]
     [Tooltip("存放炮弹的库存")]
     [SerializeField] private InventoryDataSO cannonAmmoInventory;
@@ -521,6 +525,17 @@ public class WeaponIndicator : MonoBehaviour
 
         // 在发射点位置实例化炮弹
         GameObject obj = Instantiate(prefabToUse, currentFirePoint.position, Quaternion.identity);
+
+        // 设置伤害源所有者 (玩家船只)
+        // 假设 WeaponIndicator 是挂在玩家船只的子物体上，或者直接挂在船上
+        GameObject owner = transform.root.gameObject; // 或者 GetComponentInParent<PlayerShip>()?.gameObject
+        DamageVolume dv = obj.GetComponent<DamageVolume>();
+        if (dv == null) dv = obj.GetComponentInChildren<DamageVolume>();
+        if (dv != null)
+        {
+            dv.Setup(owner);
+        }
+
         CannonBall ball = obj.GetComponent<CannonBall>();
         // 如果炮弹有CannonBall脚本，则设置速度和发射方向
         if (ball != null)
@@ -531,5 +546,55 @@ public class WeaponIndicator : MonoBehaviour
 
         // 消耗一个炮弹
         ConsumeCannonball(cannonballStack.item);
+    }
+
+    public void LoadingCannon(int count = 10, CannonballType cannonballType = CannonballType.Normal)
+    {
+        if (cannonAmmoInventory == null)
+        {
+            Debug.LogWarning("[WeaponIndicator] 炮库 InventoryDataSO 未赋值！");
+            return;
+        }
+
+        ItemDataSO itemToAdd = null;
+        switch (cannonballType)
+        {
+            case CannonballType.Normal:
+                itemToAdd = normalCannonballData;
+                break;
+            case CannonballType.ArmorPiercing:
+                itemToAdd = armorPiercingCannonballData;
+                break;
+        }
+
+        if (itemToAdd == null)
+        {
+            Debug.LogWarning($"[WeaponIndicator] 未找到类型为 {cannonballType} 的炮弹 ItemDataSO！请在 Inspector 中赋值。");
+            return;
+        }
+
+        // AddItem 会处理堆叠和空位，并触发 OnInventoryChanged
+        // 注意：InventoryDataSO.AddItem 需要传入 inventory type，这里使用 cannonAmmoInventory 自身的 type
+        bool success = cannonAmmoInventory.AddItem(itemToAdd, count, cannonAmmoInventory.type);
+        if (success)
+        {
+            Debug.Log($"[WeaponIndicator] 已装填 {count} 发 {itemToAdd.itemName}");
+        }
+        else
+        {
+            Debug.LogWarning($"[WeaponIndicator] 装填失败！{itemToAdd.itemName} (可能是库存已满)");
+        }
+    }
+
+    [ContextMenu("Load Normal Cannonball (x10)")]
+    private void DebugLoadNormalCannon()
+    {
+        LoadingCannon(10, CannonballType.Normal);
+    }
+
+    [ContextMenu("Load AP Cannonball (x10)")]
+    private void DebugLoadAPCannon()
+    {
+        LoadingCannon(10, CannonballType.ArmorPiercing);
     }
 }

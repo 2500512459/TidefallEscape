@@ -101,13 +101,13 @@ MonoBehaviour:
   _dynamicScale: 10
   _cascadeCount: 1
   _cascadeResolution: 1
-  colorsPreset: {fileID: 11400000, guid: 2df22753164cee643bc1a2a0c968db3b, type: 2}
+  colorsPreset: {fileID: 11400000, guid: 96c4a52ea23da9c4697691401e2e8cc1, type: 2}
   viewer: {fileID: 0}
   waterMaterial: {fileID: 2100000, guid: 79f16f7e2e961cc46828737b584510ee, type: 2}
   updateMaterialProperties: 0
   lengthScale: 100
-  vertexDensity: 40
-  clipLevels: 8
+  vertexDensity: 15
+  clipLevels: 6
   skirtSize: 50
   sssStrength: 1
   sssScale: 11.2

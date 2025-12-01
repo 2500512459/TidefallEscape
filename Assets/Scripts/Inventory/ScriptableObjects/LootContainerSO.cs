@@ -100,6 +100,9 @@ public class LootContainerSO : ScriptableObject
             return null;
 
         // 权重加权随机
+        /*
+        例如 1 2 3 4 5，权重和为15，随机权重为7，那么返回第4个条目
+        */
         int totalWeight = 0;
         foreach (var e in filtered)
             totalWeight += Mathf.Max(1, e.weight);

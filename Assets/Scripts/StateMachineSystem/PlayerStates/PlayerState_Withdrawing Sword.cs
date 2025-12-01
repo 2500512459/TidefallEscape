@@ -18,10 +18,12 @@ public class PlayerState_WithdrawingSword : PlayerState
             if(input.Move)
             {
                 stateMachine.SwitchState(typeof(PlayerState_Run));
+                return;
             }
             else
             {
                 stateMachine.SwitchState(typeof(PlayerState_IdleArmed));
+                return;
             }
         }
     }

@@ -16,6 +16,31 @@ public class ShipRudderInteractable : BaseInteractable
     [SerializeField] private GameObject ShipwrightModel;
 
     private GameObject currentPlayer;
+    
+
+    private void Start()
+    {
+        playerShip = PlayerShipManager.Instance.PlayerShip.gameObject;
+        CrewmanModel = playerShip.transform.Find("CrewmanModel").gameObject;
+        LookoutModel = playerShip.transform.Find("LookoutModel").gameObject;
+        //CaptainModel = playerShip.transform.Find("CaptainModel").gameObject;
+        //ShipwrightModel = playerShip.transform.Find("ShipwrightModel").gameObject;
+    }
+    /// <summary>
+    /// 关闭所有职业模型
+    /// </summary>
+    public void DisableAllModels()
+    {
+        if (CrewmanModel != null)
+            CrewmanModel.SetActive(false);
+        if (LookoutModel != null)
+            LookoutModel.SetActive(false);
+        if (CaptainModel != null)
+            CaptainModel.SetActive(false);
+        if (ShipwrightModel != null)
+            ShipwrightModel.SetActive(false);
+    }
+    
     public override void Interact(Character player)
     {
         Debug.Log("ShipRudderInteractable: Interact");
@@ -51,7 +76,7 @@ public class ShipRudderInteractable : BaseInteractable
             if (shipCtrl != null)
             {
                 shipCtrl.enabled = true;
-                shipCtrl.EnterControl(currentPlayer); // 传递玩家引用（便于退出控制）
+                shipCtrl.EnterControl(currentPlayer, this); // 传递玩家引用和当前交互对象引用（便于退出控制时关闭模型）
             }
 
             var weaponInDicator = playerShip.GetComponent<WeaponIndicator>();

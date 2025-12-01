@@ -5,7 +5,7 @@ using UnityEngine.Events;
 public enum AttributeType
 {
     Hp, //生命
-    MP, //法力
+    Moisture, //水分
     VIT,    //体力
     Atk,    //攻击力
     Def,    //防御力

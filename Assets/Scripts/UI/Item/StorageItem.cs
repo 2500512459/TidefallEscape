@@ -42,9 +42,32 @@ public class StorageItem : ItemSlot
     private static List<MaskPlayRequest> maskPlayQueue = new List<MaskPlayRequest>();
     private static bool isPlayingSequence = false;
     private static MaskQueueManager queueManagerInstance;
+    
+    // 全局记录：当前这一轮播放到了哪个索引（用于回传给 TreasureBox）
+    private static int currentMaxPlayedIndex = -1;
+    // 全局记录：本次打开时的起始忽略索引（小于等于此索引的不播放）
+    private static int startIgnoreIndex = -1;
 
     // 队列管理器辅助类
     private class MaskQueueManager : MonoBehaviour { }
+
+    /// <summary>
+    /// 设置本次打开宝箱的起始播放索引（外部调用）
+    /// 小于等于此索引的物品将直接显示，不播放动画
+    /// </summary>
+    public static void SetStartPlayIndex(int index)
+    {
+        startIgnoreIndex = index;
+        currentMaxPlayedIndex = index; // 从上次进度继续
+    }
+
+    /// <summary>
+    /// 获取当前播放到的最大索引（外部调用，用于保存进度）
+    /// </summary>
+    public static int GetCurrentPlayedIndex()
+    {
+        return currentMaxPlayedIndex;
+    }
 
     protected override void Awake()
     {
@@ -59,6 +82,15 @@ public class StorageItem : ItemSlot
         
         // 确保队列管理器存在
         EnsureQueueManager();
+    }
+
+    protected void OnDisable()
+    {
+        // 当UI被禁用时，立即停止当前的遮罩动画
+        if (lootMaskFill != null)
+        {
+            lootMaskFill.StopAndHide();
+        }
     }
 
     /// <summary>
@@ -175,6 +207,17 @@ public class StorageItem : ItemSlot
         // 检查该格子是否已经播放过遮罩动画（使用 slotIndex+itemID 作为唯一标识）
         string slotKey = GetSlotKey(itemStack);
 
+        // 新增逻辑：如果当前索引 <= 起始忽略索引，直接显示物品，不播放动画
+        // 这代表之前已经播放过了
+        if (slotIndex <= startIgnoreIndex)
+        {
+             if (lootMaskFill != null)
+                lootMaskFill.StopAndHide();
+            if (obstructionImage != null)
+                obstructionImage.enabled = false;
+            return;
+        }
+
         // 如果已经播放过且不在队列中，则不重复播放，失能ObstructionImage
         if (playedMaskSlots.Contains(slotKey) && !queuedMaskSlots.Contains(slotKey))
         {
@@ -268,6 +311,12 @@ public class StorageItem : ItemSlot
             // 动画完成后，从队列记录中移除，添加到已播放记录
             queuedMaskSlots.Remove(request.slotKey);
             playedMaskSlots.Add(request.slotKey);
+            
+            // 更新当前最大播放进度
+            if (request.slotIndex > currentMaxPlayedIndex)
+            {
+                currentMaxPlayedIndex = request.slotIndex;
+            }
         }
 
         isPlayingSequence = false;
@@ -297,5 +346,9 @@ public class StorageItem : ItemSlot
         queuedMaskSlots.Clear();
         maskPlayQueue.Clear();
         isPlayingSequence = false;
+        
+        // 重置索引
+        currentMaxPlayedIndex = -1;
+        startIgnoreIndex = -1;
     }
 }

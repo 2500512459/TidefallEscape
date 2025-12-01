@@ -51,7 +51,8 @@ public enum ShopType
     WeaponShop,     //武器店
     AmmoShop,       //弹药店
     ConsumableShop,     //消耗品店
-    MaterialShop        //材料店
+    MaterialShop,        //材料店
+    FoodShop,          //食物店
 }
 // 职业类型
 public enum ProfessionType
@@ -60,4 +61,21 @@ public enum ProfessionType
     Lookout,        //瞭望员
     Captain,        //船长
     Shipwright      //船工
+}
+
+// 船只类型
+public enum ShipType
+{
+    None,           //无船
+    Sloop,          //单桅帆船
+    Brig,           //双桅帆船
+    Galleon,        //大型帆船
+    Warship         //战舰
+}
+
+public enum EnemyShipType
+{
+    Small,
+    Medium,
+    Large
 }

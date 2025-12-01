@@ -76,15 +76,15 @@ public class DialogueUI : MonoSingleton<DialogueUI>
 
         if (piece.options.Count == 0 && currentData.dialoguePieces.Count > 0)
         {
-            nextButton.interactable = true; //启用按钮
-            nextButton.transform.GetChild(0).gameObject.SetActive(true);
+            nextButton.gameObject.SetActive(true); //启用按钮
+            ToggleNextButtonIndicator(true);
 
         }
         else
         {
             //nextButton.gameObject.SetActive(false);
-            nextButton.interactable = false;    //禁用按钮
-            nextButton.transform.GetChild(0).gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(false);    //禁用按钮
+            ToggleNextButtonIndicator(false);
         }
 
         // 创建options
@@ -130,5 +130,17 @@ public class DialogueUI : MonoSingleton<DialogueUI>
         dialoguePanel.SetActive(false);
         currentIndex = 0;
         currentDialogueController = null;
+    }
+
+    /// <summary>
+    /// 安全切换下一步箭头或文本的可见性
+    /// </summary>
+    /// <param name="active"></param>
+    private void ToggleNextButtonIndicator(bool active)
+    {
+        if (nextButton.transform.childCount > 0)
+        {
+            nextButton.transform.GetChild(0).gameObject.SetActive(active);
+        }
     }
 }

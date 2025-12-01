@@ -9,18 +9,18 @@ public class ItemDataSOEditor : Editor
 
     private void OnEnable()
     {
-        // ²éÕÒËùÓĞ ItemDataSO ÊµÀı£¨½ö±à¼­Æ÷ÏÂÓĞĞ§£©
+        // æŸ¥æ‰¾æ‰€æœ‰ ItemDataSO å®ä¾‹ï¼ˆä»…ç¼–è¾‘å™¨ä¸‹æœ‰æ•ˆï¼‰
         string[] guids = AssetDatabase.FindAssets("t:ItemDataSO");
         itemCount = guids.Length;
     }
 
     public override void OnInspectorGUI()
     {
-        // »æÖÆÄ¬ÈÏ Inspector
+        // ç»˜åˆ¶é»˜è®¤ Inspector
         base.OnInspectorGUI();
 
-        // ÏÔÊ¾ÌáÊ¾ĞÅÏ¢
-        EditorGUILayout.HelpBox($"µ±Ç°ÒÑÓĞ {itemCount} ¸ö ItemDataSO", MessageType.Info);
+        // æ˜¾ç¤ºæç¤ºä¿¡æ¯
+        EditorGUILayout.HelpBox($"å½“å‰å·²æœ‰ {itemCount} ä¸ª ItemDataSO", MessageType.Info);
 
     }
 }

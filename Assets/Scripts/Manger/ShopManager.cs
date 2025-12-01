@@ -13,7 +13,8 @@ public class ShopManager : MonoSingleton<ShopManager>
     public InventoryDataSO ConsumableShopData;
     [Header("材料店数据")]
     public InventoryDataSO MaterialShopData;
-
+    [Header("食物店数据")]
+    public InventoryDataSO FoodShopData;
     public event Action<ShopType> OnShopChangedEvent;   // 商店数据更新事件
 
     // 根据类型获得库数据
@@ -25,6 +26,7 @@ public class ShopManager : MonoSingleton<ShopManager>
             ShopType.AmmoShop => AmmoShopData,
             ShopType.ConsumableShop => ConsumableShopData,
             ShopType.MaterialShop => MaterialShopData,
+            ShopType.FoodShop => FoodShopData,
             _ => null
         };
     }

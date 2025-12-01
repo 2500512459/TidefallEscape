@@ -61,15 +61,33 @@ public class NPC_Shop : BaseInteractable
 
         shopInventoryData.EnsureSlotCount(shopInventoryData.maxCount);
     }
+    
+    public override void OnFocus(Character player)
+    {
+        // 根据商店是否打开显示不同的提示
+        if (ShopUI.Instance != null && ShopUI.Instance.IsVisible)
+        {
+            InteractHintUI.Instance.ShowHint("关闭商店", key);
+        }
+        else
+        {
+            // 显示默认提示（通常是"进入商店"）
+            base.OnFocus(player);
+        }
+    }
+    
     public override void Interact(Character player)
     {
         if (ShopUI.Instance.IsVisible)
         {
             ShopUI.Instance.HidePanel();
-            InteractHintUI.Instance.HideHint();
             PlayerInput.Instance.EnableAllInputs();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            
+            // 关闭商店后，重新显示交互提示
+            // 使用协程延迟一帧，确保 PlayerCtrl 的交互系统能正确更新
+            StartCoroutine(RefreshHintAfterClose(player));
         }
         else
         {
@@ -86,11 +104,20 @@ public class NPC_Shop : BaseInteractable
             }
 
             shopPanel.ShowPanel(shopInventoryData, shopType, buyPriceMultiplier, sellPriceMultiplier);
-            InteractHintUI.Instance.ShowHint("进入商店", key);
-            PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.playerInputAction.Control.InteractionEvent);
+            InteractHintUI.Instance.ShowHint("关闭商店", key);
+            PlayerInput.Instance.DisableAllInputsExcept(PlayerInput.Instance.InteractionEventInput);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
 
+    }
+    
+    private IEnumerator RefreshHintAfterClose(Character player)
+    {
+        // 等待一帧，确保 PlayerCtrl 的交互系统已经更新
+        yield return null;
+        
+        // 重新显示交互提示
+        OnFocus(player);
     }
 }

@@ -13,14 +13,17 @@ public class PlayerState_Land : PlayerState
         if (input.Jump)
         {
             stateMachine.SwitchState(typeof(PlayerState_Jump));
+            return;
         }
         if (input.Move)
         {
             stateMachine.SwitchState(typeof(PlayerState_Run));
+            return;
         }
         if(IsAnimationFinished)
         {
             stateMachine.SwitchState(typeof(PlayerState_Idle));
+            return;
         }
     }
 }

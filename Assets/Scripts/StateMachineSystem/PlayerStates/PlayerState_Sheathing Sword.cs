@@ -16,6 +16,7 @@ public class PlayerState_SheathingSword : PlayerState
         {
             playerCtrl.weaponState = PlayerCtrl.WeaponState.Sheathed;
             stateMachine.SwitchState(typeof(PlayerState_Idle));
+            return;
         }
         
         

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 public class PlayerCtrl : MonoBehaviour
 {
-    public InventoryContext setContext = InventoryContext.Default;  // 当前场景上下文
+    // public InventoryContext setContext = InventoryContext.Default;  // 已移动到 PlayerDataManager
     [Header("移动参数")]
     private float moveSpeed = 7f;
     public float walkSpeed = 7f;
@@ -178,6 +178,7 @@ public class PlayerCtrl : MonoBehaviour
 
     private bool OnSwimming()
     {
+        if(isClimbOver) return false;
         if(isClimbing) return false;
         if(isGround) return false;
         if (Water.Instance == null) return false;
@@ -631,9 +632,9 @@ public class PlayerCtrl : MonoBehaviour
     {
         if (isOpen)
         {
-            InventoryManager.Instance.currenContext = setContext;
+            InventoryManager.Instance.currenContext = PlayerDataManager.Instance.currentContext;
             InventoryUI.Instance?.ShowPanel();
-            playerInput.DisableAllInputsExcept(playerInput.playerInputAction.Control.OpenInventory);
+            playerInput.DisableAllInputsExcept(playerInput.OpenInventoryInput);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
@@ -664,7 +665,7 @@ public class PlayerCtrl : MonoBehaviour
 
         playerInput.isInventoryOpen = true;
         playerInput.isLootOpen = true;
-        playerInput.DisableAllInputsExcept(playerInput.playerInputAction.Control.OpenInventory, playerInput.playerInputAction.Control.OpenEvent);
+        playerInput.DisableAllInputsExcept(playerInput.OpenInventoryInput, playerInput.OpenEventInput);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -720,5 +721,20 @@ public class PlayerCtrl : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         UpdateClosestTreasureBox(true);
+
+        // 恢复 Context
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.RestoreContext();
+        }
+
+        // 记录当前播放进度到宝箱
+        if (highlightedTreasureBox != null)
+        {
+            highlightedTreasureBox.lastPlayedMaskIndex = StorageItem.GetCurrentPlayedIndex();
+        }
+
+        // 清理宝箱遮罩播放队列，防止下一个宝箱动画出错
+        StorageItem.ClearPlayedMaskRecords();
     }
 }

@@ -118,6 +118,16 @@ public class InventoryDataSO : ScriptableObject
 
         InventoryManager.Instance.OnInventoryChanged(type);
     }
+
+    private void OnEnable()
+    {
+        EnsureSlotCount(_maxCount);
+    }
+
+    private void OnValidate()
+    {
+        EnsureSlotCount(_maxCount);
+    }
 }
 
 [System.Serializable]

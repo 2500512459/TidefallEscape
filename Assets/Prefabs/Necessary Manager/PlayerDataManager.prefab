@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SelectedProfession: 1
+  OwnedShips: 01000000
+  CurrentShipType: 0
+  currentContext: 0
   professionDataList:
   - professionType: 0
     characterPrefab: {fileID: 8703872773199547215, guid: 64c9d96775079344fac674889078804c,

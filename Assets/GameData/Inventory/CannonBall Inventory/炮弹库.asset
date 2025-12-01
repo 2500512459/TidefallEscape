@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82bf538660b0aeb4dbc20faa4baaa8a3, type: 3}
   m_Name: "\u70AE\u5F39\u5E93"
   m_EditorClassIdentifier: 
-  items:
-  - item: {fileID: 11400000, guid: 845e326b3c846564eb62bb570e27ef5c, type: 2}
-    count: 5
-  - item: {fileID: 11400000, guid: cd468b5f4b4bdb044b91d8d5e120d563, type: 2}
-    count: 5
+  items: []
   type: 5
-  _maxCount: 5
+  _maxCount: 20

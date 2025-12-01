@@ -186,6 +186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1650710109797680057}
   - component: {fileID: 2958784189529911780}
+  - component: {fileID: 763710840889014273}
   m_Layer: 15
   m_Name: Wolf
   m_TagString: Untagged
@@ -230,6 +231,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &763710840889014273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778914258980533141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9f31738a59d3d4fbf46f6aac1fee9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &787292680282555108
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +260,7 @@ GameObject:
   - component: {fileID: 1146404841323038573}
   - component: {fileID: 2250207229854847893}
   - component: {fileID: 176012273118744824}
+  - component: {fileID: 5352187571177668123}
   m_Layer: 15
   m_Name: Wolf_Black
   m_TagString: Untagged
@@ -311,7 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treasureSpawnDelay: 1.5
   viewRadius: 10
-  attackRadius: 1.5
+  attackRadius: 2
   treasureBoxPrefab: {fileID: 6353125034039695676, guid: 6ddf68864d8ad5640b1c912f0b9af1e7,
     type: 3}
   lootContainerSO: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
@@ -324,6 +338,10 @@ MonoBehaviour:
   stopDistance: 1.4
   resumeChaseDistance: 2.5
   attackRecoveryTime: 1.5
+  separationActiveDuration: 3
+  separationCooldownDuration: 2
+  attackDamage: 10
+  edgeAvoidanceDuration: 1
   material: {fileID: 2100000, guid: 5879ebc99ede21b44b47d8b868b45675, type: 2}
   dissolveSpeed: 3
   deathDisappearDelay: 2.5
@@ -423,6 +441,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1c8c690f20c3c4998bc7459a01801d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5352187571177668123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787292680282555108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7a1bcb943f249a688c64edfe2fd47d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  separationMaxAcceleration: 25
+  separationMaxDistance: 1
+  ignoreLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  ignoreTags:
+  - Player
 --- !u!1 &1066939898387360111
 GameObject:
   m_ObjectHideFlags: 0

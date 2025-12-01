@@ -839,6 +839,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3334785719891194019, guid: 63a007e15f28f8d478e27e5791d66048,
+        type: 3}
+      propertyPath: m_Name
+      value: CarouselScroll
+      objectReference: {fileID: 0}
     - target: {fileID: 5584956596160801931, guid: 63a007e15f28f8d478e27e5791d66048,
         type: 3}
       propertyPath: m_SizeDelta.y

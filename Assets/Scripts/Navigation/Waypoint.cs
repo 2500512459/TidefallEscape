@@ -35,12 +35,18 @@ public class Waypoint : MonoBehaviour
     // 障碍层：用于检测路径中是否有阻挡（如墙体等）
     [SerializeField] private LayerMask obstacleLayer;
 
+    // 所属区域序号
+    [SerializeField] private int zoneID = 0;
+
 
     // 节点在世界空间中的位置（简化访问）
     public Vector3 Position => transform.position;
 
     // 获取当前节点的所有连接（供外部访问）
     public List<WaypointConnection> Connections => connections;
+
+    // 获取所属区域序号
+    public int ZoneID => zoneID;
 
 
     /// <summary>

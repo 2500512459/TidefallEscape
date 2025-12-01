@@ -58,7 +58,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Wolf_Attack
-  m_Speed: 1.5
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -1625475448535427962}
@@ -71,7 +71,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1754276390031137892, guid: 85f195117dfa07046bd02a403f6a46c8,
+  m_Motion: {fileID: 2219115924650817687, guid: d2355f941fd4d8c49b2856590c85e0eb,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 

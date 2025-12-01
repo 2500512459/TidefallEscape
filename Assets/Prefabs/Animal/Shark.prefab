@@ -4948,10 +4948,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0cd01648328b024a8324bd741f4b337, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  treasureSpawnDelay: 1.5
   viewRadius: 20
   attackRadius: 5
-  treasureBoxPrefab: {fileID: 0}
-  lootContainerSO: {fileID: 0}
+  treasureBoxPrefab: {fileID: 2704006021686220995, guid: 755afaab5bd1b2e49b0b4598a1f70e33,
+    type: 3}
+  lootContainerSO: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
 --- !u!114 &8163887708470086652
 MonoBehaviour:
   m_ObjectHideFlags: 0

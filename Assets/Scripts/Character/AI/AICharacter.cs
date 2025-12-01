@@ -31,6 +31,7 @@ public class AICharacter : Character
     protected PursueBehavior pursue;                 // 追踪目标
     protected CollisionSensor colsensor;             // 碰撞感知（防止撞墙）
     protected SeparationBehavior separation;         // 分离行为（避免与其他AI重叠）
+    protected SurroundingBehavior surrounding;       // 环绕行为
 
     // 存活状态标识
     protected bool live = true;
@@ -54,6 +55,7 @@ public class AICharacter : Character
         pursue = GetComponent<PursueBehavior>();
         colsensor = GetComponent<CollisionSensor>();
         separation = GetComponent<SeparationBehavior>();
+        surrounding = GetComponent<SurroundingBehavior>(); // 缓存环绕行为组件
     }
 
     /// <summary>

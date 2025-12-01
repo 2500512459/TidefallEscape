@@ -15,5 +15,5 @@ MonoBehaviour:
   items:
   - item: {fileID: 11400000, guid: 6a22f77ec7817cd4ba3b211f2bf6001d, type: 2}
     count: 3
-  type: 0
+  type: 4
   _maxCount: 100

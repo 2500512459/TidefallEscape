@@ -213,5 +213,5 @@ MonoBehaviour:
     count: 0
   - item: {fileID: 0}
     count: 0
-  type: 0
+  type: 4
   _maxCount: 100

@@ -9,7 +9,16 @@ public class BaseInteractable : MonoBehaviour, IInteractable
     [SerializeField] protected string key = "E";
     public string HintText => hintText;
     public string Key => key;
-    public Transform Transform => transform;
+    public Transform Transform
+    {
+        get
+        {
+            if (this == null)
+                return null;
+
+            return transform;
+        }
+    }
 
     public virtual void Interact(Character player)
     {

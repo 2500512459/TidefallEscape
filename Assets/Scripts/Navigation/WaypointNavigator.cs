@@ -17,6 +17,13 @@ public class WaypointNavigator : MonoBehaviour
     // 当对象距离当前路径点小于该数值时，认为已“到达”该路径点并前往下一个。
     [SerializeField] private float waypointReachDistance = 1f;
 
+    // 优化：检测频率（秒），避免每帧检测
+    [SerializeField] private float reachCheckInterval = 0.1f;
+    private float nextCheckTime = 0f;
+
+    // 所属区域序号（仅在该区域内寻路）
+    [SerializeField] private int zoneID = 0;
+
     // 是否在 Scene 视图中绘制路径调试线（用于可视化当前路径）
     [SerializeField] private bool debugPath = false;
 
@@ -34,6 +41,15 @@ public class WaypointNavigator : MonoBehaviour
     /// </summary>
     public bool HasPath => currentPath != null && currentPath.Count > 0;
 
+    /// <summary>
+    /// 获取或设置当前区域序号
+    /// </summary>
+    public int ZoneID
+    {
+        get => zoneID;
+        set => zoneID = value;
+    }
+
 
     /// <summary>
     /// 获取当前路径点的世界坐标
@@ -50,11 +66,11 @@ public class WaypointNavigator : MonoBehaviour
     /// <param name="worldPosition">目标的世界坐标</param>
     public void SetDestination(Vector3 worldPosition)
     {
-        // 找到距离目标点最近的路径点
-        var targetWaypoint = WaypointManager.Instance.GetNearestWaypoint(worldPosition);
+        // 找到距离目标点最近的路径点 (限定在当前区域)
+        var targetWaypoint = WaypointManager.Instance.GetNearestWaypoint(worldPosition, zoneID);
 
-        // 找到距离自身最近的路径点
-        var startWaypoint = WaypointManager.Instance.GetNearestWaypoint(transform.position);
+        // 找到距离自身最近的路径点 (限定在当前区域)
+        var startWaypoint = WaypointManager.Instance.GetNearestWaypoint(transform.position, zoneID);
 
         // 若两者均存在，则执行寻路
         if (targetWaypoint != null && startWaypoint != null)
@@ -64,6 +80,9 @@ public class WaypointNavigator : MonoBehaviour
 
             // 重置路径索引，从第一个点开始行进
             currentWaypointIndex = 0;
+
+            // 重置检测时间，确保立即开始检测
+            nextCheckTime = 0f;
         }
     }
 
@@ -77,11 +96,17 @@ public class WaypointNavigator : MonoBehaviour
     {
         if (!HasPath) return; // 若无路径则直接退出
 
-        // 计算当前位置到当前路径点的距离
-        float distanceToWaypoint = Vector3.Distance(transform.position, CurrentWaypointPosition);
+        // 优化：降低检测频率，减少 CPU 开销
+        if (Time.time < nextCheckTime) return;
+        nextCheckTime = Time.time + reachCheckInterval;
 
-        // 若距离小于阈值，说明已到达该路径点
-        if (distanceToWaypoint <= waypointReachDistance)
+        // 优化：使用距离平方 (sqrMagnitude) 代替 Distance (含开方运算)
+        // 计算当前位置到当前路径点的向量
+        float distSqr = (transform.position - CurrentWaypointPosition).sqrMagnitude;
+        float thresholdSqr = waypointReachDistance * waypointReachDistance;
+
+        // 若距离平方小于阈值平方，说明已到达该路径点
+        if (distSqr <= thresholdSqr)
         {
             // 前往下一个路径点
             currentWaypointIndex++;

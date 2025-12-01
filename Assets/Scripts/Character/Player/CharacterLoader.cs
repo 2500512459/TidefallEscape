@@ -3,13 +3,17 @@ using UnityEngine.Animations.Rigging;
 
 public class CharacterLoader : MonoBehaviour
 {
+    private bool hasLoaded = false; // 标记是否已经加载
+
     void OnEnable()
     {
+        if(hasLoaded) return;
         LoadCharacter();
     }
 
     void LoadCharacter()
     {
+        hasLoaded = true;
         // 1. 获取当前职业
         if (PlayerDataManager.Instance == null)
         {

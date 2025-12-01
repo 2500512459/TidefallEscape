@@ -48,3 +48,4 @@ MonoBehaviour:
   AmmoShopData: {fileID: 11400000, guid: 5ea2a32577b69d54488d37b6bd196c9d, type: 2}
   ConsumableShopData: {fileID: 11400000, guid: ea4246a8b7f1f034b936badc9f4091c2, type: 2}
   MaterialShopData: {fileID: 11400000, guid: f43b3250a4006434ab5978595b7842cf, type: 2}
+  FoodShopData: {fileID: 11400000, guid: f9eb6cb68accec442948162c6b09e7e7, type: 2}

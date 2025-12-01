@@ -20,7 +20,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
                     //GameObject obj = new GameObject();
                     //obj.name = typeof(T).Name;
                     //instance = obj.AddComponent<T>();
-                    Debug.Log("Need type " + typeof(T));
+                    //Debug.Log("Need type " + typeof(T));
                 }
                 else
                 {

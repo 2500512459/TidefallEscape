@@ -15,14 +15,17 @@ public class PlayerState_Fall : PlayerState
         if (playerCtrl.isGround)
         {
             stateMachine.SwitchState(typeof(PlayerState_Land));
+            return;
         }
         if (playerCtrl.isClimbing)
         {
             stateMachine.SwitchState(typeof(PlayerState_Climb));
+            return;
         }
         if (playerCtrl.isSwimming)
         {
-            stateMachine.SwitchState(typeof(PlayerState_Swimming));
+            stateMachine.SwitchState(typeof(PlayerState_Floating));
+            return;
         }
     }
     

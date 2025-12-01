@@ -138,26 +138,60 @@ public class LoadManager : MonoBehaviour
         // 屏幕暗下来后，显示loadingPanel（背景是黑色，与End动画结束后的颜色一致）
         loadingPanel.SetActive(true);
 
-        // 淡出完成后，开始加载场景
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-        op.allowSceneActivation = false;
-        while (!op.isDone)
+        // 淡出完成后，使用 Addressables 开始加载场景
+        AsyncOperationHandle<SceneInstance> loadHandle = Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Single, false);
+        while (!loadHandle.IsDone)
         {
-            loadingSlider.value = op.progress;
-            loadingText.text = $"{op.progress * 100}%";
-            
-            if (op.progress >= 0.9f)
-            {
-                loadingSlider.value = 1;
-                loadingText.text = "鼠标点击继续";
-                if (Input.GetMouseButtonDown(0))
-                {
-                    // 激活场景，新场景的FadePanel会自动从Start状态开始（淡入效果）
-                    op.allowSceneActivation = true;
-                }
-                yield return null;
-            }
+            float progress = Mathf.Clamp01(loadHandle.PercentComplete);
+            if (loadingSlider != null)
+                loadingSlider.value = progress;
+            if (loadingText != null)
+                loadingText.text = $"{Mathf.RoundToInt(progress * 100)}%";
             yield return null;
         }
+
+        if (loadHandle.Status != AsyncOperationStatus.Succeeded)
+        {
+            if (loadingText != null)
+                loadingText.text = "场景加载失败";
+            Debug.LogError($"Addressables 加载场景失败: {sceneName}");
+            isLoading = false;
+            yield break;
+        }
+
+        // 场景已加载完成，等待玩家确认激活
+        if (loadingSlider != null)
+            loadingSlider.value = 1f;
+        if (loadingText != null)
+            loadingText.text = "鼠标点击继续";
+
+        while (!Input.GetMouseButtonDown(0))
+        {
+            yield return null;
+        }
+
+        // 激活场景，新场景的 FadePanel 会触发 Start（淡入）
+        AsyncOperation activationOperation = loadHandle.Result.ActivateAsync();
+        while (!activationOperation.isDone)
+        {
+            yield return null;
+        }
+
+        // 更新上下文
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.UpdateContextBasedOnScene(sceneName);
+        }
+
+        // 如果不是HomeScene，实例化船只
+        if (sceneName != "HomeScene")
+        {
+            if (PlayerShipManager.Instance != null)
+            {
+                PlayerShipManager.Instance.InstantiateShipModel();
+            }
+        }
+
+        EventManager.Raise(new SceneLoadedMessage(sceneName));
     }
 }

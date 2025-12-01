@@ -35,7 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 42.968, y: -16.648, z: 0.038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.006}
 --- !u!20 &1906741532851488378
 Camera:
   m_ObjectHideFlags: 0
@@ -193,9 +193,9 @@ MonoBehaviour:
   lookRotateY: 180
   lookDistance: 20
   minLookDistance: 4
-  maxLookDistance: 16
+  maxLookDistance: 20
   sailingMinLookDistance: 4
-  sailingMaxLookDistance: 100
+  sailingMaxLookDistance: 150
   target: {fileID: 0}
   playerBodyRenderers: []
   isSailing: 0
@@ -216,7 +216,7 @@ MonoBehaviour:
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2
-  m_BlendUpdateMethod: 1
+  m_BlendUpdateMethod: 0
   m_DefaultBlend:
     m_Style: 1
     m_Time: 0.5

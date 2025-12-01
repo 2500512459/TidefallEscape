@@ -290,6 +290,7 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   fillImage: {fileID: 8451099980706126430}
+  alpha: 1
 --- !u!1 &1717472403217159120
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,10 +903,14 @@ MonoBehaviour:
   treasureSpawnDelay: 1.5
   viewRadius: 10
   attackRadius: 1
-  treasureBoxPrefab: {fileID: 0}
-  lootContainerSO: {fileID: 0}
+  treasureBoxPrefab: {fileID: 2704006021686220995, guid: 755afaab5bd1b2e49b0b4598a1f70e33,
+    type: 3}
+  lootContainerSO: {fileID: 11400000, guid: 12598d74b68fed341972de544cc3a74b, type: 2}
   maxHealth: 100
   healthBar: {fileID: 2633328201430847005}
+  shopType: 0
+  buyPriceMultiplier: 1
+  sellPriceMultiplier: 0.5
   detectPlayerRange: 20
   stopDistance: 15
   HintUI: {fileID: 4699199021955016307}
@@ -974,6 +979,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointReachDistance: 1
+  reachCheckInterval: 0.1
+  zoneID: 0
   debugPath: 0
 --- !u!114 &3007943580073063096
 MonoBehaviour:

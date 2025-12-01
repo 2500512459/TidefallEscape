@@ -16,7 +16,7 @@ public class DialogueController : MonoBehaviour
 
         // 禁止移动和视角旋转，保留 E 键交互事件继续有效
         PlayerInput.Instance.DisableMovementAndLook(disableQuestInput: true);
-        PlayerInput.Instance.playerInputAction.Control.Fire.Disable();
+        PlayerInput.Instance.FireInput?.Disable();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -27,7 +27,7 @@ public class DialogueController : MonoBehaviour
         DialogueUI.Instance.dialoguePanel.SetActive(false);
 
         PlayerInput.Instance.EnableMovementAndLook(enableQuestInput: true);
-        PlayerInput.Instance.playerInputAction.Control.Fire.Enable();
+        PlayerInput.Instance.FireInput?.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 

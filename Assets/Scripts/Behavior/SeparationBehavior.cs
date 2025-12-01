@@ -12,6 +12,11 @@ public class SeparationBehavior : MonoBehaviour
     // 分离行为的作用距离，在此距离内的物体会产生排斥力
     public float separationMaxDistance = 1f;
 
+    // 忽略的层级或Tag，避免与玩家产生排斥
+    [Header("Filtering")]
+    public LayerMask ignoreLayers; // 可在Inspector设置要忽略的层，如 Player 层
+    public List<string> ignoreTags = new List<string> { "Player" }; // 要忽略的Tag列表
+
     // 附近物体传感器组件
     NearbySensor nearby;
 
@@ -43,6 +48,16 @@ public class SeparationBehavior : MonoBehaviour
         // 遍历传感器检测到的所有目标
         foreach (Rigidbody r in nearby.targets)
         {
+            // 过滤逻辑：跳过忽略的层级或Tag
+            if (r == null) continue;
+            GameObject go = r.gameObject;
+            
+            // 1. 检查层级是否在忽略列表中
+            if (((1 << go.layer) & ignoreLayers) != 0) continue;
+
+            // 2. 检查Tag是否在忽略列表中
+            if (ignoreTags.Contains(go.tag)) continue;
+
             // 计算从目标指向当前物体的方向向量
             Vector3 direction = transform.position - r.transform.position;
             float dist = direction.magnitude;  // 计算与目标的距离
