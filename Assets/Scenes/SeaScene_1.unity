@@ -6978,12 +6978,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Map Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 9027990205627567379, guid: 29e2373d2ebda2b40a9b22364145d116,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: c69502a3c010b824cbc713970342b722,
-        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
