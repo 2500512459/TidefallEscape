@@ -87,6 +87,7 @@ public class LoadManager : MonoBehaviour
     
     public void LoadScene(string sceneName)
     {
+        Debug.Log("热更新测试" + sceneName);
         // 防止重复加载
         if (isLoading)
             return;

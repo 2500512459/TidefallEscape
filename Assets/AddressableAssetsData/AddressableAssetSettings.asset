@@ -17,7 +17,7 @@ MonoBehaviour:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
-  m_BuildRemoteCatalog: 0
+  m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
   m_CatalogRequestsTimeout: 0
   m_DisableCatalogUpdateOnStart: 0
@@ -35,17 +35,21 @@ MonoBehaviour:
   m_CheckForContentUpdateRestrictionsOption: 0
   m_MonoScriptBundleCustomNaming: 
   m_RemoteCatalogBuildPath:
-    m_Id: 
+    m_Id: 627f1eda0aabf4a4993453ca8c2de1e1
   m_RemoteCatalogLoadPath:
-    m_Id: 
-  m_ContentStateBuildPathProfileVariableName: 
+    m_Id: a13f13bc3a61b9c4b96d716d302208a6
+  m_ContentStateBuildPathProfileVariableName: <default settings path>
   m_CustomContentStateBuildPath: 
   m_ContentStateBuildPath: 
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
   - {fileID: 11400000, guid: bef9d68299e0a2c45ba865e073c28f33, type: 2}
+  - {fileID: 11400000, guid: b50f60f4076111a46a1d672f4c37e50a, type: 2}
+  - {fileID: 11400000, guid: b2baf0c9e1bc15b438d6da7943b009ed, type: 2}
   - {fileID: 11400000, guid: eec53e5b870320644ad06dc36ce88752, type: 2}
+  - {fileID: 11400000, guid: 352be320dc1c4dd40b101e7817c899c5, type: 2}
+  - {fileID: 11400000, guid: 91ce1a7db658f294897d078932a088f7, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -62,7 +66,7 @@ MonoBehaviour:
       - m_Id: 627f1eda0aabf4a4993453ca8c2de1e1
         m_Value: ServerData/[BuildTarget]
       - m_Id: a13f13bc3a61b9c4b96d716d302208a6
-        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+        m_Value: http://192.168.1.29/[BuildTarget]
       - m_Id: accf4550fa86b9847a491cc08ef4272e
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: decd95879952c2b44a7128bc4e7f48fe
@@ -86,7 +90,16 @@ MonoBehaviour:
     m_ProfileVersion: 1
   m_LabelTable:
     m_LabelNames:
+    - Prefab
+    - Canvas
+    - Scene
+    - Dll
     - default
+    - All
+    - Quest
+    - Dialog
+    - Shared
+    - Icon
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 59aa941cc15b46f4d956d44f93c52b17, type: 2}

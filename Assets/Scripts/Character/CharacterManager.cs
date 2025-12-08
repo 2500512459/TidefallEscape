@@ -50,20 +50,60 @@ public class CharacterManager : MonoSingleton<CharacterManager>
     [Tooltip("简化激活半径(中距离:Simple),超过此距离则进入 Sleep")]
     public float simpleActiveRadius = 80f;
 
+    // ------------------ 分帧更新相关 ------------------
+    [Header("分帧更新 Batch Settings")]
+    [Tooltip("是否启用分帧批处理（每帧处理一部分角色）")]
+    public bool enableBatchUpdate = true;
+
+    [Tooltip("每帧处理多少个角色")]
+    public int batchSize = 30;
+
+    private int currentIndex = 0;
+
+
+    // ------------------ 降频更新（时间间隔）相关 ------------------
+    [Header("降频更新 Interval Settings")]
+    [Tooltip("是否启用降频更新（每隔 intervalSeconds 更新一次所有角色）")]
+    public bool enableIntervalUpdate = false;
+
+    [Tooltip("完整更新的时间间隔（秒）")]
+    public float intervalSeconds = 0.1f;
+
+    private float intervalTimer = 0f;
+
     private void Update()
     {
-        UpdateCharactersActiveLevelByDistance();
+        if (characters.Count == 0) return;
+
+        // 1. 如果开启了降频：只在间隔到达时更新一次
+        if (enableIntervalUpdate)
+        {
+            intervalTimer += Time.deltaTime;
+            if (intervalTimer < intervalSeconds)
+                return;
+
+            intervalTimer = 0f;
+        }
+
+        // 2. 如果开启了分帧批处理：执行批处理
+        if (enableBatchUpdate)
+        {
+            UpdateCharacters_Batched();
+        }
+        else
+        {
+            // 3. 否则：整体更新（所有角色）
+            UpdateCharacters_All();
+        }
     }
 
     /// <summary>
     /// 按与玩家的距离，为所有已注册角色设置激活等级。
     /// 近 -> Full，中等 -> Simple，远 -> Sleep。
+    /// 每帧只处理 batchSize 个角色，减少 Update 压力。
     /// </summary>
-    private void UpdateCharactersActiveLevelByDistance()
+    private void UpdateCharacters_Batched()
     {
-        if (characters == null || characters.Count == 0) return;
-
-        // 确保有玩家参考点
         if (playerTransform == null)
         {
             TryAutoAssignPlayerTransform();
@@ -71,36 +111,56 @@ public class CharacterManager : MonoSingleton<CharacterManager>
         }
 
         Vector3 center = playerTransform.position;
-        float fullSqr = Mathf.Max(0.01f, fullActiveRadius * fullActiveRadius);
-        float simpleSqr = Mathf.Max(fullSqr, simpleActiveRadius * simpleActiveRadius);
 
-        // 遍历所有角色，根据距离设置激活等级
+        float fullSqr = fullActiveRadius * fullActiveRadius;
+        float simpleSqr = simpleActiveRadius * simpleActiveRadius;
+
+        int count = characters.Count;
+        int iterations = Mathf.Min(batchSize, count);
+
+        for (int i = 0; i < iterations; i++)
+        {
+            if (currentIndex >= count)
+                currentIndex = 0;
+
+            Character character = characters[currentIndex];
+            currentIndex++;
+
+            if (character == null) continue;
+            if (character.transform == playerTransform) continue;
+
+            float dist = (character.transform.position - center).sqrMagnitude;
+
+            if (dist <= fullSqr) character.SetActiveLevel(CharacterActiveLevel.Full);
+            else if (dist <= simpleSqr) character.SetActiveLevel(CharacterActiveLevel.Simple);
+            else character.SetActiveLevel(CharacterActiveLevel.Sleep);
+        }
+    }
+
+    private void UpdateCharacters_All()
+    {
+        if (playerTransform == null)
+        {
+            TryAutoAssignPlayerTransform();
+            if (playerTransform == null) return;
+        }
+
+        Vector3 center = playerTransform.position;
+
+        float fullSqr = fullActiveRadius * fullActiveRadius;
+        float simpleSqr = simpleActiveRadius * simpleActiveRadius;
+
         for (int i = 0; i < characters.Count; i++)
         {
             Character character = characters[i];
             if (character == null) continue;
-
-            // 玩家自身通常不需要被距离逻辑控制，这里可根据项目需要过滤
             if (character.transform == playerTransform) continue;
 
-            Vector3 diff = character.transform.position - center;
-            float sqrDist = diff.sqrMagnitude;
+            float dist = (character.transform.position - center).sqrMagnitude;
 
-            CharacterActiveLevel level;
-            if (sqrDist <= fullSqr)
-            {
-                level = CharacterActiveLevel.Full;
-            }
-            else if (sqrDist <= simpleSqr)
-            {
-                level = CharacterActiveLevel.Simple;
-            }
-            else
-            {
-                level = CharacterActiveLevel.Sleep;
-            }
-
-            character.SetActiveLevel(level);
+            if (dist <= fullSqr) character.SetActiveLevel(CharacterActiveLevel.Full);
+            else if (dist <= simpleSqr) character.SetActiveLevel(CharacterActiveLevel.Simple);
+            else character.SetActiveLevel(CharacterActiveLevel.Sleep);
         }
     }
 

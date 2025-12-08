@@ -47,6 +47,7 @@ public class PlayerShipCtrl : MonoBehaviour
 
     private void OnEnable()
     {
+        // 切换至第三人称视角
         PlayerCamera.target = CameraPos;
         if(PlayerCamera.cameraMode != PlayerCamera.CameraMode.ThirdPerson)
             PlayerCamera.SwitchCamera();
@@ -88,6 +89,19 @@ public class PlayerShipCtrl : MonoBehaviour
             PlayerInput.Instance.LootPressedEvent -= TryOpenTreasureBox;
         }
     }
+    private void Update()
+    {
+        if (!PlayerInput.Instance.isInventoryOpen)
+        {
+            // 读取移动输入
+            verticalImpetus = PlayerInput.Instance.AxesY;
+            horizontalImpetus = PlayerInput.Instance.AxesX;
+            isBoosting = PlayerInput.Instance.Sprint;
+            // 检测最近交互对象
+            UpdateNearestTreasure();
+            UpdateNearestShop();
+        }
+    }
 
     private void FixedUpdate()
     {
@@ -119,20 +133,6 @@ public class PlayerShipCtrl : MonoBehaviour
         rigidbodyComponent.MoveRotation(Quaternion.Euler(angle));
     }
 
-    private void Update()
-    {
-        if (!PlayerInput.Instance.isInventoryOpen)
-        {
-            // 读取移动输入
-            verticalImpetus = PlayerInput.Instance.AxesY;
-            horizontalImpetus = PlayerInput.Instance.AxesX;
-            isBoosting = PlayerInput.Instance.Sprint;
-            // 检测最近交互对象
-            UpdateNearestTreasure();
-            UpdateNearestShop();
-        }
-    }
-    
     private void HandleInteract()
     {
         ExitControl();

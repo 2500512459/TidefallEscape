@@ -1,0 +1,25 @@
+{
+    "name": "MainEditor",
+    "rootNamespace": "",
+    "references": [
+        "HotUpdate",
+        "Launcher",
+        "UWS",
+        "Unity.Addressables.Editor",
+        "Unity.ScriptableBuildPipeline.Editor",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "HybridCLR.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

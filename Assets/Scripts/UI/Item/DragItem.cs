@@ -127,8 +127,12 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         var fromItem = fromSlot.currentItem;
         var toItem = toSlot.currentItem;
 
-        var fromItemName = fromItem == null ? "" : fromItem.item.name;
-        var ToItemName = toItem == null ? "" : toItem.item.name;
+        // 如果拖拽源物品为空或无效，则取消操作
+        if (fromItem == null || fromItem.item == null)
+            return;
+
+        var fromItemName = fromItem.item.itemName;
+        var ToItemName = (toItem == null || toItem.item == null) ? "" : toItem.item.itemName;
 
         var fromType = fromSlot.inventoryType;
         var toType = toSlot.inventoryType;
@@ -204,11 +208,11 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             if (fromType == InventoryType.Loot)
             {
-                if (fromItemName != "")
+                if (fromItemName != "" && fromItem != null)
                 {
                     QuestManager.Instance.UpdateQuestProgress(fromItemName, fromItem.count);
                 }
-                if (ToItemName != "")
+                if (ToItemName != "" && toItem != null)
                 {
                     QuestManager.Instance.UpdateQuestProgress(ToItemName, -toItem.count);
                 }
@@ -216,11 +220,11 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
             if (toType == InventoryType.Loot)
             {
-                if (fromItemName != "")
+                if (fromItemName != "" && fromItem != null)
                 {
                     QuestManager.Instance.UpdateQuestProgress(fromItemName, -fromItem.count);
                 }
-                if (ToItemName != "")
+                if (ToItemName != "" && toItem != null)
                 {
                     QuestManager.Instance.UpdateQuestProgress(ToItemName, toItem.count);
                 }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 public class PlayerCtrl : MonoBehaviour
 {
-    // public InventoryContext setContext = InventoryContext.Default;  // 已移动到 PlayerDataManager
     [Header("移动参数")]
     private float moveSpeed = 7f;
     public float walkSpeed = 7f;
@@ -14,6 +13,8 @@ public class PlayerCtrl : MonoBehaviour
     public float groundDrag;
 
     public float currentSpeed => new Vector3(rb.velocity.x, 0f, rb.velocity.z).magnitude;
+
+    // 所处环境
     public bool isGround => groundDetector.IsGrounded;
     public bool isOnShip => false;
     public bool isFalling => !isGround && rb.velocity.y < 0f && !isSwimming;
@@ -34,26 +35,29 @@ public class PlayerCtrl : MonoBehaviour
     private RaycastHit slopeHit;
     private bool isOnSlope;
     private bool exitingSlope = false;
-
-    [SerializeField] LayerMask obstacleLayer = -1;
+    [SerializeField] LayerMask obstacleLayer = -1;  // 坡的图层
 
     public PlayerCamera PlayerCamera;
     public PlayerAimCamera PlayerAimCamera;
-    private ThirdPersonShooterController thirdPersonShooterController;
-    public Transform orientation;
+    public Transform orientation;   // 朝向
     public PlayerGroundDetector groundDetector;
     public PlayerWallDetector wallDetector;
-    private PlayerInput playerInput;
     public Rigidbody rb;
-    private Player player;
     public Transform interactiveDetection;
+
+    private Player player;
+    private PlayerInput playerInput;
+    private ThirdPersonShooterController thirdPersonShooterController;  // 瞄准视角控制
     [Header("宝箱交互")]
     [SerializeField] private float lootDetectRadius = 2f;
     private readonly List<TreasureBox> nearbyTreasureBoxes = new List<TreasureBox>();
     private TreasureBox highlightedTreasureBox;
     private SphereCollider trigger;
+
+    [Header("当前移动状态")]
     public MovementState state;
     public enum MovementState { walking, sprinting, climbing, swimming, air }
+    [Header("武器状态")]
     public WeaponState weaponState = WeaponState.Sheathed;
     public enum WeaponState { Sheathed, Drawing, Armed, Sheathing }
 
@@ -124,8 +128,8 @@ public class PlayerCtrl : MonoBehaviour
         else
             rb.drag = 0f;
         
-        SpeedControl();
-        StateHandler();
+        SpeedControl();     // 速度限制
+        StateHandler();     // 状态改变
         HandleCombatInput();
         //HandleInteract();
         if (playerInput.Jump && readyToJump && isGround && player.CanUseVitality && PlayerCamera.cameraMode != PlayerCamera.CameraMode.AimPerson)

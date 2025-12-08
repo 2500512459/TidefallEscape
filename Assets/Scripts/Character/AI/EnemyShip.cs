@@ -54,7 +54,6 @@ public class EnemyShip : AICharacter
     private WaypointNavigator waypointNav;
     
     private Character attackTarget = null;
-    private Vector3 moveToPosition = Vector3.zero;
 
     // 攻击状态缓存：用于“进入攻击状态后等待一段时间，并进入环绕圈后再开火”的逻辑
     private float attackStateElapsed = 0f;
@@ -336,15 +335,15 @@ public class EnemyShip : AICharacter
 
             Vector3 targetPosition = Vector3.zero;
 
-            List<Waypoint> waypoints = WaypointManager.Instance.GetWaypoints();
+            int zoneId = waypointNav != null ? waypointNav.ZoneID : 0;
+            List<Waypoint> waypoints = WaypointManager.Instance.GetWaypoints(zoneId);
 
             if (waypoints != null && waypoints.Count > 0)
             {
                 while (!waypointNav.HasPath)
                 {
-                    waypointNav.SetDestination(
-                        waypoints[Random.Range(0, waypoints.Count)].Position
-                    );
+                    var targetWp = waypoints[Random.Range(0, waypoints.Count)];
+                    waypointNav.SetDestination(targetWp);
                 }
                 targetPosition = waypointNav.CurrentWaypointPosition;
             }

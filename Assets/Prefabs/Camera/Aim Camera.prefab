@@ -26,14 +26,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1762933697843049252}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31811583, y: 0.01945835, z: -0.0064251265, w: 0.9478304}
+  m_LocalRotation: {x: 0.31811687, y: 0.019459473, z: -0.0064283074, w: 0.94783}
   m_LocalPosition: {x: -6.43, y: 8.347651, z: -22.689999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3785072200360344770}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 37.106, y: 2.357, z: 0.014}
 --- !u!114 &4128945486281501461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +87,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CinemachineCameraTarget: {fileID: 0}
   TopClamp: 70
-  BottomClamp: -30
+  BottomClamp: -20
   CameraAngleOverride: 0
   LockCameraPosition: 0
   Sensitivity: 0.5

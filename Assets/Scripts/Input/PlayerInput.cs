@@ -5,9 +5,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoSingleton<PlayerInput>
 {
-    // 使用 InputActionAsset，而不是自动生成的 PlayerInputAction C# 类
     [Header("Input System")]
-    [Tooltip("拖拽你的 Input Actions 资源（.inputactions）到这里")]
+    [Tooltip("Input Actions 资源")]
     [SerializeField] private InputActionAsset inputActionAsset;
 
     // 对应 Control Action Map 里的各个 Action
@@ -96,11 +95,6 @@ public class PlayerInput : MonoSingleton<PlayerInput>
 
         // 获取 Control Action Map（名字需要与你的 Input Actions 中的 Map 名一致）
         var controlMap = inputActionAsset.FindActionMap("Control", true);
-        if (controlMap == null)
-        {
-            Debug.LogError("PlayerInput: 在 InputActionAsset 中未找到名为 \"Control\" 的 Action Map。");
-            return;
-        }
 
         // 根据 Action 名称获取各个 InputAction（名称需与 Input Actions 资源里一致）
         moveAction = controlMap.FindAction("Move", true);

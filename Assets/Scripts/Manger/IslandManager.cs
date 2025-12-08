@@ -180,8 +180,8 @@ public class IslandManager : MonoBehaviour
     /// </summary>
     private void GenerateGridCenters()
     {
-        gridCenters.Clear();
-        gridCoords.Clear();
+        gridCenters.Clear();    // 中心点位置
+        gridCoords.Clear();     // 坐标（x，y）
     
         Vector3 origin = center != null ? center.position : Vector3.zero;
     

@@ -19,7 +19,7 @@ public class PlayerCamera : MonoBehaviour
     [Header("第一人称参数")]
     public float sensX;
     public float sensY;
-    public Transform cameraPosition;
+    public Transform cameraPosition;            // 相机位置
     public Transform FirstPersonAimPosition;   // 第一人称瞄准位置
     public Transform ThirdPersonAimPosition;   // 第三人称瞄准位置
     public Transform CrewmanCameraPosition;    // Crewman摄像机位置

@@ -25,10 +25,10 @@ public class WaypointNavigator : MonoBehaviour
     [SerializeField] private int zoneID = 0;
 
     // 是否在 Scene 视图中绘制路径调试线（用于可视化当前路径）
-    [SerializeField] private bool debugPath = false;
+    [SerializeField] private bool showPath = false;
 
     // 当前完整路径（由 WaypointManager.FindPath() 生成）
-    private List<Waypoint> currentPath;
+    [SerializeField] private List<Waypoint> currentPath;
 
     // 当前正在前往的路径点索引（在 currentPath 中的下标）
     private int currentWaypointIndex;
@@ -85,6 +85,23 @@ public class WaypointNavigator : MonoBehaviour
             nextCheckTime = 0f;
         }
     }
+    /// <summary>
+    /// 设置目标点（Waypoint类型）
+    /// 自动寻找“自身最近的Waypoint”和“目标Waypoint”之间的路径。
+    /// </summary>
+    /// <param name="targetWaypoint">目标路径点</param>
+    public void SetDestination(Waypoint targetWaypoint)
+    {
+        if (targetWaypoint == null) return;
+
+        var startWaypoint = WaypointManager.Instance.GetNearestWaypoint(transform.position, zoneID);
+        if (startWaypoint == null) return;
+
+        currentPath = WaypointManager.Instance.FindPath(startWaypoint, targetWaypoint);
+        currentWaypointIndex = 0;
+        nextCheckTime = 0f;
+
+    }
 
 
     /// <summary>
@@ -96,11 +113,10 @@ public class WaypointNavigator : MonoBehaviour
     {
         if (!HasPath) return; // 若无路径则直接退出
 
-        // 优化：降低检测频率，减少 CPU 开销
+        // 降低检测频率，减少 CPU 开销
         if (Time.time < nextCheckTime) return;
         nextCheckTime = Time.time + reachCheckInterval;
 
-        // 优化：使用距离平方 (sqrMagnitude) 代替 Distance (含开方运算)
         // 计算当前位置到当前路径点的向量
         float distSqr = (transform.position - CurrentWaypointPosition).sqrMagnitude;
         float thresholdSqr = waypointReachDistance * waypointReachDistance;
@@ -119,7 +135,7 @@ public class WaypointNavigator : MonoBehaviour
             }
         }
 
-        //// （可选功能）定期更新路径
+        //重新规划路径
         //if (Time.time - lastPathUpdateTime >= pathUpdateInterval)
         //{
         //    UpdatePath();
@@ -163,11 +179,10 @@ public class WaypointNavigator : MonoBehaviour
     /// </summary>
     private void OnDrawGizmos()
     {
-        // 若未开启调试或没有路径则不绘制
-        if (!debugPath || !HasPath) return;
+        if (!showPath || !HasPath) return;
 
         // 绘制路径连线（黄色）
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.red;
         for (int i = 0; i < currentPath.Count - 1; i++)
         {
             Gizmos.DrawLine(currentPath[i].Position, currentPath[i + 1].Position);

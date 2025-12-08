@@ -363,8 +363,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0e5942af3bc46af94137db46b4c6fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 5
-  maxAcceleration: 10
+  maxVelocity: 30
+  maxAcceleration: 20
   turnSpeed: 5
   targetRadius: 5
   slowRadius: 10
@@ -430,7 +430,8 @@ MonoBehaviour:
   waypointReachDistance: 10
   reachCheckInterval: 0.1
   zoneID: 3
-  debugPath: 0
+  showPath: 1
+  currentPath: []
 --- !u!114 &7272375457126905932
 MonoBehaviour:
   m_ObjectHideFlags: 0

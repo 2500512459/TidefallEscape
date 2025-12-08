@@ -182,7 +182,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5395692944769035941}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -520, y: 0, z: -58.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -287,12 +287,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0e5942af3bc46af94137db46b4c6fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 3.5
+  maxVelocity: 5
   maxAcceleration: 10
   turnSpeed: 5
-  targetRadius: 0.005
-  slowRadius: 1
-  timeToTarget: 0.1
+  targetRadius: 10
+  slowRadius: 5
+  timeToTarget: 5
 --- !u!114 &1102698944573840713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,8 +324,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointReachDistance: 1
-  reachCheckInterval: 0.1
-  zoneID: 0
+  reachCheckInterval: 0.2
+  zoneID: 1
   debugPath: 0
 --- !u!114 &4837448111383421845
 MonoBehaviour:

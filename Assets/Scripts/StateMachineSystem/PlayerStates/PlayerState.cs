@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerState : ScriptableObject, IState
 {
     [SerializeField] string stateName;
-    [SerializeField, Range(0f, 1f)] float transitionDuration = 0.1f;
+    [SerializeField, Range(0f, 1f)] float transitionDuration = 0.1f;    // ¹ý¶ÉÊ±¼ä
 
     float stateStartTime;
     int stateHash;

@@ -1,0 +1,27 @@
+{
+    "name": "HotUpdate",
+    "rootNamespace": "",
+    "references": [
+        "Launcher",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Cinemachine",
+        "UWS",
+        "VHierarchy",
+        "DOTween.Modules",
+        "Fluid.BehaviorTree",
+        "Unity.Animation.Rigging"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

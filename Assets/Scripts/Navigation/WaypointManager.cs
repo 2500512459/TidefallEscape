@@ -10,7 +10,7 @@ public class WaypointManager : MonoSingleton<WaypointManager>
     // 当前场景中的所有 Waypoint (按区域分组)
     private Dictionary<int, List<Waypoint>> waypointsByZone = new Dictionary<int, List<Waypoint>>();
 
-    // --- 寻路数据结构缓存 (减少 GC Alloc) ---
+    // --- 寻路数据结构缓存 ---
     // frontier：待探索的节点列表
     private List<PathNode> frontier = new List<PathNode>();
     // visitedNodes：已探索节点集合
@@ -23,14 +23,14 @@ public class WaypointManager : MonoSingleton<WaypointManager>
     private void Start()
     {
         // 游戏开始时初始化节点网络
-        InitializeWaypoints();
+        InitWaypoints();
     }
 
 
     /// <summary>
     /// 初始化路径点：收集所有 Waypoint，并按区域自动生成连接关系
     /// </summary>
-    public void InitializeWaypoints()
+    public void InitWaypoints()
     {
         waypointsByZone.Clear();
 
@@ -71,7 +71,7 @@ public class WaypointManager : MonoSingleton<WaypointManager>
     {
         if (waypointsByZone.Count == 0)
         {
-            InitializeWaypoints();
+            InitWaypoints();
         }
         
         // 聚合所有区域的路点
@@ -90,7 +90,7 @@ public class WaypointManager : MonoSingleton<WaypointManager>
     {
         if (waypointsByZone.Count == 0)
         {
-            InitializeWaypoints();
+            InitWaypoints();
         }
 
         if (waypointsByZone.ContainsKey(zoneID))

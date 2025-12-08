@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: UI
+  m_EditorClassIdentifier: 
+  m_GroupName: UI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 1459baf6f57df474693b030562b57941
+  m_SerializeEntries:
+  - m_GUID: 29e2373d2ebda2b40a9b22364145d116
+    m_Address: Map Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 375ea1ba4c985a64b89c6bb60f4740f0
+    m_Address: Time Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 803dc1119b16b9e42808cde928115a67
+    m_Address: RemainingTime Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d17ffdef88158554ead31de32872499c
+    m_Address: Quest Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df029f13d9a25d74197096a0ab6d5306
+    m_Address: Shop Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9264b8c8c1cf63448529e1be3fbf0cc
+    m_Address: GameSetting Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f126ff6df5a162e40a53cde648d126a9
+    m_Address: Menu Canvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - All
+    - Canvas
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 80c0f422ea5e4aa4b97c7dc98813e782, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fcb887a1376653545926474800d64cf2, type: 2}
+    - {fileID: 11400000, guid: 73d30c071d796f844b6a995ddaf2096d, type: 2}

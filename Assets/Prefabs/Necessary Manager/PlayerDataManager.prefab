@@ -44,10 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d93f12d56934a5b41ba14836d9498180, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SelectedProfession: 1
+  SelectedProfession: 0
   OwnedShips: 01000000
   CurrentShipType: 0
   currentContext: 0
+  CurrentMatchTime: 0
+  currencyData: {fileID: 11400000, guid: ca94f8df4a0778048bed46159302e79e, type: 2}
   professionDataList:
   - professionType: 0
     characterPrefab: {fileID: 8703872773199547215, guid: 64c9d96775079344fac674889078804c,

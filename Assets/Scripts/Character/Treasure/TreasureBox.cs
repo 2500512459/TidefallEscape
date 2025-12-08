@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 /// <summary>
 /// 宝箱（继承 Character）
@@ -14,6 +13,7 @@ public class TreasureBox : Character
 
     [Header("提示UI")]
     public TreasureHintUI HintUI;
+    
 
     [Header("掉落数量设置")]
     [Tooltip("生成的最大物品数量")]

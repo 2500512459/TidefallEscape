@@ -20,9 +20,7 @@ public class LootContainerSO : ScriptableObject
     [Tooltip("传奇 概率 (默认 0.01)")]
     [Range(0f, 1f)] public float legendaryChance = 0.01f;
 
-    // ================================================================
-    //  一、稀有度随机选择
-    // ================================================================
+#region 稀有度随机选择
     /// <summary>
     /// 根据当前设置的概率随机返回一个 ItemRarity。
     /// 如果四个概率总和不等于 1，会按权重自动归一化。
@@ -72,9 +70,8 @@ public class LootContainerSO : ScriptableObject
             default: return commonEntries;
         }
     }
-    // ================================================================
-    //  二、从稀有度列表中按概率 + 权重抽取一个条目
-    // ================================================================
+#endregion
+#region 从稀有度列表中按概率 + 权重抽取一个条目
     /// <summary>
     /// 从指定稀有度的列表中，根据 probability + weight 抽取一个物品条目
     /// </summary>
@@ -119,9 +116,8 @@ public class LootContainerSO : ScriptableObject
         // 随机失败，从候选名单中拿取
         return filtered[filtered.Count - 1];
     }
-    // ================================================================
-    //  三、完整掉落逻辑
-    // ================================================================
+#endregion
+#region 完整掉落逻辑
     /// <summary>
     /// 抽取指定数量的物品,数量+是否去重
     /// </summary>
@@ -155,9 +151,8 @@ public class LootContainerSO : ScriptableObject
 
         return results;
     }
-    // ================================================================
-    //  四、测试接口
-    // ================================================================
+#endregion
+#region 测试接口
     /// <summary>
     /// 编辑器右键测试：多次抽取稀有度并输出分布（用于校验概率）
     /// </summary>
@@ -221,6 +216,7 @@ public class LootContainerSO : ScriptableObject
             Debug.Log($" - [{stack.item.rarity}] {stack.item.itemName} × {stack.count}");
         }
     }
+#endregion
 }
 
 [System.Serializable]
